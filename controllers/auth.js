@@ -243,6 +243,9 @@ exports.androidGoogleAuth = (req, res, next) => {
             logger.info(`Existing user found for google id : ${uid}.`);
             console.log(`Existing user found for google id : ${uid}.`);
             updateUser.firebaseToken = firebaseToken;
+            req.session.user = updateUser;
+            req.session.isLoggedIn = true;
+            req.session.save();
             updateUser.save();
             return res.json({
                 message: `Google user was existing therefore, updated firebaseToken only.`,
