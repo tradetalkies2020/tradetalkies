@@ -235,10 +235,18 @@ exports.androidGoogleAuth = (req, res, next) => {
             req.session.user = newUser;
             req.session.isLoggedIn = true;
             req.session.save();
+            return res.json({
+                message: `Google user with userid : ${uid} signed up and logged in`,
+            });
         } else {
             let updateUser = user;
+            logger.info(`Existing user found for google id : ${uid}.`);
+            console.log(`Existing user found for google id : ${uid}.`);
             updateUser.firebaseToken = firebaseToken;
             updateUser.save();
+            return res.json({
+                message: `Google user was existing therefore, updated firebaseToken only.`,
+            });
         }
     });
 };
