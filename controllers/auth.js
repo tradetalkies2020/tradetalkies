@@ -142,7 +142,7 @@ exports.postNewPassword = (req, res, next) => {
                     resetUser.resetToken = undefined;
                     resetUser.resetTokenExpiration = undefined;
                     resetUser.save();
-                    return res.json({message:"Password changes saved!"})
+                    return res.json({ message: "Password changes saved!" });
                 });
             });
         });
@@ -153,8 +153,7 @@ exports.postNewPassword = (req, res, next) => {
     }
 };
 
-exports.mergedLogin=(req,res,next)=>
-{
+exports.mergedLogin = (req, res, next) => {
     const errors = validationResult(req);
 
     const today = new Date();
@@ -210,4 +209,36 @@ exports.mergedLogin=(req,res,next)=>
                 });
         });
     });
-}
+};
+
+exports.androidGoogleAuth = (req, res, next) => {
+    const username = req.body.userName;
+    const email = req.body.email;
+    const uid = req.body.uid;
+    const today = Date.now();
+    const firebaseToken = req.body.firebaseToken;
+    User.findOne({ "google.id": uid }).then((user) => {
+        if (!user) {
+            logger.info(
+                `No user found for google id : ${uid}, creating new user`
+            );
+            console.log(
+                `No user found for google id : ${uid}, creating new user`
+            );
+            var googleData = { name: username, id: uid, email: email };
+            var newUser = new User({
+                google: googleData,
+                createdAt: today,
+                firebaseToken: firebaseToken,
+            });
+            newUser.save();
+            req.session.user = newUser;
+            req.session.isLoggedIn = true;
+            req.session.save();
+        } else {
+            let updateUser = user;
+            updateUser.firebaseToken = firebaseToken;
+            updateUser.save();
+        }
+    });
+};

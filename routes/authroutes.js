@@ -111,8 +111,16 @@ module.exports = function (app, passport) {
     });
 
 //merging local login and signup in single endpoint
+
 app.post('/local-signin',validator,authController.mergedLogin);
 
+//Google anroid signin logic
+
+
+app.post('/android-google-login',authController.androidGoogleAuth);
+
+
+//android logic ends here//
     app.post('/passwordreset',authController.postReset);
     app.get('/reset/:token',authController.getNewPassword);
     app.post('/new-password',authController.postNewPassword);
