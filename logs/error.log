@@ -1,0 +1,11 @@
+{"message":[{"value":"gangulyprateek0","msg":"Please Enter a valid Email","param":"email","location":"body"}],"level":"error","timestamp":"2020-07-27T17:01:41.456Z"}
+{"message":[{"value":"gangulyprateek0@gmail.com","msg":"E-mail already exists, try something else.","param":"email","location":"body"}],"level":"error","timestamp":"2020-07-27T17:02:59.084Z"}
+{"message":"An error occured in saving facebook data for use with profile [object Object]","level":"error","timestamp":"2020-07-28T08:03:47.581Z"}
+{"message":"An error occured in saving facebook data for use with profile [object Object]","level":"error","timestamp":"2020-07-28T08:05:45.819Z"}
+{"message":"An error occured in saving facebook data for use with profile [object Object]","level":"error","timestamp":"2020-07-28T08:16:24.958Z"}
+{"message":"An error occured in saving facebook data for use with profile [object Object]","level":"error","timestamp":"2020-07-28T08:17:41.898Z"}
+{"message":"An error occured in saving facebook data for use with profile [object Object]","level":"error","timestamp":"2020-07-28T08:25:10.611Z"}
+{"message":"An error occured in saving facebook data for use with profile [object Object]","level":"error","timestamp":"2020-07-28T08:25:43.842Z"}
+{"message":"An error occured in saving facebook data for use with profile [object Object]","level":"error","timestamp":"2020-07-28T08:29:45.745Z"}
+{"message":"An error occured in saving facebook data for use with profile [object Object]","level":"error","timestamp":"2020-07-28T08:29:56.892Z"}
+{"message":"An error occured in saving facebook data for use with profile [object Object]","level":"error","timestamp":"2020-07-28T09:59:35.440Z"}
