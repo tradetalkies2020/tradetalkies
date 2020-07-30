@@ -3,7 +3,7 @@ const authController = require("../controllers/auth");
 const { validator } = require("../middleware/validator");
 const { validationResult } = require("express-validator");
 const logger = require("../middleware/logger");
-const isAuth = require("../middleware/isAuth");
+const isAuth=require('../middleware/isAuth');
 module.exports = function (app, passport) {
     app.post("/login", validator, (req, res, next) => {
         //Using passport for authentication of local user
@@ -110,10 +110,10 @@ module.exports = function (app, passport) {
         })(req, res, next);
     });
 
-    //merging local login and signup in single endpoint
-    app.post("/local-signin", authController.mergedLogin);
+//merging local login and signup in single endpoint
+app.post('/local-signin',validator,authController.mergedLogin);
 
-    app.post("/passwordreset", authController.postReset);
-    app.get("/reset/:token", authController.getNewPassword);
-    app.post("/new-password", authController.postNewPassword);
+    app.post('/passwordreset',authController.postReset);
+    app.get('/reset/:token',authController.getNewPassword);
+    app.post('/new-password',authController.postNewPassword);
 };
