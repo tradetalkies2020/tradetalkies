@@ -13,7 +13,7 @@ var bodyParser = require("body-parser");
 var passport = require("passport");
 var flash = require("connect-flash");
 
-var configDB = require("./config/database");
+//var configDB = require("./config/database");
 mongoose.connect(MONGO_URI);
 require("./config/passport")(passport);
 const store = new MongoDbSession({

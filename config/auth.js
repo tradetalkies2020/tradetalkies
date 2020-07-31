@@ -13,6 +13,11 @@ module.exports={
         'clientID':process.env.LINKEDIN_CLIENT_ID,
         'clientSecret': process.env.LINKEDIN_CLIENT_SECRET,
         'callbackURL':`${process.env.APP_URL}/auth/linkedin/callback`
+    },
+    "twitterAuth":{
+        'clientID':process.env.TWITTER_CLIENT_ID,
+        'clientSecret': process.env.TWITTER_CLIENT_SECRET,
+        'callbackURL':`${process.env.APP_URL}/auth/twitter/callback`
     }
 
 }

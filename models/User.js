@@ -26,6 +26,12 @@ var userSchema = new Schema({
         email: String,
         name: String,
     },
+    twitter: {
+        id: String,
+        token: String,
+        email: String,
+        name: String,
+    },
     firebaseToken: String,
     createdAt: { type: Date, default: Date.now() },
     resetToken:String,

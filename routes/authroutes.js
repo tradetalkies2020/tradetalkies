@@ -110,6 +110,30 @@ module.exports = function (app, passport) {
         })(req, res, next);
     });
 
+    //Twitter Authentication//
+    app.get(
+        "/auth/twitter",
+        passport.authenticate("twitter", { scope: ["profile", "email"] })
+    );
+
+    //Twitter sending us back data
+    app.get("/auth/twitter/callback", (req, res, next) => {
+        passport.authenticate("twitter", (err, user, info) => {
+            try {
+                if (err) throw err;
+                req.session.isLoggedIn = true;
+                req.session.user = user;
+                req.session.save();
+                return res.json({ message: "Twitter login done", user: user });
+            } catch (exc) {
+                console.log(
+                    `Error in saving user from Twitter login for user ${exc}`
+                );
+            }
+        })(req, res, next);
+    });
+
+
     //merging local login and signup in single endpoint
 
     app.post("/local-signin", validator, authController.mergedLogin);

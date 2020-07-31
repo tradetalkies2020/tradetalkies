@@ -6,6 +6,8 @@ var configAuth = require("./auth");
 const FacebookStrategy = require("passport-facebook").Strategy;
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const LinkedinStrategy = require("passport-linkedin-oauth2").Strategy;
+const TwitterStrategy=require('passport-twitter').Strategy;
+
 
 module.exports = function (passport) {
     //serializing
@@ -199,6 +201,66 @@ module.exports = function (passport) {
                                     newUser.linkedin.name = profile.displayName;
                                     if (profile.emails !== undefined) {
                                         newUser.linkedin.email =
+                                            profile.emails[0].value;
+                                    }
+                                    console.log(newUser);
+
+                                    newUser.save(function (err) {
+                                        if (err) {
+                                            throw err;
+                                        }
+                                        return done(null, newUser);
+                                    });
+                                } catch (err) {
+                                    console.log(err);
+                                    logger.error(
+                                        `An error occured in saving facebook data for use with profile ${profile}`
+                                    );
+                                }
+                            }
+                        })
+                        .catch((err) => {
+                            logger.error(
+                                `Error ocurred for facebook login : ${err}`
+                            );
+                            done(err);
+                        });
+                });
+            }
+        )
+    );
+
+
+    //Twitter Strategy
+    passport.use(
+        new TwitterStrategy(
+            {
+                consumerKey: configAuth.twitterAuth.clientID,
+                consumerSecret: configAuth.twitterAuth.clientSecret,
+                callbackURL: configAuth.twitterAuth.callbackURL,
+                profileFields: [
+                    "id",
+                    "first-name",
+                    "last-name",
+                    "email-address",
+                ],
+                scope:['profile','email']
+            },
+            function (accessToken, refreshToken, profile, done) {
+                process.nextTick(function () {
+                    User.findOne({ "twitter.id": profile.id })
+                        .then((user) => {
+                            if (user) {
+                                return done(null, user);
+                            } else {
+                                try {
+                                    //console.log(profile);
+                                    var newUser = new User();
+                                    newUser.twitter.id = profile.id;
+                                    newUser.twitter.token = accessToken;
+                                    newUser.twitter.name = profile.displayName;
+                                    if (profile.emails !== undefined) {
+                                        newUser.twitter.email =
                                             profile.emails[0].value;
                                     }
                                     console.log(newUser);
