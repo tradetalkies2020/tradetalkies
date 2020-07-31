@@ -3,7 +3,7 @@ const authController = require("../controllers/auth");
 const { validator } = require("../middleware/validator");
 const { validationResult } = require("express-validator");
 const logger = require("../middleware/logger");
-const isAuth=require('../middleware/isAuth');
+const isAuth = require("../middleware/isAuth");
 module.exports = function (app, passport) {
     app.post("/login", validator, (req, res, next) => {
         //Using passport for authentication of local user
@@ -110,18 +110,17 @@ module.exports = function (app, passport) {
         })(req, res, next);
     });
 
-//merging local login and signup in single endpoint
+    //merging local login and signup in single endpoint
 
-app.post('/local-signin',validator,authController.mergedLogin);
+    app.post("/local-signin", validator, authController.mergedLogin);
 
-//Google anroid signin logic
+    //Google anroid signin logic
 
+    app.post("/android-google-login", authController.androidGoogleAuth);
+    app.post("/android-facebook-login", authController.androidFacebookAuth);
 
-app.post('/android-google-login',authController.androidGoogleAuth);
-
-
-//android logic ends here//
-    app.post('/passwordreset',authController.postReset);
-    app.get('/reset/:token',authController.getNewPassword);
-    app.post('/new-password',authController.postNewPassword);
+    //android logic ends here//
+    app.post("/passwordreset", authController.postReset);
+    app.get("/reset/:token", authController.getNewPassword);
+    app.post("/new-password", authController.postNewPassword);
 };

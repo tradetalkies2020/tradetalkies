@@ -254,7 +254,7 @@ exports.androidGoogleAuth = (req, res, next) => {
     });
 };
 
-exports.androidLinkedinAuth = (req, res, next) => {
+exports.androidFacebookAuth = (req, res, next) => {
     const username = req.body.userName;
     const email = req.body.email;
     const uid = req.body.uid;
