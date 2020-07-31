@@ -253,3 +253,46 @@ exports.androidGoogleAuth = (req, res, next) => {
         }
     });
 };
+
+exports.androidLinkedinAuth = (req, res, next) => {
+    const username = req.body.userName;
+    const email = req.body.email;
+    const uid = req.body.uid;
+    const today = Date.now();
+    const firebaseToken = req.body.firebaseToken;
+    User.findOne({ "facebook.id": uid }).then((user) => {
+        if (!user) {
+            logger.info(
+                `No user found for facebook id : ${uid}, creating new user`
+            );
+            console.log(
+                `No user found for facebook id : ${uid}, creating new user`
+            );
+            var facebookData = { name: username, id: uid, email: email };
+            var newUser = new User({
+                facebook: facebookData,
+                createdAt: today,
+                firebaseToken: firebaseToken,
+            });
+            newUser.save();
+            req.session.user = newUser;
+            req.session.isLoggedIn = true;
+            req.session.save();
+            return res.json({
+                message: `facebook user with userid : ${uid} signed up and logged in`,
+            });
+        } else {
+            let updateUser = user;
+            logger.info(`Existing user found for facebook id : ${uid}.`);
+            console.log(`Existing user found for facebook id : ${uid}.`);
+            updateUser.firebaseToken = firebaseToken;
+            req.session.user = updateUser;
+            req.session.isLoggedIn = true;
+            req.session.save();
+            updateUser.save();
+            return res.json({
+                message: `facebook user was existing therefore, updated firebaseToken only.`,
+            });
+        }
+    });
+};
