@@ -12,7 +12,7 @@ var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 var passport = require("passport");
 var flash = require("connect-flash");
-
+const dashboardRoutes=require('./routes/dashboard.js')
 //var configDB = require("./config/database");
 mongoose.connect(MONGO_URI);
 require("./config/passport")(passport);
@@ -58,7 +58,7 @@ app.set("view engine", "ejs");
 // 	console.log('================');
 // 	console.log(req.session);
 // });
-
+app.use(dashboardRoutes);
 require("./routes/authroutes")(app, passport);
 
 app.listen(port);
