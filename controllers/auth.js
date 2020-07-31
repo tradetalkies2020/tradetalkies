@@ -242,7 +242,13 @@ exports.androidGoogleAuth = (req, res, next) => {
             let updateUser = user;
             logger.info(`Existing user found for google id : ${uid}.`);
             console.log(`Existing user found for google id : ${uid}.`);
-            updateUser.firebaseToken = firebaseToken;
+            if (
+                firebaseToken !== undefined ||
+                firebaseToken !== null ||
+                firebaseToken !== ""
+            ) {
+                updateUser.firebaseToken = firebaseToken;
+            }
             req.session.user = updateUser;
             req.session.isLoggedIn = true;
             req.session.save();
@@ -285,7 +291,13 @@ exports.androidFacebookAuth = (req, res, next) => {
             let updateUser = user;
             logger.info(`Existing user found for facebook id : ${uid}.`);
             console.log(`Existing user found for facebook id : ${uid}.`);
-            updateUser.firebaseToken = firebaseToken;
+            if (
+                firebaseToken !== undefined ||
+                firebaseToken !== null ||
+                firebaseToken !== ""
+            ) {
+                updateUser.firebaseToken = firebaseToken;
+            }
             req.session.user = updateUser;
             req.session.isLoggedIn = true;
             req.session.save();
