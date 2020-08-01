@@ -145,7 +145,10 @@ exports.postNewPassword = (req, res, next) => {
                     resetUser.resetToken = undefined;
                     resetUser.resetTokenExpiration = undefined;
                     resetUser.save();
-                    return res.json({ message: "Password changes saved!" });
+                    return res.render("auth/reset", {
+                        path: "/new-password",
+                        docTitle: "Success",
+                    });
                 });
             });
         });
