@@ -108,7 +108,9 @@ exports.getNewPassword = (req, res, next) => {
             if (!user) {
                 return res.json({ message: "Token expired or no user found" });
             }
-            res.json({
+            res.render("auth/new-password", {
+                path: "/new-password",
+                docTitle: "New Password",
                 userId: user._id.toString(),
                 passwordToken: token,
             });
@@ -121,6 +123,7 @@ exports.getNewPassword = (req, res, next) => {
 };
 
 exports.postNewPassword = (req, res, next) => {
+    console.log(req.body);
     const newPassword = req.body.password;
     const userId = req.body.userId;
     const passwordToken = req.body.passwordToken;
@@ -138,7 +141,7 @@ exports.postNewPassword = (req, res, next) => {
                     if (err) {
                         throw err;
                     }
-                    resetUser.password = hash;
+                    resetUser.local.password = hash;
                     resetUser.resetToken = undefined;
                     resetUser.resetTokenExpiration = undefined;
                     resetUser.save();

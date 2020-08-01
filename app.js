@@ -1,5 +1,6 @@
 var express = require("express");
 var app = express();
+const path=require('path')
 var port = process.env.PORT || 3000;
 const dotenv = require("dotenv");
 dotenv.config();
@@ -12,7 +13,7 @@ var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 var passport = require("passport");
 var flash = require("connect-flash");
-const dashboardRoutes=require('./routes/dashboard.js')
+const dashboardRoutes = require("./routes/dashboard.js");
 //var configDB = require("./config/database");
 mongoose.connect(MONGO_URI);
 require("./config/passport")(passport);
@@ -21,6 +22,7 @@ const store = new MongoDbSession({
     collection: "sessions",
 });
 app.use(morgan("dev"));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 app.use(bodyParser.json({ limit: "50mb" }));
