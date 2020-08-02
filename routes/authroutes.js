@@ -31,7 +31,9 @@ module.exports = function (app, passport) {
                     return res.json({ message: "User logged in", user: user });
                 });
             } else {
-                return res.json({ errorMessage: "Invalid format" });
+                return res
+                    .status(401)
+                    .json({ errorMessage: "Invalid credentials" });
             }
         })(req, res, next);
     });
@@ -133,7 +135,6 @@ module.exports = function (app, passport) {
         })(req, res, next);
     });
 
-
     //merging local login and signup in single endpoint
 
     app.post("/local-signin", validator, authController.mergedLogin);
@@ -147,4 +148,13 @@ module.exports = function (app, passport) {
     app.post("/passwordreset", authController.postReset);
     app.get("/reset/:token", authController.getNewPassword);
     app.post("/new-password", authController.postNewPassword);
+    app.get("/checkUser/:email", (req, res, next) => {
+        User.findOne({ "local.email": req.params.email }).then((user) => {
+            if (!user) {
+                return res.json({ isAlreadyInApp: false });
+            }
+            console.log(user);
+            return res.json({ isAlreadyInApp: true, userDoc: user });
+        });
+    });
 };
