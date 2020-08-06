@@ -12,7 +12,6 @@ const transporter = nodemailer.createTransport(
 );
 
 exports.sendResetEmail = (to, sub, content, token) => {
-    const excpiration = "";
     return new Promise((resolve, reject) => {
         User.findOne({
             $or: [

@@ -206,7 +206,7 @@ exports.mergedLogin = (req, res, next) => {
                     req.session.isLoggedIn = true;
                     req.session.user = newUser;
                     req.session.save();
-                    res.json({ message: "User signed up" });
+                    res.json({ message: "User signed up", user:newUser });
                 })
                 .catch((err) => {
                     const error = new Error(err);

@@ -42,6 +42,7 @@
         "passport-local-mongoose": "^6.0.1",
         "passport-twitter": "^1.0.4",
         "query-string": "^6.13.1",
+        "request-promise": "^4.2.6",
         "winston": "^3.3.3"
     },
     "devDependencies": {

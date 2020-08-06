@@ -14,6 +14,7 @@ var bodyParser = require("body-parser");
 var passport = require("passport");
 var flash = require("connect-flash");
 const dashboardRoutes = require("./routes/dashboard.js");
+const adminRoutes=require('./routes/admin');
 //var configDB = require("./config/database");
 mongoose.connect(MONGO_URI);
 require("./config/passport")(passport);
@@ -61,6 +62,7 @@ app.set("view engine", "ejs");
 // 	console.log(req.session);
 // });
 app.use(dashboardRoutes);
+app.use(adminRoutes);
 require("./routes/authroutes")(app, passport);
 
 app.listen(port);

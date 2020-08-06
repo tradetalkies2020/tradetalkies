@@ -148,6 +148,8 @@ module.exports = function (app, passport) {
     app.post("/passwordreset", authController.postReset);
     app.get("/reset/:token", authController.getNewPassword);
     app.post("/new-password", authController.postNewPassword);
+
+    //User test route
     app.get("/checkUser/:email", (req, res, next) => {
         User.findOne({ "local.email": req.params.email }).then((user) => {
             if (!user) {
