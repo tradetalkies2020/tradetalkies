@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Activity = require("../models/Activity");
 const { validationResult } = require("express-validator");
 const logger = require("../middleware/logger");
 const bcrypt = require("bcrypt");
@@ -197,8 +198,8 @@ exports.mergedLogin = (req, res, next) => {
     const email = req.body.email;
     const username = req.body.username;
     const password = req.body.password;
-    const industry=req.body.industry;
-    const age=req.body.age;
+    const industry = req.body.industry;
+    const age = req.body.age;
     var firebaseToken = "";
     if (req.body.firebaseToken) {
         firebaseToken = req.body.firebaseToken;
@@ -232,8 +233,8 @@ exports.mergedLogin = (req, res, next) => {
                 local: userData,
                 firebaseToken: firebaseToken,
                 createdAt: today,
-                industry:industry,
-                age:age
+                industry: industry,
+                age: age,
             });
             return newUser
                 .save()
@@ -285,8 +286,8 @@ exports.androidGoogleAuth = (req, res, next) => {
                 google: googleData,
                 createdAt: today,
                 firebaseToken: firebaseToken,
-                industry:industry,
-                age:age
+                industry: industry,
+                age: age,
             });
             newUser.save();
             req.session.user = newUser;
@@ -353,8 +354,8 @@ exports.androidFacebookAuth = (req, res, next) => {
                 facebook: facebookData,
                 createdAt: today,
                 firebaseToken: firebaseToken,
-                industry:industry,
-                age:age
+                industry: industry,
+                age: age,
             });
             newUser.save();
             req.session.user = newUser;
