@@ -92,6 +92,7 @@ exports.editProfile = async (req, res, next) => {
     const email = req.body.email;
     const industry = req.body.industry;
     const age = req.body.age;
+    const firebaseToken = req.body.firebaseToken;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         logger.error(errors.array());
@@ -124,6 +125,7 @@ exports.editProfile = async (req, res, next) => {
             "local.email": email,
             age: age,
             industry: industry,
+            firebaseToken: firebaseToken,
         };
     }
 
@@ -133,6 +135,7 @@ exports.editProfile = async (req, res, next) => {
             "linkedin.email": email,
             age: age,
             industry: industry,
+            firebaseToken:firebaseToken
         };
     }
     if (userType === "google") {
@@ -141,6 +144,7 @@ exports.editProfile = async (req, res, next) => {
             "google.email": email,
             age: age,
             industry: industry,
+            firebaseToken:firebaseToken
         };
     }
     if (userType === "facebook") {
@@ -149,6 +153,7 @@ exports.editProfile = async (req, res, next) => {
             "facebook.email": email,
             age: age,
             industry: industry,
+            firebaseToken:firebaseToken
         };
     }
     if (userType === "twitter") {
@@ -157,6 +162,7 @@ exports.editProfile = async (req, res, next) => {
             "twitter.email": email,
             age: age,
             industry: industry,
+            firebaseToken:firebaseToken
         };
     }
 
@@ -185,12 +191,10 @@ exports.editProfile = async (req, res, next) => {
     });
     if (req.file !== undefined) {
         imageUrl = await req.file.location;
+    } else {
+        imageUrl = "";
     }
-    else
-    {
-        imageUrl="";
-    }
-    console.log(imageUrl)
+    console.log(imageUrl);
     update.imageUrl = imageUrl;
 
     User.findOneAndUpdate(
