@@ -91,7 +91,7 @@ exports.editProfile = async (req, res, next) => {
     const name = req.body.name;
     const email = req.body.email;
     const industry = req.body.industry;
-    const age = req.body.age;
+    const age = parseInt(req.body.age);
     const firebaseToken = req.body.firebaseToken;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
