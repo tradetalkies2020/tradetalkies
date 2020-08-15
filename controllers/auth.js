@@ -5,8 +5,10 @@ const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
 const mailService = require("../services/mailer");
 const crypto = require("crypto");
+const upload = require("../config/s3Service");
+const singleUpload = upload.single("image");
 
-exports.postSignup = (req, res, next) => {
+exports.postSignup = async (req, res, next) => {
     const errors = validationResult(req);
 
     const today = new Date();
@@ -14,8 +16,34 @@ exports.postSignup = (req, res, next) => {
     const username = req.body.username;
     const password = req.body.password;
     var firebaseToken = "";
+    var industry = "";
+    var age = null;
     if (req.body.firebaseToken) {
         firebaseToken = req.body.firebaseToken;
+    }
+    if (req.body.industry) {
+        industry = req.body.industry;
+    }
+    if (req.body.age) {
+        age = req.body.age;
+    }
+
+    //Image upload logic
+    var imageUrl = {};
+    await singleUpload(req, res, function (err) {
+        if (err) {
+            return res.status(422).send({
+                errors: [
+                    {
+                        title: "Error in uploading image",
+                        detail: err.message,
+                    },
+                ],
+            });
+        }
+    });
+    if (req.file !== undefined) {
+        imageUrl = await req.file.location;
     }
 
     //Validation result checking//
@@ -46,6 +74,9 @@ exports.postSignup = (req, res, next) => {
                 local: userData,
                 firebaseToken: firebaseToken,
                 createdAt: today,
+                industry: industry,
+                age: age,
+                imageUrl: imageUrl,
             });
             return newUser
                 .save()
@@ -166,6 +197,8 @@ exports.mergedLogin = (req, res, next) => {
     const email = req.body.email;
     const username = req.body.username;
     const password = req.body.password;
+    const industry=req.body.industry;
+    const age=req.body.age;
     var firebaseToken = "";
     if (req.body.firebaseToken) {
         firebaseToken = req.body.firebaseToken;
@@ -199,6 +232,8 @@ exports.mergedLogin = (req, res, next) => {
                 local: userData,
                 firebaseToken: firebaseToken,
                 createdAt: today,
+                industry:industry,
+                age:age
             });
             return newUser
                 .save()
@@ -206,7 +241,21 @@ exports.mergedLogin = (req, res, next) => {
                     req.session.isLoggedIn = true;
                     req.session.user = newUser;
                     req.session.save();
-                    res.json({ message: "User signed up", user:newUser });
+
+                    //Logging user login activity in db
+                    let activity = new Activity({
+                        userId: newUser._id,
+                        activity: [
+                            { endpoint: req.route.path, time: Date.now() },
+                        ],
+                    });
+                    activity.save();
+                    //User logging activity saved //
+
+                    return res.json({
+                        message: "User signed up",
+                        user: newUser,
+                    });
                 })
                 .catch((err) => {
                     const error = new Error(err);
@@ -236,11 +285,21 @@ exports.androidGoogleAuth = (req, res, next) => {
                 google: googleData,
                 createdAt: today,
                 firebaseToken: firebaseToken,
+                industry:industry,
+                age:age
             });
             newUser.save();
             req.session.user = newUser;
             req.session.isLoggedIn = true;
             req.session.save();
+
+            //Logging user login activity in db
+            let activity = new Activity({
+                userId: newUser._id,
+                activity: [{ endpoint: req.route.path, time: Date.now() }],
+            });
+            activity.save();
+            //User logging activity saved //
             return res.json({
                 message: `Google user with userid : ${uid} signed up and logged in`,
             });
@@ -259,6 +318,15 @@ exports.androidGoogleAuth = (req, res, next) => {
             req.session.isLoggedIn = true;
             req.session.save();
             updateUser.save();
+
+            //Logging user login activity in db
+            let activity_ = new Activity({
+                userId: updateUser._id,
+                activity: [{ endpoint: req.route.path, time: Date.now() }],
+            });
+            activity_.save();
+            //User logging activity saved //
+
             return res.json({
                 message: `Google user was existing therefore, updated firebaseToken only.`,
             });
@@ -285,11 +353,22 @@ exports.androidFacebookAuth = (req, res, next) => {
                 facebook: facebookData,
                 createdAt: today,
                 firebaseToken: firebaseToken,
+                industry:industry,
+                age:age
             });
             newUser.save();
             req.session.user = newUser;
             req.session.isLoggedIn = true;
             req.session.save();
+
+            //Logging user login activity in db
+            let activity = new Activity({
+                userId: newUser._id,
+                activity: [{ endpoint: req.route.path, time: Date.now() }],
+            });
+            activity.save();
+            //User logging activity saved //
+
             return res.json({
                 message: `facebook user with userid : ${uid} signed up and logged in`,
             });
@@ -308,6 +387,15 @@ exports.androidFacebookAuth = (req, res, next) => {
             req.session.isLoggedIn = true;
             req.session.save();
             updateUser.save();
+
+            //Logging user login activity in db
+            let activity_ = new Activity({
+                userId: updateUser._id,
+                activity: [{ endpoint: req.route.path, time: Date.now() }],
+            });
+            activity_.save();
+            //User logging activity saved //
+
             return res.json({
                 message: `facebook user was existing therefore, updated firebaseToken only.`,
             });

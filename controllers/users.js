@@ -1,8 +1,13 @@
 const User = require("../models/User");
 const Constants = require("../models/constants");
 const Help = require("../models/Help");
+const userservices = require("../services/userservices");
 const async = require("async");
 const { v4: uuidv4 } = require("uuid");
+const { validationResult } = require("express-validator");
+const logger = require("../middleware/logger");
+const upload = require("../config/s3Service");
+const singleUpload = upload.single("image");
 
 exports.getProfile = (req, res, next) => {
     const currentUser = req.session.user;
@@ -73,7 +78,137 @@ exports.postHelpQuery = (req, res, next) => {
                     helpData: helpData,
                 });
             } else {
+                return res.json({
+                    errorMessage: `Error in posting help query for id : ${currentUser._id}`,
+                });
                 //If category does not exist logic
             }
         });
+};
+
+exports.editProfile = async (req, res, next) => {
+    const currentUser = req.session.user;
+    const name = req.body.name;
+    const email = req.body.email;
+    const industry = req.body.industry;
+    const age = req.body.age;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        logger.error(errors.array());
+        return res.status(200).json({
+            errorMessage: errors.array()[0].msg,
+            oldInput: {
+                email: email,
+                name: name,
+                age: age,
+                industry: industry,
+            },
+            validationErrors: errors.array(),
+        });
+    }
+    var imageUrl = {};
+
+    //Find user type logic..
+    let userPromise = userservices.userType(currentUser._id);
+    let userType = await userPromise
+        .then((type) => {
+            return type.type;
+        })
+        .catch((err) => {
+            return err;
+        });
+    let update = {};
+    if (userType === "local") {
+        update = {
+            "local.name": name,
+            "local.email": email,
+            age: age,
+            industry: industry,
+        };
+    }
+
+    if (userType === "linkedin") {
+        update = {
+            "linkedin.name": name,
+            "linkedin.email": email,
+            age: age,
+            industry: industry,
+        };
+    }
+    if (userType === "google") {
+        update = {
+            "google.name": name,
+            "google.email": email,
+            age: age,
+            industry: industry,
+        };
+    }
+    if (userType === "facebook") {
+        update = {
+            "facebook.name": name,
+            "facebook.email": email,
+            age: age,
+            industry: industry,
+        };
+    }
+    if (userType === "twitter") {
+        update = {
+            "twitter.name": name,
+            "twitter.email": email,
+            age: age,
+            industry: industry,
+        };
+    }
+
+    //Update logic
+    // var update = {
+    //     local: { username: name, email: email },
+    //     age: age,
+    //     industry: industry,
+    // };
+    Object.keys(update).forEach(
+        (key) =>
+            (update[key] == null || update[key] == undefined) &&
+            delete update[key]
+    );
+    await singleUpload(req, res, function (err) {
+        if (err) {
+            return res.status(422).send({
+                errors: [
+                    {
+                        title: "Error in uploading image",
+                        detail: err.message,
+                    },
+                ],
+            });
+        }
+    });
+    if (req.file !== undefined) {
+        imageUrl = await req.file.location;
+    }
+    else
+    {
+        imageUrl="";
+    }
+    console.log(imageUrl)
+    update.imageUrl = imageUrl;
+
+    User.findOneAndUpdate(
+        { _id: currentUser._id },
+        { $set: update },
+        { new: true },
+        async (err, result) => {
+            if (err) {
+                logger.error("Error in updating user data", err);
+                return res.json({
+                    message: "error in updating user data",
+                    err: err,
+                });
+            }
+            return res.json({
+                result: result,
+                message: "User updated",
+            });
+        }
+    );
 };

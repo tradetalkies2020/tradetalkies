@@ -1,9 +1,11 @@
 var User = require("../models/User");
+const Activity = require("../models/Activity");
 const authController = require("../controllers/auth");
 const { validator } = require("../middleware/validator");
 const { validationResult } = require("express-validator");
 const logger = require("../middleware/logger");
 const isAuth = require("../middleware/isAuth");
+
 module.exports = function (app, passport) {
     app.post("/login", validator, (req, res, next) => {
         //Using passport for authentication of local user
@@ -22,6 +24,17 @@ module.exports = function (app, passport) {
                     req.session.isLoggedIn = true;
                     req.session.user = user;
                     req.session.save();
+
+                    //Logging user login activity in db
+                    let activity = new Activity({
+                        userId: user._id,
+                        activity: [
+                            { endpoint: req.route.path, time: Date.now() },
+                        ],
+                    });
+                    activity.save();
+                    //User logging activity saved //
+
                     console.log(
                         `from authroutes.js, logging user in : ${user}`
                     );
@@ -57,6 +70,15 @@ module.exports = function (app, passport) {
                 req.session.isLoggedIn = true;
                 req.session.user = user;
                 req.session.save();
+
+                //Logging user login activity in db
+                let activity = new Activity({
+                    userId: user._id,
+                    activity: [{ endpoint: req.route.path, time: Date.now() }],
+                });
+                activity.save();
+                //User logging activity saved //
+
                 return res.json({ message: "Facebook login done", user: user });
             } catch (exc) {
                 console.log(
@@ -81,6 +103,15 @@ module.exports = function (app, passport) {
                 req.session.isLoggedIn = true;
                 req.session.user = user;
                 req.session.save();
+
+                //Logging user login activity in db
+                let activity = new Activity({
+                    userId: user._id,
+                    activity: [{ endpoint: req.route.path, time: Date.now() }],
+                });
+                activity.save();
+                //User logging activity saved //
+
                 return res.json({ message: "Google login done", user: user });
             } catch (exc) {
                 console.log(
@@ -103,6 +134,15 @@ module.exports = function (app, passport) {
                 req.session.isLoggedIn = true;
                 req.session.user = user;
                 req.session.save();
+
+                //Logging user login activity in db
+                let activity = new Activity({
+                    userId: user._id,
+                    activity: [{ endpoint: req.route.path, time: Date.now() }],
+                });
+                activity.save();
+                //User logging activity saved //
+
                 return res.json({ message: "Linkedin login done", user: user });
             } catch (exc) {
                 console.log(
@@ -126,6 +166,15 @@ module.exports = function (app, passport) {
                 req.session.isLoggedIn = true;
                 req.session.user = user;
                 req.session.save();
+
+                //Logging user login activity in db
+                let activity = new Activity({
+                    userId: user._id,
+                    activity: [{ endpoint: req.route.path, time: Date.now() }],
+                });
+                activity.save();
+                //User logging activity saved //
+
                 return res.json({ message: "Twitter login done", user: user });
             } catch (exc) {
                 console.log(

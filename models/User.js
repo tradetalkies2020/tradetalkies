@@ -35,7 +35,11 @@ var userSchema = new Schema({
     firebaseToken: String,
     createdAt: { type: Date, default: Date.now() },
     resetToken:String,
-    resetTokenExpiration:Date
+    resetTokenExpiration:Date,
+    imageUrl:{type:String},
+    industry:{type:String},
+    age:{type:Schema.Types.Number}
+
 
 
 });

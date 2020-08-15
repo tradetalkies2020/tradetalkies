@@ -16,21 +16,4 @@ exports.validator = [
         }),
 ];
 
-exports.editValidator = [
-    check("email")
-        .isEmail()
-        .withMessage("Please Enter a valid Email")
-        .custom((value, { req }) => {
-            return User.findOne({
-                email: value,
-                _id: { $ne: req.session.user._id },
-            }).then((userDoc) => {
-                if (userDoc) {
-                    return Promise.reject(
-                        "E-mail already exists, try something else."
-                    );
-                }
-            });
-        }),
-    
-];
+
