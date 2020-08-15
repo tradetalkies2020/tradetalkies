@@ -135,7 +135,7 @@ exports.editProfile = async (req, res, next) => {
             "linkedin.email": email,
             age: age,
             industry: industry,
-            firebaseToken:firebaseToken
+            firebaseToken: firebaseToken,
         };
     }
     if (userType === "google") {
@@ -144,7 +144,7 @@ exports.editProfile = async (req, res, next) => {
             "google.email": email,
             age: age,
             industry: industry,
-            firebaseToken:firebaseToken
+            firebaseToken: firebaseToken,
         };
     }
     if (userType === "facebook") {
@@ -153,7 +153,7 @@ exports.editProfile = async (req, res, next) => {
             "facebook.email": email,
             age: age,
             industry: industry,
-            firebaseToken:firebaseToken
+            firebaseToken: firebaseToken,
         };
     }
     if (userType === "twitter") {
@@ -162,10 +162,10 @@ exports.editProfile = async (req, res, next) => {
             "twitter.email": email,
             age: age,
             industry: industry,
-            firebaseToken:firebaseToken
+            firebaseToken: firebaseToken,
         };
     }
-
+    console.log(update);
     //Update logic
     // var update = {
     //     local: { username: name, email: email },
