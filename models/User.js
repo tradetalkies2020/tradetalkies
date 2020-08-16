@@ -6,7 +6,6 @@ var userSchema = new Schema({
         email: String,
         password: String,
         username: String,
-        
     },
     facebook: {
         id: String,
@@ -34,14 +33,15 @@ var userSchema = new Schema({
     },
     firebaseToken: String,
     createdAt: { type: Date, default: Date.now() },
-    resetToken:String,
-    resetTokenExpiration:Date,
-    imageUrl:{type:String},
-    industry:{type:String},
-    age:{type:Schema.Types.Number}
-
-
-
+    resetToken: String,
+    resetTokenExpiration: Date,
+    imageUrl: { type: String },
+    industry: { type: String },
+    age: { type: Schema.Types.Number },
+    //referral part/
+    refCode: { type: String },
+    referred: { type: Schema.Types.Number, default: 0 },
+    points: { type: Schema.Types.Number, default: 100 },
 });
 
 userSchema.methods.comparePassword = function (candidatePassword, cb) {

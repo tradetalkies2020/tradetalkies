@@ -53,6 +53,7 @@ module.exports = function (app, passport) {
                         .catch((err) => {
                             console.log(err);
                             logger.error(`Error in logging in user ${err}`);
+                            return res.json({ errorMessage: err });
                         });
                     //User logging activity saved //
                 });
@@ -85,14 +86,32 @@ module.exports = function (app, passport) {
                 req.session.save();
 
                 //Logging user login activity in db
-                let activity = new Activity({
-                    userId: user._id,
-                    activity: [{ endpoint: req.route.path, time: Date.now() }],
-                });
-                activity.save();
+                Activity.findOneAndUpdate(
+                    { userId: user._id },
+                    {
+                        $push: {
+                            activity: {
+                                endpoint: req.route.path,
+                                time: Date.now(),
+                            },
+                        },
+                    },
+                    { new: true, upsert: true }
+                )
+                    .then((result) => {
+                        return res.json({
+                            message: "Facebook login done",
+                            user: user,
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        logger.error(
+                            `Error in logging in facebook user ${err}`
+                        );
+                        return res.json({ errorMessage: err });
+                    });
                 //User logging activity saved //
-
-                return res.json({ message: "Facebook login done", user: user });
             } catch (exc) {
                 console.log(
                     `Error in saving user from facebook login for user ${exc}`
@@ -118,14 +137,30 @@ module.exports = function (app, passport) {
                 req.session.save();
 
                 //Logging user login activity in db
-                let activity = new Activity({
-                    userId: user._id,
-                    activity: [{ endpoint: req.route.path, time: Date.now() }],
-                });
-                activity.save();
+                Activity.findOneAndUpdate(
+                    { userId: user._id },
+                    {
+                        $push: {
+                            activity: {
+                                endpoint: req.route.path,
+                                time: Date.now(),
+                            },
+                        },
+                    },
+                    { new: true, upsert: true }
+                )
+                    .then((result) => {
+                        return res.json({
+                            message: "Google login done",
+                            user: user,
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        logger.error(`Error in logging in Google user ${err}`);
+                        return res.json({ errorMessage: err });
+                    });
                 //User logging activity saved //
-
-                return res.json({ message: "Google login done", user: user });
             } catch (exc) {
                 console.log(
                     `Error in saving user from google login for user ${exc}`
@@ -149,14 +184,33 @@ module.exports = function (app, passport) {
                 req.session.save();
 
                 //Logging user login activity in db
-                let activity = new Activity({
-                    userId: user._id,
-                    activity: [{ endpoint: req.route.path, time: Date.now() }],
-                });
-                activity.save();
+                Activity.findOneAndUpdate(
+                    { userId: user._id },
+                    {
+                        $push: {
+                            activity: {
+                                endpoint: req.route.path,
+                                time: Date.now(),
+                            },
+                        },
+                    },
+                    { new: true, upsert: true }
+                )
+                    .then((result) => {
+                        return res.json({
+                            message: "Linkedin login done",
+                            user: user,
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        logger.error(
+                            `Error in logging in Linkedin user ${err}`
+                        );
+                        return res.json({ errorMessage: err });
+                    });
                 //User logging activity saved //
 
-                return res.json({ message: "Linkedin login done", user: user });
             } catch (exc) {
                 console.log(
                     `Error in saving user from linkedin login for user ${exc}`
@@ -181,14 +235,30 @@ module.exports = function (app, passport) {
                 req.session.save();
 
                 //Logging user login activity in db
-                let activity = new Activity({
-                    userId: user._id,
-                    activity: [{ endpoint: req.route.path, time: Date.now() }],
-                });
-                activity.save();
+                Activity.findOneAndUpdate(
+                    { userId: user._id },
+                    {
+                        $push: {
+                            activity: {
+                                endpoint: req.route.path,
+                                time: Date.now(),
+                            },
+                        },
+                    },
+                    { new: true, upsert: true }
+                )
+                    .then((result) => {
+                        return res.json({
+                            message: "Twitter login done",
+                            user: user,
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        logger.error(`Error in logging in Twitter user ${err}`);
+                        return res.json({ errorMessage: err });
+                    });
                 //User logging activity saved //
-
-                return res.json({ message: "Twitter login done", user: user });
             } catch (exc) {
                 console.log(
                     `Error in saving user from Twitter login for user ${exc}`

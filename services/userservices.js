@@ -1,5 +1,5 @@
 const User = require("../models/User");
-
+const { v4: uuidv4 } = require("uuid");
 exports.userType = (userId) => {
     return new Promise((resolve, reject) => {
         User.findOne({ _id: userId })
@@ -32,4 +32,11 @@ exports.userType = (userId) => {
             });
     });
 };
+
+
+exports.generateRefCode=(username)=>
+{
+    const unique=uuidv4();
+    return `${username.toUpperCase().substring(0,4)}_${unique}`;
+}
 

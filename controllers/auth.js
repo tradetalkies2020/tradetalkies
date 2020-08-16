@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator");
 const logger = require("../middleware/logger");
 const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
+const userservices = require("../services/userservices");
 const mailService = require("../services/mailer");
 const crypto = require("crypto");
 const upload = require("../config/s3Service");
@@ -71,6 +72,9 @@ exports.postSignup = async (req, res, next) => {
                 username: username,
             };
 
+            //Generate referral code//
+            let refCode = userservices.generateRefCode(username);
+
             var newUser = new User({
                 local: userData,
                 firebaseToken: firebaseToken,
@@ -78,6 +82,7 @@ exports.postSignup = async (req, res, next) => {
                 industry: industry,
                 age: age,
                 imageUrl: imageUrl,
+                refCode: refCode,
             });
             return newUser
                 .save()
@@ -244,19 +249,34 @@ exports.mergedLogin = (req, res, next) => {
                     req.session.save();
 
                     //Logging user login activity in db
-                    let activity = new Activity({
-                        userId: newUser._id,
-                        activity: [
-                            { endpoint: req.route.path, time: Date.now() },
-                        ],
-                    });
-                    activity.save();
+                    Activity.findOneAndUpdate(
+                        { userId: newUser._id },
+                        {
+                            $push: {
+                                activity: {
+                                    endpoint: req.route.path,
+                                    time: Date.now(),
+                                },
+                            },
+                        },
+                        { new: true, upsert: true }
+                    )
+                        .then((result) => {
+                            return res.json({
+                                message: "User signed up",
+                                user: newUser,
+                            });
+                        })
+                        .catch((err) => {
+                            logger.error(
+                                `Error in uppdating user activity from merged login for user ${newUser._id}`
+                            );
+                            console.log(
+                                `Error in uppdating user activity from merged login for user ${newUser._id}`
+                            );
+                            return res.json({ errorMessage: err });
+                        });
                     //User logging activity saved //
-
-                    return res.json({
-                        message: "User signed up",
-                        user: newUser,
-                    });
                 })
                 .catch((err) => {
                     const error = new Error(err);
@@ -321,16 +341,32 @@ exports.androidGoogleAuth = (req, res, next) => {
             updateUser.save();
 
             //Logging user login activity in db
-            let activity_ = new Activity({
-                userId: updateUser._id,
-                activity: [{ endpoint: req.route.path, time: Date.now() }],
+            Activity.findOneAndUpdate(
+                { userId: updateUser._id },
+                {
+                    $push: {
+                        activity: {
+                            endpoint: req.route.path,
+                            time: Date.now(),
+                        },
+                    },
+                },
+                { new: true, upsert: true }
+            )
+                .then((result) => {
+                    return res.json({
+                        message: `Google user was existing therefore, updated firebaseToken only.`,
+                    });
+                })
+                .catch((err) => { logger.error(
+                    `Error in uppdating user activity from google login for user ${updateUser._id}`
+                );
+                console.log(
+                    `Error in uppdating user activity from google login for user ${updateUser._id}`
+                );
+                return res.json({ errorMessage: err });
             });
-            activity_.save();
             //User logging activity saved //
-
-            return res.json({
-                message: `Google user was existing therefore, updated firebaseToken only.`,
-            });
         }
     });
 };
@@ -390,11 +426,31 @@ exports.androidFacebookAuth = (req, res, next) => {
             updateUser.save();
 
             //Logging user login activity in db
-            let activity_ = new Activity({
-                userId: updateUser._id,
-                activity: [{ endpoint: req.route.path, time: Date.now() }],
-            });
-            activity_.save();
+            Activity.findOneAndUpdate(
+                { userId: updateUser._id },
+                {
+                    $push: {
+                        activity: {
+                            endpoint: req.route.path,
+                            time: Date.now(),
+                        },
+                    },
+                },
+                { new: true, upsert: true }
+            )
+                .then((result) => {
+                    return res.json({
+                        message: `Facebook user was existing therefore, updated firebaseToken only.`,
+                    });
+                })
+                .catch((err) => { logger.error(
+                    `Error in uppdating user activity from facebook login for user ${updateUser._id}`
+                );
+                console.log(
+                    `Error in uppdating user activity from facebook login for user ${updateUser._id}`
+                );
+                return res.json({ errorMessage: err });
+                });
             //User logging activity saved //
 
             return res.json({

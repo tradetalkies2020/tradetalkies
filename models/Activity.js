@@ -8,6 +8,7 @@ var activitySchema = new Schema({
         {
             endpoint: { type: String, required: true },
             time: { type: Date, required: true },
+            _id:false
         },
     ],
 });
