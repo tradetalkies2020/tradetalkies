@@ -121,7 +121,7 @@ exports.editProfile = async (req, res, next) => {
     let update = {};
     if (userType === "local") {
         update = {
-            "local.name": name,
+            "local.username": name,
             "local.email": email,
             age: age,
             industry: industry,
@@ -165,18 +165,17 @@ exports.editProfile = async (req, res, next) => {
             firebaseToken: firebaseToken,
         };
     }
-    console.log(update);
-    //Update logic
-    // var update = {
-    //     local: { username: name, email: email },
-    //     age: age,
-    //     industry: industry,
-    // };
+
+    //Deleting null keys for update//
     Object.keys(update).forEach(
         (key) =>
-            (update[key] == null || update[key] == undefined) &&
+            (update[key] == null ||
+                update[key] == undefined ||
+                isNaN(update[key])) &&
             delete update[key]
     );
+
+    //Image upload logic//
     await singleUpload(req, res, function (err) {
         if (err) {
             return res.status(422).send({

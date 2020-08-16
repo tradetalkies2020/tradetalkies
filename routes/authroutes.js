@@ -26,22 +26,35 @@ module.exports = function (app, passport) {
                     req.session.save();
 
                     //Logging user login activity in db
-                    let activity = new Activity({
-                        userId: user._id,
-                        activity: [
-                            { endpoint: req.route.path, time: Date.now() },
-                        ],
-                    });
-                    activity.save();
+                    Activity.findOneAndUpdate(
+                        { userId: user._id },
+                        {
+                            $push: {
+                                activity: {
+                                    endpoint: req.route.path,
+                                    time: Date.now(),
+                                },
+                            },
+                        },
+                        { new: true, upsert: true }
+                    )
+                        .then((result) => {
+                            console.log(
+                                `from authroutes.js, logging user in : ${user}`
+                            );
+                            logger.info(
+                                `from authroutes.js, logging user in : ${user}`
+                            );
+                            return res.json({
+                                message: "User logged in",
+                                user: user,
+                            });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            logger.error(`Error in logging in user ${err}`);
+                        });
                     //User logging activity saved //
-
-                    console.log(
-                        `from authroutes.js, logging user in : ${user}`
-                    );
-                    logger.info(
-                        `from authroutes.js, logging user in : ${user}`
-                    );
-                    return res.json({ message: "User logged in", user: user });
                 });
             } else {
                 return res
