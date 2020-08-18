@@ -91,6 +91,7 @@ exports.postSignup = async (req, res, next) => {
                 })
                 .catch((err) => {
                     const error = new Error(err);
+                    console.log(error);
                     error.httpStatusCode = 500;
                     return next(error);
                 });
