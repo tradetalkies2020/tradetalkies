@@ -46,7 +46,7 @@ exports.postSignup = async (req, res, next) => {
 
     //Generate hashed password for password
     bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-        bcrypt.hash(password, salt, function (err, hash) {
+        bcrypt.hash(password, salt,async function (err, hash) {
             if (err) {
                 throw err;
             }
@@ -55,7 +55,7 @@ exports.postSignup = async (req, res, next) => {
                 password: hash,
                 username: username,
             };
-                //Image upload logic
+    //Image upload logic
     var imageUrl = {};
     await singleUpload(req, res, function (err) {
         if (err) {
