@@ -31,7 +31,7 @@ exports.postSignup = async (req, res, next) => {
     }
 
     //Image upload logic
-    var imageUrl = {};
+    var imageUrl = "";
     await singleUpload(req, res, function (err) {
         if (err) {
             return res.status(422).send({
