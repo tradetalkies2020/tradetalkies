@@ -90,7 +90,7 @@ exports.postSignup = async (req, res, next) => {
                     res.json({ message: "User signed up" });
                 })
                 .catch((err) => {
-                   console.log(err);
+                   console.log(r);
                 });
         });
     });
