@@ -31,7 +31,7 @@ exports.postSignup = async (req, res, next) => {
     }
 
     //Image upload logic
-    var imageUrl = "";
+    var imageUrl = {};
     await singleUpload(req, res, function (err) {
         if (err) {
             return res.status(422).send({
@@ -46,6 +46,8 @@ exports.postSignup = async (req, res, next) => {
     });
     if (req.file !== undefined) {
         imageUrl = await req.file.location;
+    } else {
+        imageUrl = "";
     }
 
     //Validation result checking//
