@@ -90,10 +90,7 @@ exports.postSignup = async (req, res, next) => {
                     res.json({ message: "User signed up" });
                 })
                 .catch((err) => {
-                    const error = new Error(err);
-                    console.log(error);
-                    error.httpStatusCode = 500;
-                    return next(error);
+                   console.log(err);
                 });
         });
     });
