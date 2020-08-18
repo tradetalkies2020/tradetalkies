@@ -170,8 +170,7 @@ exports.editProfile = async (req, res, next) => {
     Object.keys(update).forEach(
         (key) =>
             (update[key] == null ||
-                update[key] == undefined ||
-                isNaN(update[key])) &&
+                update[key] == undefined) &&
             delete update[key]
     );
 
