@@ -11,7 +11,7 @@ exports.testUpload = (req, res, next) => {
                     },
                 ],
             };
-           
+           console.log(errorData);
         }
         return res.json(req.file.location);
     });
