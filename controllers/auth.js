@@ -233,13 +233,14 @@ exports.mergedLogin = (req, res, next) => {
                 password: hash,
                 username: username,
             };
-
+            let refCode = userservices.generateRefCode(username);
             var newUser = new User({
                 local: userData,
                 firebaseToken: firebaseToken,
                 createdAt: today,
                 industry: industry,
                 age: age,
+                refCode:refCode
             });
             return newUser
                 .save()
@@ -358,14 +359,15 @@ exports.androidGoogleAuth = (req, res, next) => {
                         message: `Google user was existing therefore, updated firebaseToken only.`,
                     });
                 })
-                .catch((err) => { logger.error(
-                    `Error in uppdating user activity from google login for user ${updateUser._id}`
-                );
-                console.log(
-                    `Error in uppdating user activity from google login for user ${updateUser._id}`
-                );
-                return res.json({ errorMessage: err });
-            });
+                .catch((err) => {
+                    logger.error(
+                        `Error in uppdating user activity from google login for user ${updateUser._id}`
+                    );
+                    console.log(
+                        `Error in uppdating user activity from google login for user ${updateUser._id}`
+                    );
+                    return res.json({ errorMessage: err });
+                });
             //User logging activity saved //
         }
     });
@@ -443,13 +445,14 @@ exports.androidFacebookAuth = (req, res, next) => {
                         message: `Facebook user was existing therefore, updated firebaseToken only.`,
                     });
                 })
-                .catch((err) => { logger.error(
-                    `Error in uppdating user activity from facebook login for user ${updateUser._id}`
-                );
-                console.log(
-                    `Error in uppdating user activity from facebook login for user ${updateUser._id}`
-                );
-                return res.json({ errorMessage: err });
+                .catch((err) => {
+                    logger.error(
+                        `Error in uppdating user activity from facebook login for user ${updateUser._id}`
+                    );
+                    console.log(
+                        `Error in uppdating user activity from facebook login for user ${updateUser._id}`
+                    );
+                    return res.json({ errorMessage: err });
                 });
             //User logging activity saved //
 

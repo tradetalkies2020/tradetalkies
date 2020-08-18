@@ -165,7 +165,7 @@ exports.editProfile = async (req, res, next) => {
             firebaseToken: firebaseToken,
         };
     }
-
+    console.log(update);
     //Deleting null keys for update//
     Object.keys(update).forEach(
         (key) =>
