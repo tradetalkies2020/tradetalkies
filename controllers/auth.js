@@ -30,25 +30,7 @@ exports.postSignup = async (req, res, next) => {
         age = req.body.age;
     }
 
-    //Image upload logic
-    var imageUrl = {};
-    await singleUpload(req, res, function (err) {
-        if (err) {
-            return res.status(422).send({
-                errors: [
-                    {
-                        title: "Error in uploading image",
-                        detail: err.message,
-                    },
-                ],
-            });
-        }
-    });
-    if (req.file !== undefined) {
-        imageUrl = await req.file.location;
-    } else {
-        imageUrl = "";
-    }
+
 
     //Validation result checking//
     if (!errors.isEmpty()) {
@@ -73,6 +55,25 @@ exports.postSignup = async (req, res, next) => {
                 password: hash,
                 username: username,
             };
+                //Image upload logic
+    var imageUrl = {};
+    await singleUpload(req, res, function (err) {
+        if (err) {
+            return res.status(422).send({
+                errors: [
+                    {
+                        title: "Error in uploading image",
+                        detail: err.message,
+                    },
+                ],
+            });
+        }
+    });
+    if (req.file !== undefined) {
+        imageUrl = await req.file.location;
+    } else {
+        imageUrl = "";
+    }
 
             //Generate referral code//
             let refCode = userservices.generateRefCode(username);
