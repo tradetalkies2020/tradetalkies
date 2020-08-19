@@ -4,7 +4,7 @@ const dashboardController = require("../controllers/users");
 const { check, body } = require("express-validator");
 const User = require("../models/User");
 const { validator } = require("../middleware/validator");
-const userLog=require('../middleware/userLog');
+const userLog = require("../middleware/userLog");
 const UploadController = require("../services/upload");
 const isAuth = require("../middleware/isAuth");
 
@@ -19,17 +19,20 @@ router.post(
             .isEmail()
             .withMessage("Please Enter a valid Email")
             .custom((value, { req }) => {
-                return User.findOne({ "local.email": value ,_id:{$ne:req.session.user._id} }).then(
-                    (userDoc) => {
-                        if (userDoc) {
-                            return Promise.reject(
-                                "E-mail already exists, try something else."
-                            );
-                        }
+                return User.findOne({
+                    "local.email": value,
+                    _id: { $ne: req.session.user._id },
+                }).then((userDoc) => {
+                    if (userDoc) {
+                        return Promise.reject(
+                            "E-mail already exists, try something else."
+                        );
                     }
-                );
+                });
             }),
     ],
     dashboardController.editProfile
 );
+
+router.post("/change-password",isAuth,userLog, dashboardController.passworChange);
 module.exports = router;

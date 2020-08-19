@@ -391,3 +391,101 @@
 {"message":"trying to config S3","level":"info","timestamp":"2020-08-18T08:00:52.692Z"}
 {"message":"trying to config S3","level":"info","timestamp":"2020-08-18T08:01:13.456Z"}
 {"message":"trying to config S3","level":"info","timestamp":"2020-08-18T08:01:26.446Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:24:21.343Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:25:04.122Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:25:26.101Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:26:06.450Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:26:42.031Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:27:55.204Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:28:04.938Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:28:20.250Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:28:37.758Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:28:44.337Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:31:38.416Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:31:53.538Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:32:10.902Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:32:53.230Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:33:06.204Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:33:13.915Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:33:34.003Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:34:17.574Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:34:22.976Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:34:40.931Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:35:21.491Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:35:35.656Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:35:59.823Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:36:13.646Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:36:27.494Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:36:32.040Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:37:49.292Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:38:05.520Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:38:16.274Z"}
+{"message":"from authroutes.js, logging user in : {\n  local: {\n    email: 'gangulyprateek0@gmail.com',\n    password: '$2b$10$7k36jcI0fvetLqth/Yw3refAqTzX6GDqmQbXs1DRsAd/0uK5Wd3sG',\n    username: 'Prateek'\n  },\n  createdAt: 2020-08-18T08:21:12.451Z,\n  referred: 0,\n  points: 100,\n  _id: 5f3b8f78b83e090017d40a16,\n  firebaseToken: 'adfjFJEPIFJPEJFdfdfwifipjfipqjipipp323jji1hdkfjhdfkjasdfk',\n  industry: 'Trade',\n  age: 21,\n  imageUrl: 'https://tradetalkies.s3.ap-south-1.amazonaws.com/profileImg/1597738860658_62cd20e0-e809-4c16-9637-f062b26e0c44_pimg.jpeg',\n  refCode: 'PRAT_13608014-4410-402f-a126-879b8bfe0c95',\n  __v: 0\n}","level":"info","timestamp":"2020-08-19T13:41:11.088Z"}
+{"message":"Password has been reset for the user : 5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-08-19T13:41:22.552Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:47:13.902Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:47:44.512Z"}
+{"message":"Password has been reset for the user : 5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-08-19T13:48:29.045Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:49:21.872Z"}
+{"message":"Password has been reset for the user : 5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-08-19T13:49:36.534Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:49:48.522Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:50:02.820Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:50:14.943Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:50:59.354Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:51:05.798Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:51:17.182Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:51:27.236Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:51:35.456Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:51:45.998Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:51:54.237Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:52:01.050Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:52:08.939Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:52:38.504Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:54:00.703Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T13:54:03.770Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:56:29.912Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:56:41.326Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:56:49.017Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:56:54.916Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:57:10.147Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:57:21.537Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:57:32.842Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:58:19.871Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:58:23.259Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:58:28.269Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:58:31.477Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:58:39.202Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:58:41.568Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:58:48.881Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:58:54.771Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:58:58.531Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:59:09.782Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T14:59:43.506Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:00:23.585Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:00:36.775Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:01:12.411Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:01:52.104Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:02:00.434Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:02:04.447Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:02:27.208Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:02:30.546Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:02:43.076Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:02:50.043Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:03:04.755Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:03:12.053Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:03:14.883Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:03:32.747Z"}
+{"message":"Password has been reset for the user : 5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-08-19T15:03:40.901Z"}
+{"message":"Password has been reset for the user : 5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-08-19T15:03:46.838Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:04:48.469Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:04:56.435Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:06:10.961Z"}
+{"message":"Password has been reset for the user : 5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-08-19T15:06:24.804Z"}
+{"message":"Password has been reset for the user : 5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-08-19T15:07:00.067Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:07:33.889Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:08:17.957Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:08:22.076Z"}
+{"message":"Password has been reset for the user : 5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-08-19T15:08:38.434Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:08:46.749Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:08:49.561Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-19T15:09:06.308Z"}
+{"message":"Password has been reset for the user : 5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-08-19T15:09:18.841Z"}

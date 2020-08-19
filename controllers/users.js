@@ -2,6 +2,8 @@ const User = require("../models/User");
 const Constants = require("../models/constants");
 const Help = require("../models/Help");
 const userservices = require("../services/userservices");
+const bcrypt = require("bcrypt");
+const SALT_WORK_FACTOR = 10;
 const async = require("async");
 const { v4: uuidv4 } = require("uuid");
 const { validationResult } = require("express-validator");
@@ -165,12 +167,11 @@ exports.editProfile = async (req, res, next) => {
             firebaseToken: firebaseToken,
         };
     }
-    
+
     //Deleting null keys for update//
     Object.keys(update).forEach(
         (key) =>
-            (update[key] == null ||
-                update[key] == undefined) &&
+            (update[key] == null || update[key] == undefined) &&
             delete update[key]
     );
 
@@ -213,4 +214,91 @@ exports.editProfile = async (req, res, next) => {
             });
         }
     );
+};
+
+exports.passworChange = async (req, res, next) => {
+    const currentUser = req.session.user;
+    const password = req.body.password;
+    const oldPassword = req.body.oldPassword;
+    console.log(`User trying to change password : ${currentUser._id}`);
+    let userPromise = userservices.userType(currentUser._id);
+    let userType = await userPromise
+        .then((type) => {
+            return type.type;
+        })
+        .catch((err) => {
+            return err;
+        });
+
+    try {
+        if (userType === "local") {
+            bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+                bcrypt.hash(password, salt, async function (err, hash) {
+                    if (err) {
+                        throw err;
+                    }
+
+                    let isMatch=bcrypt.compareSync(oldPassword,currentUser.local.password);
+                    console.log(currentUser.local.password);
+                    if(isMatch==true)
+                    {
+                        User.findOneAndUpdate(
+                            { _id: currentUser._id},
+                            { $set: { "local.password": hash } },
+                            { new: true }
+                        )
+                            .then((result) => {
+                                if (result !== null) {
+                                    logger.info(
+                                        `Password has been reset for the user : ${currentUser._id}`
+                                    );
+                                    console.log(
+                                        `Password has been reset for the user : ${currentUser._id}`
+                                    );
+                                    req.session.user=result;
+                                    return res.json({
+                                        message: `password has been reset`,
+                                        result: result,
+                                    });
+                                } else {
+                                    return res
+                                        .status(404)
+                                        .json({
+                                            errorMessage: `User doesn't exist.`,
+                                        });
+                                }
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                logger.error(
+                                    `An error occured in resetting password from logged in user : ${currentUser._id}`
+                                );
+                                return res.json({
+                                    errorMessage: `An error occured in resetting password from logged in user : ${currentUser._id}`,
+                                });
+                            });
+                    }
+                    else
+                    {
+                        return res.status(401).json({errorMessage:`Old password incorrect for ${currentUser._id}`});
+                    }
+
+                    
+                });
+            });
+        } else {
+            console.log(`Unauthorized user`);
+            return res.json({ errorMessage: `Invalid user email` });
+        }
+    } catch (exc) {
+        logger.error(
+            `Exception occured at ${req.route.path} accessed by user ${currentUser._id}`
+        );
+        console.log(
+            `Exception occured at ${req.route.path} accessed by user ${currentUser._id}`
+        );
+        return res.json({
+            errorMessage: `Exception occured at ${req.route.path} accessed by user ${currentUser._id}`,
+        });
+    }
 };
