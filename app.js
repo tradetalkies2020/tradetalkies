@@ -17,6 +17,7 @@ var passport = require("passport");
 var flash = require("connect-flash");
 const dashboardRoutes = require("./routes/dashboard.js");
 const adminRoutes = require("./routes/admin");
+const postRoutes = require("./routes/post");
 //var configDB = require("./config/database");
 mongoose.connect(MONGO_URI);
 require("./config/passport")(passport);
@@ -87,6 +88,7 @@ app.use((req, res, next) => {
 // });
 app.use(dashboardRoutes);
 app.use(adminRoutes);
+app.use(postRoutes);
 require("./routes/authroutes")(app, passport);
 
 app.listen(port);

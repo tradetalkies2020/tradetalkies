@@ -238,12 +238,14 @@ exports.passworChange = async (req, res, next) => {
                         throw err;
                     }
 
-                    let isMatch=bcrypt.compareSync(oldPassword,currentUser.local.password);
+                    let isMatch = bcrypt.compareSync(
+                        oldPassword,
+                        currentUser.local.password
+                    );
                     console.log(currentUser.local.password);
-                    if(isMatch==true)
-                    {
+                    if (isMatch == true) {
                         User.findOneAndUpdate(
-                            { _id: currentUser._id},
+                            { _id: currentUser._id },
                             { $set: { "local.password": hash } },
                             { new: true }
                         )
@@ -255,17 +257,15 @@ exports.passworChange = async (req, res, next) => {
                                     console.log(
                                         `Password has been reset for the user : ${currentUser._id}`
                                     );
-                                    req.session.user=result;
+                                    req.session.user = result;
                                     return res.json({
                                         message: `password has been reset`,
                                         result: result,
                                     });
                                 } else {
-                                    return res
-                                        .status(404)
-                                        .json({
-                                            errorMessage: `User doesn't exist.`,
-                                        });
+                                    return res.status(404).json({
+                                        errorMessage: `User doesn't exist.`,
+                                    });
                                 }
                             })
                             .catch((err) => {
@@ -277,13 +277,13 @@ exports.passworChange = async (req, res, next) => {
                                     errorMessage: `An error occured in resetting password from logged in user : ${currentUser._id}`,
                                 });
                             });
+                    } else {
+                        return res
+                            .status(401)
+                            .json({
+                                errorMessage: `Old password incorrect for ${currentUser._id}`,
+                            });
                     }
-                    else
-                    {
-                        return res.status(401).json({errorMessage:`Old password incorrect for ${currentUser._id}`});
-                    }
-
-                    
                 });
             });
         } else {

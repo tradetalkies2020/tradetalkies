@@ -17,6 +17,10 @@ exports.postSignup = async (req, res, next) => {
     const email = req.body.email;
     const username = req.body.username;
     const password = req.body.password;
+
+    //send query param by name refC//
+
+    const referrerCode = req.query.refC;
     var firebaseToken = "";
     var industry = "";
     var age = null;
@@ -29,8 +33,6 @@ exports.postSignup = async (req, res, next) => {
     if (req.body.age) {
         age = req.body.age;
     }
-
-
 
     //Validation result checking//
     if (!errors.isEmpty()) {
@@ -46,7 +48,7 @@ exports.postSignup = async (req, res, next) => {
 
     //Generate hashed password for password
     bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-        bcrypt.hash(password, salt,async function (err, hash) {
+        bcrypt.hash(password, salt, async function (err, hash) {
             if (err) {
                 throw err;
             }
@@ -55,25 +57,25 @@ exports.postSignup = async (req, res, next) => {
                 password: hash,
                 username: username,
             };
-    //Image upload logic
-    var imageUrl = {};
-    await singleUpload(req, res, function (err) {
-        if (err) {
-            return res.status(422).send({
-                errors: [
-                    {
-                        title: "Error in uploading image",
-                        detail: err.message,
-                    },
-                ],
+            //Image upload logic
+            var imageUrl = {};
+            await singleUpload(req, res, function (err) {
+                if (err) {
+                    return res.status(422).send({
+                        errors: [
+                            {
+                                title: "Error in uploading image",
+                                detail: err.message,
+                            },
+                        ],
+                    });
+                }
             });
-        }
-    });
-    if (req.file !== undefined) {
-        imageUrl = await req.file.location;
-    } else {
-        imageUrl = "";
-    }
+            if (req.file !== undefined) {
+                imageUrl = await req.file.location;
+            } else {
+                imageUrl = "";
+            }
 
             //Generate referral code//
             let refCode = userservices.generateRefCode(username);
@@ -90,10 +92,29 @@ exports.postSignup = async (req, res, next) => {
             return newUser
                 .save()
                 .then((result) => {
-                    res.json({ message: "User signed up" });
+                    // Update referrer point before successful completion of sign up!//
+                    let referPromise = userservices.referralBonus(referrerCode);
+                    referPromise
+                        .then((response) => {
+                            res.json({ message: "User signed up" });
+                        })
+                        .catch((err) => {
+                            logger.error(
+                                `Error occured in referCode Promise before saving`
+                            );
+                            console.log(
+                                `Error occured in referCode Promise before saving`
+                            );
+                            return res.json({
+                                errorMessage: `Error occured in referCode Promise before saving`,
+                            });
+                        });
                 })
                 .catch((err) => {
-                   console.log(err);
+                    console.log(err);
+                    return res.json({
+                        errorMessage: `Error occured while saving user.`,
+                    });
                 });
         });
     });
@@ -241,7 +262,7 @@ exports.mergedLogin = (req, res, next) => {
                 createdAt: today,
                 industry: industry,
                 age: age,
-                refCode:refCode
+                refCode: refCode,
             });
             return newUser
                 .save()
