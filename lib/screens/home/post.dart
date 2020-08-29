@@ -1,8 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:fireauth/services/auth/services.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
+// import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart';
 
+// import 'package:flutter_absolute_path/flutter_absolute_path.dart';
+// import 'package:flutter_absolute_path/flutter_absolute_path.dart';
+// import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 
 class post extends StatefulWidget {
   post({
@@ -16,6 +27,7 @@ class post extends StatefulWidget {
 class _postState extends State<post> {
   List<Asset> images = List<Asset>();
   bool _isLoading = false;
+  final _textController = TextEditingController();
 
   // buildItem(BuildContext context, Asset image) {
   //   return Padding(
@@ -106,6 +118,7 @@ class _postState extends State<post> {
     });
 
     List<Asset> resultList;
+   
 
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -121,6 +134,7 @@ class _postState extends State<post> {
       ));
     }
 
+
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
@@ -130,7 +144,107 @@ class _postState extends State<post> {
       images = resultList;
       print(images);
     });
+
+    // print(images[0].identifier.)
+
+    
+    // final byteData = await images[0].getByteData();
+    // final tempFile =
+    //     File("${(await getTemporaryDirectory()).path}/${images[0].name}");
+    // final file = await tempFile.writeAsBytes(
+    //   byteData.buffer
+    //       .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+    // );
+
+    // print(file);
+
+    // final byteData = await resultList[0].getByteData();
+    // final tempFile =
+    //     File("${(await getTemporaryDirectory()).path}/${resultList[0].}");
+    // final file = await tempFile.writeAsBytes(
+    //   byteData.buffer
+    //       .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+    // );
+
+    // print(file);
     // widget.updateAssetImages(resultList);
+  }
+
+  test() async {
+    final byteData = await images[0].getByteData();
+    final tempFile =
+        File("${(await getTemporaryDirectory()).path}/${images[0].name}");
+    final file = await tempFile.writeAsBytes(
+      byteData.buffer
+          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+    );
+
+    print(file);
+    // final filepath =
+    //     await FlutterAbsolutePath.getAbsolutePath(images[0].identifier);
+    // print(filepath);
+    // print("dd");
+    // File tempfile = File(filepath);
+    // print(tempfile);
+  }
+
+  Future<void> _submit() async {
+    setState(() {
+      _isLoading = true;
+    });
+    List imageFiles = [];
+
+    for (int i = 0; i < images.length; i++) {
+      final byteData = await images[i].getByteData();
+      final tempFile =
+          File("${(await getTemporaryDirectory()).path}/${images[i].name}");
+      final file = await tempFile.writeAsBytes(
+        byteData.buffer
+            .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+      );
+      String base64Image = base64Encode(file.readAsBytesSync());
+      // print(image);
+      // print(base64Image);
+      // print(file);4
+
+
+
+      imageFiles.add(base64Image);
+
+    }
+    print(imageFiles);
+
+    final String text = _textController.text;
+
+    try {
+      await Provider.of<UserAuth>(context, listen: false).post(text,imageFiles);
+      // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       return AvatarGenderAgeUpload(
+      //         firstVisit: true,
+      //       );
+      //     },
+      //   ),
+      // );
+      print("posted");
+      Toast.show(
+        "Posted",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    } catch (err) {
+      Toast.show(
+        "Could not post",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -203,6 +317,7 @@ class _postState extends State<post> {
               child: TextFormField(
                 // minLines: 0,
                 maxLines: 10,
+                controller: _textController,
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 18,
@@ -259,11 +374,7 @@ class _postState extends State<post> {
                         ],
                       ),
                       InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isLoading = true;
-                          });
-                        },
+                        onTap: _submit,
                         child: Container(
                           // padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
@@ -274,16 +385,22 @@ class _postState extends State<post> {
                           width: 95,
                           height: 42,
                           child: Center(
-                            child: _isLoading?Container(
-                              height: 25,
-                              width: 25,
-                              child: CircularProgressIndicator(backgroundColor: Colors.white,strokeWidth: 2,)):Text(
-                              "Post",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  .copyWith(fontWeight: FontWeight.normal),
-                            ),
+                            child: _isLoading
+                                ? Container(
+                                    height: 25,
+                                    width: 25,
+                                    child: CircularProgressIndicator(
+                                      backgroundColor: Colors.white,
+                                      strokeWidth: 2,
+                                    ))
+                                : Text(
+                                    "Post",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline4
+                                        .copyWith(
+                                            fontWeight: FontWeight.normal),
+                                  ),
                           ),
                         ),
                       )

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:fireauth/services/auth/imageJson.dart';
 import 'package:path/path.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ var google_sign_in = "http://tradetalkies.herokuapp.com/android-google-login";
 var edit_profile = "http://tradetalkies.herokuapp.com/edit-profile";
 var user = "http://tradetalkies.herokuapp.com/user";
 var change_Password = "http://tradetalkies.herokuapp.com/change-password";
+var postUrl = "http://tradetalkies.herokuapp.com/post";
 
 var signUp = "$baseUrl/signup";
 var signIn = "$baseUrl/auth/login";
@@ -162,7 +164,6 @@ class UserAuth with ChangeNotifier {
           {
             "password": password,
             "oldPassword": oldPassword,
-
           },
         ),
       );
@@ -194,10 +195,11 @@ class UserAuth with ChangeNotifier {
     try {
       FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
       String newToken = await firebaseMessaging.getToken();
-
-      // String base64Image = base64Encode(image.readAsBytesSync());
-      // print(image);
-      // print(base64Image);
+      //     4444444444444444444444444444444444444444444444444
+      // print(image.readAsBytesSync());
+      String base64Image = base64Encode(image.readAsBytesSync());
+      print(image);
+      print(base64Image);
       // File image1 = base64Decode(base64Image) as File;
       // print(image1);\
 
@@ -207,20 +209,24 @@ class UserAuth with ChangeNotifier {
       // var length = await image.length();
       // var uri = Uri.parse(edit_profile);
       // var request = new http.MultipartRequest("POST", uri);
-      // var multipartFile = new http.MultipartFile('file_field', stream, length,
-      //     filename: basename(image.path));
+      // var multipartFile = new http.MultipartFile('imageUrl', stream, length,
+      // filename: basename(image.path));
       // request.files.add(multipartFile);
-      // print(multipartFile);
+      // print(multipartFile.toString());
       // print(uri);
       // print(length);
       // print(request);
       // var response = await request.send();
       // print(response.statusCode);
       // response.stream.transform(utf8.decoder).listen((event) {
-      //   print(event);
+      // print(event);
       // });
 
       // // print(image);
+      // print(image.path);
+      // print(image.toString());
+      // print(image.absolute);
+      // print(image.readAsString(encoding: ));
       final response = await http.post(
         edit_profile,
         headers: {
@@ -233,9 +239,10 @@ class UserAuth with ChangeNotifier {
             "email": email,
             "age": age,
             "industry": industry,
+            "image": base64Image,
             "firebaseToken": newToken,
           },
-        ),
+        )
       );
       // print("ab = ${newToken}");
       print(_token);
@@ -371,6 +378,39 @@ class UserAuth with ChangeNotifier {
       // print(decodeIndustry);
 
       // return decodeIndustry;
+    } catch (err) {
+      print(err.toString());
+      throw err;
+    }
+  }
+
+  Future<void> post(
+      String desc,
+      // List stocks,
+      List images) async {
+    try {
+      // FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+      // String newToken = await firebaseMessaging.getToken();
+
+      final response = await http.post(
+        postUrl,
+        headers: {
+          "Content-type": "application/json",
+          "Cookie": "$_token",
+          HttpHeaders.authorizationHeader: "Bearer $_token",
+        },
+        body: json.encode(
+          {
+            "desc": desc,
+            "images": images,
+          },
+        ),
+      );
+
+      print(response.body);
+
+      notifyListeners();
+      // setLoginPrefs(decodeEmail, decodeUsername, headerToken, decodeUserId);
     } catch (err) {
       print(err.toString());
       throw err;
