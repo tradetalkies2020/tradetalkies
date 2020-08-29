@@ -8,16 +8,31 @@ const postServices = require("../services/postservices");
 const logger = require("../middleware/logger");
 const Tickers = require("../models/Tickers");
 
-exports.postNewPost = (req, res, next) => {
+exports.postNewPost = async (req, res, next) => {
     const currentUser = req.session.user;
     const tickers = req.body.tickers;
     const desc = req.body.desc;
+    let images = [];
+
+    //image handler//
+    if (req.files !== undefined) {
+        await req.files.forEach((file) => {
+            images.push(file.location);
+        });
+    } else if (req.file !== undefined) {
+        images.push(req.file.location);
+    }
+
+    //end image handler//
+
     const post = new Post({
         userId: currentUser._id,
         tickers: tickers,
         desc: desc,
         likes: [],
+        images: images,
     });
+    console.log(post);
 
     Constants.findOne({ name: "points" })
         .select("value")
@@ -41,7 +56,7 @@ exports.postNewPost = (req, res, next) => {
                                 );
                                 return res.json({
                                     messgae: `Post created`,
-                                    postId: post._id,
+                                    post: post,
                                 });
                             })
                             .catch((err) => {
@@ -129,4 +144,3 @@ exports.getPost = (req, res, next) => {
             return res.json(err);
         });
 };
-

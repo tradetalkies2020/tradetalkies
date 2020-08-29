@@ -1,6 +1,6 @@
 var express = require("express");
 var app = express();
-const User=require('./models/User');
+const User = require("./models/User");
 const path = require("path");
 var port = process.env.PORT || 3000;
 const dotenv = require("dotenv");
@@ -28,6 +28,9 @@ const store = new MongoDbSession({
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
+// app.use(upload.array("images"));
+// app.use(upload.single("image"));
+app.use(upload.any());
 app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use((req, res, next) => {
@@ -51,7 +54,6 @@ app.use(
         resave: true,
     })
 );
-app.use(upload.single("image"));
 
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
