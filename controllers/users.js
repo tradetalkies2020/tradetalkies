@@ -189,7 +189,7 @@ exports.editProfile = async (req, res, next) => {
         }
     });
     if (req.file !== undefined) {
-        imageUrl = await req.file.location;
+        imageUrl = await req.files[0].location;
     } else {
         imageUrl = "";
     }

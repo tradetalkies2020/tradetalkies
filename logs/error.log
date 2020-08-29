@@ -41,3 +41,4 @@
 {"message":"Error in logging in Twitter user Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client","level":"error","timestamp":"2020-08-16T13:01:28.168Z"}
 {"message":"Error in logging in Linkedin user Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client","level":"error","timestamp":"2020-08-16T13:03:57.451Z"}
 {"message":"Error occcured while creating post: ValidationError: desc: Path `desc` is required.","level":"error","timestamp":"2020-08-26T15:05:17.711Z"}
+{"message":[{"value":"test123@test1.com","msg":"E-mail already exists, try something else.","param":"email","location":"body"}],"level":"error","timestamp":"2020-08-29T16:36:12.407Z"}

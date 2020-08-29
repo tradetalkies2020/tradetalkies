@@ -850,3 +850,7 @@
 {"message":"trying to config S3","level":"info","timestamp":"2020-08-29T15:50:16.399Z"}
 {"message":"trying to config S3","level":"info","timestamp":"2020-08-29T15:50:23.131Z"}
 {"message":"Post created for userId :5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-08-29T15:50:52.424Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-29T16:32:28.051Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-29T16:34:44.377Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-08-29T16:35:48.698Z"}
+{"message":[{"value":"test123@test1.com","msg":"E-mail already exists, try something else.","param":"email","location":"body"}],"level":"error","timestamp":"2020-08-29T16:36:12.413Z"}
