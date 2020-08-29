@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">auth-check</string>
+    <string name="facebook_app_id">430733017904162</string>
+    <string name="fb_login_protocol_scheme">fb430733017904162</string>
+</resources>
