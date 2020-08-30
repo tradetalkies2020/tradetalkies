@@ -186,15 +186,14 @@ exports.editProfile = async (req, res, next) => {
                     },
                 ],
             });
-
         }
     });
     if (req.files !== undefined) {
         imageUrl = await req.files[0].location;
     } else {
-        imageUrl = "";
+        //for later
     }
-    
+
     update.imageUrl = imageUrl;
     console.log(update);
     User.findOneAndUpdate(
@@ -279,11 +278,9 @@ exports.passworChange = async (req, res, next) => {
                                 });
                             });
                     } else {
-                        return res
-                            .status(401)
-                            .json({
-                                errorMessage: `Old password incorrect for ${currentUser._id}`,
-                            });
+                        return res.status(401).json({
+                            errorMessage: `Old password incorrect for ${currentUser._id}`,
+                        });
                     }
                 });
             });
