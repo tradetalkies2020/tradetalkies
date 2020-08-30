@@ -144,3 +144,44 @@ exports.getPost = (req, res, next) => {
             return res.json(err);
         });
 };
+
+exports.getTickerSuggestions = (req, res, next) => {
+    const keyword = req.body.keyword;
+    const currentUser = req.session.user;
+    logger.info(`Getting tickers for suggestion word ${keyword}`);
+    Ticker.aggregate([
+        {
+            $match: {
+                $or: [
+                    {
+                        symbol: {
+                            $regex: keyword,
+                            $options: "i",
+                        },
+                    },
+                    {
+                        value: {
+                            $regex: keyword,
+                            $options: "i",
+                        },
+                    },
+                ],
+            },
+        },
+    ])
+        .then((result) => {
+            var uniqueDocs = result.reduce((unique, o) => {
+                if (!unique.some((obj) => obj._id === o._id)) {
+                    unique.push(o);
+                }
+                return unique;
+            }, []);
+            return res.json(uniqueDocs);
+        })
+        .catch((err) => {
+            console.log(err);
+            logger.error(
+                `Error in getting ticekr suggestions for ${currentUser._id}`
+            );
+        });
+};

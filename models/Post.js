@@ -12,4 +12,5 @@ var postSchema = new Schema({
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
+
 module.exports = mongoose.model("Post", postSchema);

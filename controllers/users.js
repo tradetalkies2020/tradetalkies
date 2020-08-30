@@ -186,16 +186,17 @@ exports.editProfile = async (req, res, next) => {
                     },
                 ],
             });
+
         }
     });
-    if (req.file !== undefined) {
+    if (req.files !== undefined) {
         imageUrl = await req.files[0].location;
     } else {
         imageUrl = "";
     }
-    console.log(update);
+    
     update.imageUrl = imageUrl;
-
+    console.log(update);
     User.findOneAndUpdate(
         { _id: currentUser._id },
         { $set: update },
