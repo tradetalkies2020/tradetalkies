@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+// import 'dart:html';
 import 'package:fireauth/services/auth/imageJson.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:dio/dio.dart';
 
 import '../http_exception.dart';
 
@@ -192,14 +195,16 @@ class UserAuth with ChangeNotifier {
     String industry,
     File image,
   ) async {
+    String fileName = basename(image.path);
+    print("filebase name is $fileName");
     try {
       FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
       String newToken = await firebaseMessaging.getToken();
       //     4444444444444444444444444444444444444444444444444
       // print(image.readAsBytesSync());
-      String base64Image = base64Encode(image.readAsBytesSync());
-      print(image);
-      print(base64Image);
+      // String base64Image = base64Encode(image.readAsBytesSync());
+      // print(image);
+      // print(base64Image);
       // File image1 = base64Decode(base64Image) as File;
       // print(image1);\
 
@@ -227,26 +232,44 @@ class UserAuth with ChangeNotifier {
       // print(image.toString());
       // print(image.absolute);
       // print(image.readAsString(encoding: ));
-      final response = await http.post(
-        edit_profile,
-        headers: {
-          "Content-type": "application/json",
-          "Cookie": "$_token",
-          HttpHeaders.authorizationHeader: "Bearer $_token",
-        },
-        body: json.encode(
-          {
-            "email": email,
-            "age": age,
-            "industry": industry,
-            "image": base64Image,
-            "firebaseToken": newToken,
-          },
-        )
-      );
+
+      FormData formData = new FormData.fromMap({
+        "email": email,
+        "age": age,
+        "industry": industry,
+        // "images": await http.MultipartFile.fromPath(fileName,image.path   ,contentType:),
+        "images": await MultipartFile.fromFile(image.path.toString(),
+            filename: fileName, contentType: MediaType("image", "jpg")),
+
+        "firebaseToken": newToken,
+      });
+
+      Dio dio = new Dio();
+      dio.options.headers["content-type"] = "multipart/form-data";
+      dio.options.headers["authorization"] = "Bearer $_token";
+      dio.options.headers["cookie"] = "$_token";
+
+      Response response = await dio.post(edit_profile, data: formData);
+      print("File response ${response}");
+
+      // final response = await http.post(edit_profile,
+      //     headers: {
+      //       "Content-type": "application/json",
+      //       "Cookie": "$_token",
+      //       HttpHeaders.authorizationHeader: "Bearer $_token",
+      //     },
+      //     body: json.encode(
+      //       {
+      //         "email": email,
+      //         "age": age,
+      //         "industry": industry,
+      //         "image": base64Image,
+      //         "firebaseToken": newToken,
+      //       },
+      //     ));
       // print("ab = ${newToken}");
-      print(_token);
-      print(response.body);
+      // print(_token);
+      // print(response.body);
       // String headerToken = response.headers['set-cookie'].split(';').first;
       // print(response.headers);
       // print(headerToken);
@@ -323,14 +346,17 @@ class UserAuth with ChangeNotifier {
         },
       );
       int decodeAge = json.decode(response.body)['currentuser']['age'];
+      String imageUrl = json.decode(response.body)['currentuser']['imageUrl'];
       String decodeIndustry =
           json.decode(response.body)['currentuser']['industry'];
-      Map output = {'age': decodeAge, 'industry': decodeIndustry};
+      Map output = {'age': decodeAge, 'industry': decodeIndustry,'image':imageUrl,'userName':_name};
       // print(output['age']);
       // print(output['industry']);
       print('vvhv');
+      print(response.body);
 
       print(output);
+      print(imageUrl);
 
       return output;
     } catch (err) {
@@ -389,25 +415,130 @@ class UserAuth with ChangeNotifier {
       // List stocks,
       List images) async {
     try {
-      // FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+      // if(images.length==)
+      // String fileName = basename(images[0].path);
+      // String fileName1 = basename(images[1].path);
+
+      // final ext = extension(images[0].path).replaceAll('.', '');
+      // print(ext);
+
+      FormData formData;
+      print(images.length);
+      if (images[0] == 'one') {
+        formData = new FormData.fromMap({
+          "desc": desc,
+        });
+      } else if (images.length == 1) {
+        formData = new FormData.fromMap({
+          "desc": desc,
+          "image1": await MultipartFile.fromFile(images[0].path.toString(),
+              filename: basename(images[0].path),
+              contentType: MediaType(
+                  "image", extension(images[0].path).replaceAll('.', ''))),
+        });
+      } else if (images.length == 2) {
+        formData = new FormData.fromMap({
+          "desc": desc,
+          "image1": await MultipartFile.fromFile(images[0].path.toString(),
+              filename: basename(images[0].path),
+              contentType: MediaType(
+                  "image", extension(images[0].path).replaceAll('.', ''))),
+          "image2": await MultipartFile.fromFile(images[1].path.toString(),
+              filename: basename(images[1].path),
+              contentType: MediaType(
+                  "image", extension(images[1].path).replaceAll('.', ''))),
+        });
+      } else if (images.length == 3) {
+        formData = new FormData.fromMap({
+          "desc": desc,
+          "image1": await MultipartFile.fromFile(images[0].path.toString(),
+              filename: basename(images[0].path),
+              contentType: MediaType(
+                  "image", extension(images[0].path).replaceAll('.', ''))),
+          "image2": await MultipartFile.fromFile(images[1].path.toString(),
+              filename: basename(images[1].path),
+              contentType: MediaType(
+                  "image", extension(images[1].path).replaceAll('.', ''))),
+          "image3": await MultipartFile.fromFile(images[2].path.toString(),
+              filename: basename(images[2].path),
+              contentType: MediaType(
+                  "image", extension(images[2].path).replaceAll('.', ''))),
+        });
+      } else if (images.length == 4) {
+        formData = new FormData.fromMap({
+          "desc": desc,
+          "image1": await MultipartFile.fromFile(images[0].path.toString(),
+              filename: basename(images[0].path),
+              contentType: MediaType(
+                  "image", extension(images[0].path).replaceAll('.', ''))),
+          "image2": await MultipartFile.fromFile(images[1].path.toString(),
+              filename: basename(images[1].path),
+              contentType: MediaType(
+                  "image", extension(images[1].path).replaceAll('.', ''))),
+          "image3": await MultipartFile.fromFile(images[2].path.toString(),
+              filename: basename(images[2].path),
+              contentType: MediaType(
+                  "image", extension(images[2].path).replaceAll('.', ''))),
+          "image4": await MultipartFile.fromFile(images[3].path.toString(),
+              filename: basename(images[3].path),
+              contentType: MediaType(
+                  "image", extension(images[3].path).replaceAll('.', ''))),
+        });
+      }
+
+      print(formData);
+
+      // print("filebase name is $fileName");
+      // FirebaseMessaging firebaseMessaging = new FirebaseMessaging();4
       // String newToken = await firebaseMessaging.getToken();
 
-      final response = await http.post(
-        postUrl,
-        headers: {
-          "Content-type": "application/json",
-          "Cookie": "$_token",
-          HttpHeaders.authorizationHeader: "Bearer $_token",
-        },
-        body: json.encode(
-          {
-            "desc": desc,
-            "images": images,
-          },
-        ),
-      );
+      // FormData formData = new FormData.fromMap({4444
+      //   "desc": desc,
+      //   // "images": await http.MultipartFile.fromPath(fileName,image.path   ,contentType:),
 
-      print(response.body);
+      //   // for (int i = 0;i<images.length; i++){
+      //     // "image$i": await MultipartFile.fromFile(images[i].path.toString(),
+      //         // filename: basename(images[i].path), contentType: MediaType("image", "jpg")),
+
+      //     "image1": await MultipartFile.fromFile(images[0].path.toString(),
+      //         filename: fileName, contentType: MediaType("image", "jpg")),
+      //   "image2": await MultipartFile.fromFile(images[1].path.toString(),
+      //       filename: fileName1, contentType: MediaType("image", ext)),
+
+      //   // "firebaseToken": newToken,
+      // });
+
+      Dio dio = new Dio();
+      dio.options.headers["content-type"] = "multipart/form-data";
+      dio.options.headers["authorization"] = "Bearer $_token";
+      dio.options.headers["cookie"] = "$_token";
+
+      Response response = await dio.post(postUrl, data: formData);
+      print("File response ${response}");
+
+      // imageFiles[0] = await MultipartFile.fromFile(imageFiles[0].path.toString(),
+      //     filename: fileName, contentType: MediaType("image", "jpg"));
+      // print(imageFiles);
+      // imageFiles[1] = await MultipartFile.fromFile(imageFiles[1].path.toString(),
+      //     filename: fileName1, contentType: MediaType("image", "jpg"));
+      // print(imageFiles);
+
+      // final response = await http.post(4
+      //   postUrl,
+      //   headers: {
+      //     "Content-type": "application/json",
+      //     "Cookie": "$_token",
+      //     HttpHeaders.authorizationHeader: "Bearer $_token",
+      //   },
+      //   body: json.encode(
+      //     {
+      //       "desc": desc,
+      //       "images": images,
+      //     },
+      //   ),
+      // );
+
+      print(response);
 
       notifyListeners();
       // setLoginPrefs(decodeEmail, decodeUsername, headerToken, decodeUserId);

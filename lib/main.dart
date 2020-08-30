@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: basicTheme(),
           home: auth.isAuth
-              ? HomeScreen()
+              ? HomeScreen(selectedIndex: 0,fromPost: false,)
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>

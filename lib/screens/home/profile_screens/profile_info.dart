@@ -2,6 +2,7 @@
 // import 'dart:html';
 
 import 'package:fireauth/services/auth/services.dart';
+import 'package:fireauth/services/home/getInfo.dart';
 import 'package:fireauth/widgets/textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:fireauth/screens/home/home.dart';
@@ -40,13 +41,11 @@ class _Profile_infoState extends State<Profile_info> {
   final _telegramIdController = TextEditingController();
   final _twitterIdController = TextEditingController();
 
-
-
-
   String industry = 'Finance';
 
   String oldIndustry;
   String newIndustry;
+  String imageUrl = '';
   int oldAge;
   int newAge;
 
@@ -81,7 +80,11 @@ class _Profile_infoState extends State<Profile_info> {
 
       oldAge = output['age'];
       oldIndustry = output['industry'];
+      imageUrl = output['image'];
       print("age=$oldAge");
+      // Info myinfo = new Info();
+      // myinfo.image=
+
       // oldIndustry =
       //     await Provider.of<UserAuth>(context, listen: false).getIndustry();
       print("industry=$oldIndustry");
@@ -215,9 +218,7 @@ class _Profile_infoState extends State<Profile_info> {
                 // mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(
-                    height: 35
-                  ),
+                  SizedBox(height: 35),
                   Center(
                     // margin: EdgeInsets.only(left: 20),
                     child: Column(
@@ -230,7 +231,7 @@ class _Profile_infoState extends State<Profile_info> {
                           child: CircleAvatar(
                             radius: 40,
                             backgroundImage: _image == null
-                                ? AssetImage('assets/images/avatar.png')
+                                ? NetworkImage(imageUrl)
                                 : FileImage(_image),
                           ),
                         ),
@@ -358,13 +359,13 @@ class _Profile_infoState extends State<Profile_info> {
                     ),
                   ),
                   SizedBox(
-                    height:20,
+                    height: 20,
                   ),
                   Container(
                     margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: ageTextFormField(),
                   ),
-                   SizedBox(
+                  SizedBox(
                     height: 20,
                   ),
 
@@ -379,21 +380,21 @@ class _Profile_infoState extends State<Profile_info> {
                     ),
                   ),
                   SizedBox(
-                    height:20,
+                    height: 20,
                   ),
                   Container(
                     margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: aboutTextFormField(),
                   ),
                   SizedBox(
-                    height:20,
+                    height: 20,
                   ),
                   Container(
                     margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: telegramIdTextFormField(),
                   ),
                   SizedBox(
-                    height:20,
+                    height: 20,
                   ),
                   Container(
                     margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -405,8 +406,8 @@ class _Profile_infoState extends State<Profile_info> {
                   _isLoading
                       ? Center(child: CircularProgressIndicator())
                       : next(),
-                       SizedBox(
-                    height:20,
+                  SizedBox(
+                    height: 20,
                   ),
                 ],
               ),
@@ -489,8 +490,6 @@ class _Profile_infoState extends State<Profile_info> {
       hint: "Twitter User ID url (Optional)",
     );
   }
-
-
 
   Widget industryTextFormField() {
     // return CustomTextField(

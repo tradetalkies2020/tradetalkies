@@ -9,7 +9,14 @@ import '../../widgets/drawer.dart';
 
 //
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key key}) : super(key: key);
+  HomeScreen({Key key, this.selectedIndex, this.fromPost,this.postImages,this.postName,this.postText,this.profileUrl}) : super(key: key);
+  final int selectedIndex;
+  final bool fromPost;
+
+  final String postName, postText, profileUrl;
+  List postImages;
+
+  // HomeScreen({Key key}) : super(key: key);
 
   static const routeName = '/home-page';
 
@@ -20,6 +27,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController;
   int pageIndex = 0;
+
+  // _HomeScreenState(int selectedIndex);
+
+  // _HomeScreenState(selectedIndex);
+
+  // _HomeScreenState(selectedIndex);
+
+  // _HomeScreenState(int selectedPage);
 
   void _onChangePageIndex(index) {
     setState(() {
@@ -47,7 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
           leading: false,
           show_icon: pageIndex == 0 ? true : false,
           elevation: 0.0,
-          color: pageIndex == 4 || pageIndex==0? Color(0xFFF6F6F8) : Colors.white70,
+          color: pageIndex == 4 || pageIndex == 0
+              ? Color(0xFFF6F6F8)
+              : Colors.white70,
           title: pageIndex == 0
               ? 'Home'
               : (pageIndex == 1
@@ -67,7 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
           Text('index= $pageIndex'),
           Text('index= $pageIndex'),
 
-          Feeds(),
+          Feeds(
+            isPost: widget.fromPost,
+            postImages: widget.fromPost?widget.postImages:null,
+            postName: widget.fromPost?widget.postName:null,
+            postText: widget.fromPost?widget.postText:null,
+            profileUrl: widget.fromPost?widget.profileUrl:null,),
           // Text('index= $pageIndex'),
           Profile(),
         ],
@@ -99,15 +121,15 @@ class _HomeScreenState extends State<HomeScreen> {
               //       ? "assets/new_icons/home-filled.svg"
               //       : "assets/new_icons/home.svg",
               icon: SvgPicture.asset(pageIndex == 0
-                    ? "assets/new_icons/home-filled.svg"
-                    : "assets/new_icons/home.svg"),
-                // fit: BoxFit.contain,
-                // width: 20,
-                // height: 20,
-                // color: Colors.blue,
-                // color: pageIndex == 0
-                //     ? Color(0xFF3D96FF)
-                //     : Colors.black,
+                  ? "assets/new_icons/home-filled.svg"
+                  : "assets/new_icons/home.svg"),
+              // fit: BoxFit.contain,
+              // width: 20,
+              // height: 20,
+              // color: Colors.blue,
+              // color: pageIndex == 0
+              //     ? Color(0xFF3D96FF)
+              //     : Colors.black,
               // ),
               title: Container(
                 padding: EdgeInsets.all(5.0),
@@ -127,8 +149,8 @@ class _HomeScreenState extends State<HomeScreen> {
               //   //     : Theme.of(context).hintColor,
               // ),
               icon: SvgPicture.asset(pageIndex == 1
-                    ? "assets/new_icons/airplay.svg"
-                    : "assets/new_icons/room-icon.svg"),
+                  ? "assets/new_icons/airplay.svg"
+                  : "assets/new_icons/room-icon.svg"),
               // icon: Icon(Icons.airplay,color: pageIndex == 1
               //       ? Color(0xFF3D96FF)
               //       : Colors.black,),
@@ -153,8 +175,8 @@ class _HomeScreenState extends State<HomeScreen> {
               //   //     : Theme.of(context).hintColor,
               // ),
               icon: SvgPicture.asset(pageIndex == 2
-                    ? "assets/new_icons/message-blue.svg"
-                    : "assets/new_icons/message-square.svg"),
+                  ? "assets/new_icons/message-blue.svg"
+                  : "assets/new_icons/message-square.svg"),
               title: Container(
                 padding: EdgeInsets.all(5.0),
                 child: Text('Chat',
@@ -175,8 +197,8 @@ class _HomeScreenState extends State<HomeScreen> {
               //   //     : Colors.black,
               // ),
               icon: SvgPicture.asset(pageIndex == 3
-                    ? "assets/new_icons/compass.svg"
-                    : "assets/new_icons/feed.svg"),
+                  ? "assets/new_icons/compass.svg"
+                  : "assets/new_icons/feed.svg"),
               title: Container(
                 padding: EdgeInsets.all(5.0),
                 child: Text('Feeds',
@@ -195,9 +217,9 @@ class _HomeScreenState extends State<HomeScreen> {
               //   //     ? Color(0xFF3D96FF)
               //   //     : Colors.black,
               // ),
-              icon: SvgPicture.asset( pageIndex == 4
-                    ? "assets/new_icons/user-blue.svg"
-                    : "assets/new_icons/user-black.svg"),
+              icon: SvgPicture.asset(pageIndex == 4
+                  ? "assets/new_icons/user-blue.svg"
+                  : "assets/new_icons/user-black.svg"),
               title: Container(
                 padding: EdgeInsets.all(5.0),
                 child: Text('Profile',
@@ -216,7 +238,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController =
+        PageController(initialPage: widget.fromPost ? widget.selectedIndex : 0);
+    pageIndex = widget.fromPost ? widget.selectedIndex : 0;
   }
 
   @override

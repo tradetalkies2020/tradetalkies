@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fireauth/screens/home/home.dart';
 import 'package:fireauth/services/auth/services.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,9 @@ import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 // import 'package:path_provider/path_provider.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:dio/dio.dart';
+import 'package:path/path.dart' as path;
+import 'package:http_parser/http_parser.dart';
 
 // import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 // import 'package:flutter_absolute_path/flutter_absolute_path.dart';
@@ -25,9 +29,10 @@ class post extends StatefulWidget {
 }
 
 class _postState extends State<post> {
-  List<Asset> images = List<Asset>();
+  List images = [];
   bool _isLoading = false;
   final _textController = TextEditingController();
+  bool _isImageSelected = false;
 
   // buildItem(BuildContext context, Asset image) {
   //   return Padding(
@@ -113,27 +118,31 @@ class _postState extends State<post> {
 
   Future<void> loadAssets() async {
     setState(() {
-      images = List<Asset>();
+      images = [];
       print(images);
     });
 
-    List<Asset> resultList;
-   
+    List resultList;
 
     try {
       resultList = await MultiImagePicker.pickImages(
         maxImages: 4,
       );
+      _isImageSelected = true;
+      // print(resultList);
     } on NoImagesSelectedException catch (e) {
-      Scaffold.of(context).showSnackBar(new SnackBar(
-        content: new Text(e.message),
-      ));
-    } catch (e) {
-      Scaffold.of(context).showSnackBar(new SnackBar(
-        content: new Text(e.message),
-      ));
-    }
+      print(e.message);
+      _isImageSelected = false;
 
+      // images = [];
+      // Scaffold.of(context).showSnackBar(new SnackBar(
+      //   content: new Text(e.message),
+
+    } catch (e) {
+      print(e.toString());
+      _isImageSelected = false;
+      // images == [];
+    }
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -141,13 +150,24 @@ class _postState extends State<post> {
     if (!mounted) return;
 
     setState(() {
-      images = resultList;
-      print(images);
+      // images = resultList;
+      // print(images);
+      // _isImageSelected = false;
+      if (_isImageSelected) {
+        // _isImageSelected = false;
+        images = resultList;
+        print(images);
+        // _isImageSelected = false;
+        // } else {
+        //   images = resultList;
+        //   print(images);
+        //   _isImageSelected = false;
+        // }
+      }
     });
 
     // print(images[0].identifier.)
 
-    
     // final byteData = await images[0].getByteData();
     // final tempFile =
     //     File("${(await getTemporaryDirectory()).path}/${images[0].name}");
@@ -193,42 +213,62 @@ class _postState extends State<post> {
       _isLoading = true;
     });
     List imageFiles = [];
+    String image,name;
 
-    for (int i = 0; i < images.length; i++) {
-      final byteData = await images[i].getByteData();
-      final tempFile =
-          File("${(await getTemporaryDirectory()).path}/${images[i].name}");
-      final file = await tempFile.writeAsBytes(
-        byteData.buffer
-            .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
-      );
-      String base64Image = base64Encode(file.readAsBytesSync());
-      // print(image);
-      // print(base64Image);
-      // print(file);4
-
-
-
-      imageFiles.add(base64Image);
-
+    if (_isImageSelected == false) {
+      imageFiles = ['one'];
+    } else {
+      for (int i = 0; i < images.length; i++) {
+        final byteData = await images[i].getByteData();
+        final tempFile =
+            File("${(await getTemporaryDirectory()).path}/${images[i].name}");
+        final file = await tempFile.writeAsBytes(
+          byteData.buffer
+              .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+        );
+        imageFiles.add(file);
+      }
     }
+
     print(imageFiles);
+    // String fileName = path.basename(imageFiles[0].path);
+    // String fileName1 = path.basename(imageFiles[1].path);
+
+    // print("filebase name is $fileName");
 
     final String text = _textController.text;
 
     try {
-      await Provider.of<UserAuth>(context, listen: false).post(text,imageFiles);
+      // imageFiles[0] = await MultipartFile.fromFile(imageFiles[0].path.toString(),
+      //     filename: fileName, contentType: MediaType("image", "jpg"));
+      // print(imageFiles);
+      // imageFiles[1] = await MultipartFile.fromFile(imageFiles[1].path.toString(),
+      //     filename: fileName1, contentType: MediaType("image", "jpg"));
+      // print(imageFiles);
+
+      await Provider.of<UserAuth>(context, listen: false)
+          .post(text, imageFiles);
+      Map output = await Provider.of<UserAuth>(context, listen: false).getAge();
+      image = output['image'];
+      name=output['userName'];
+      print(image);
+
       // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) {
-      //       return AvatarGenderAgeUpload(
-      //         firstVisit: true,
-      //       );
-      //     },
-      //   ),
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return HomeScreen(
+              fromPost: true,
+              selectedIndex: 3,
+              postImages: images,
+              postName: name,
+              postText: text,
+              profileUrl: image,
+            );
+          },
+        ),
+      );
       print("posted");
       Toast.show(
         "Posted",
@@ -236,11 +276,12 @@ class _postState extends State<post> {
         duration: Toast.LENGTH_LONG,
       );
     } catch (err) {
-      Toast.show(
-        "Could not post",
-        context,
-        duration: Toast.LENGTH_LONG,
-      );
+      print(err.toString());
+      // Toast.show(
+      //   "Could not post",
+      //   context,
+      //   duration: Toast.LENGTH_LONG,
+      // );
     }
     setState(() {
       _isLoading = false;
@@ -250,6 +291,7 @@ class _postState extends State<post> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // key: key,
       // appBar: new PreferredSize(
       //     preferredSize:
       //         Size.fromHeight(58.0), // Change the height of the appbar
@@ -334,18 +376,22 @@ class _postState extends State<post> {
               )),
           Column(
             children: <Widget>[
-              Container(
-                // color: Colors.red,
-                padding: EdgeInsets.only(right: 8.0),
-                height: 141,
-                child: ListView.builder(
-                  itemCount: images.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return buildItem(context, images[index], index);
-                  },
-                ),
-              ),
+              _isImageSelected == false
+                  ? SizedBox(
+                      height: 1,
+                    )
+                  : Container(
+                      // color: Colors.red,
+                      padding: EdgeInsets.only(right: 8.0),
+                      height: 141,
+                      child: ListView.builder(
+                        itemCount: images.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return buildItem(context, images[index], index);
+                        },
+                      ),
+                    ),
               Container(
                 // color: Colors.blue,
                 child: Padding(

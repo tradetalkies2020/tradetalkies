@@ -23,7 +23,46 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  
+  String imageUrl = '';
+  bool _isloading = false;
+
+  void initState() {
+    _getInfo();
+  }
+  // @override
+  // void initState() {
+  //   _getInfo();
+
+  //   super.initState();
+  // }
+
+  Future<void> _getInfo() async {
+    setState(() {
+      _isloading = true;
+    });
+    try {
+      Map output = await Provider.of<UserAuth>(context, listen: false).getAge();
+
+      // oldAge = output['age'];
+      // oldIndustry = output['industry'];
+      setState(() {
+        imageUrl = output['image'];
+        _isloading = false;
+      });
+      print("image is $imageUrl");
+      // print("age=$oldAge");
+      // oldIndustry =
+      //     await Provider.of<UserAuth>(context, listen: false).getIndustry();
+      // print("industry=$oldIndustry");
+    } catch (err) {
+      print(err.toString());
+      Toast.show(
+        "error",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +105,10 @@ class _ProfileState extends State<Profile> {
                       // ),
                       CircleAvatar(
                         radius: 40,
-                        backgroundColor: Theme.of(context).accentColor,
-                        child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: _isloading?Center(child: CircularProgressIndicator(),): CircleAvatar(
                             radius: 40,
-                            backgroundImage:
-                                AssetImage('assets/images/avatar.png')),
+                            backgroundImage: NetworkImage(imageUrl)),
                       ),
                       SizedBox(
                         width: 25.0,

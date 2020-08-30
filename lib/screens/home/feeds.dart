@@ -10,8 +10,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class Feeds extends StatefulWidget {
   Feeds({
-    Key key,
+    Key key,this.profileUrl,this.postText,this.postName,this.postImages,this.isPost
   }) : super(key: key);
+
+  final String postName, postText, profileUrl;
+  List postImages;
+  final bool isPost;
 
   @override
   _FeedsState createState() => _FeedsState();
@@ -183,20 +187,56 @@ class _FeedsState extends State<Feeds> {
               //       },
               //     ),
               // )
-              Feed_post(name: 'Manikanth',time: '2mins ago',text: 'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',imageAsset: imageAssets,),
+
+              widget.isPost?Feed_post(name:widget.postName,text: widget.postText,time: '1min ago',imageAsset: widget.postImages,imageUrl: widget.profileUrl,isPost: true,):SizedBox(height: 1,),
+              Feed_post(
+                name: 'Manikanth',
+                time: '2mins ago',
+                text:
+                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+                imageAsset: imageAssets,
+                isPost: false,
+              ),
               Divider(),
 
-              Feed_post(name: 'sarthak',time: '4mins ago',text: 'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',imageAsset: imageAssets,),
+              Feed_post(
+                name: 'sarthak',
+                time: '4mins ago',
+                text:
+                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+                imageAsset: imageAssets,
+                isPost: false,
+              ),
 
               Divider(),
-              Feed_post(name: 'AmanKumar',time: '6mins ago',text: 'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',imageAsset: imageAssets,),
-              
-              Divider(),
-              Feed_post(name: 'Manikanth',time: '2mins ago',text: 'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',imageAsset: imageAssets,),
+              Feed_post(
+                name: 'AmanKumar',
+                time: '6mins ago',
+                text:
+                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+                imageAsset: imageAssets,
+                isPost: false,
+              ),
 
               Divider(),
-             Feed_post(name: 'Manikanth',time: '2mins ago',text: 'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',imageAsset: imageAssets,),
+              Feed_post(
+                name: 'Manikanth',
+                time: '2mins ago',
+                text:
+                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+                imageAsset: imageAssets,
+                isPost: false,
+              ),
 
+              Divider(),
+              Feed_post(
+                name: 'Manikanth',
+                time: '2mins ago',
+                text:
+                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+                imageAsset: imageAssets,
+                isPost: false,
+              ),
             ],
           ),
         ),

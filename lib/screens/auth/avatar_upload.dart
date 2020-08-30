@@ -1,4 +1,5 @@
 // import 'dart:html';
+import 'package:fireauth/screens/auth/forgot_password.dart';
 import 'package:fireauth/services/auth/services.dart';
 import 'package:flutter/material.dart';
 import 'package:fireauth/screens/home/home.dart';
@@ -62,7 +63,7 @@ class _AvatarGenderAgeUploadState extends State<AvatarGenderAgeUpload> {
 
     try {
       await Provider.of<UserAuth>(context, listen: false)
-          .editProfile(age, industry,_image
+          .editProfile(age, industry, _image
               // email,
               // password,
               // userName,
@@ -73,15 +74,13 @@ class _AvatarGenderAgeUploadState extends State<AvatarGenderAgeUpload> {
       //     // password,
       //     // userName,
       //     );
-      Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-      // Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                   builder: (context) {
-      //                     return AvatarGenderAgeUpload(firstVisit: true,);
-      //                   },
-      //                 ),
-      //               );
+      // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomeScreen(
+                    fromPost: false,selectedIndex: 0,
+                  )));
       Toast.show(
         "updated profile",
         context,
@@ -132,15 +131,13 @@ class _AvatarGenderAgeUploadState extends State<AvatarGenderAgeUpload> {
                   margin: EdgeInsets.only(right: 20),
                   child: InkWell(
                     onTap: () {
-                      Navigator.of(context)
-                          .pushReplacementNamed(HomeScreen.routeName);
+                      // Navigator.of(context)
+                          // .pushReplacementNamed(HomeScreen.routeName);
 
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => ForgotPassword(),
-                      //   ),
-                      // );
+                      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomeScreen(fromPost: false,selectedIndex: 0,)));
                     },
                     child: Text("Skip",
                         style: TextStyle(
@@ -178,7 +175,7 @@ class _AvatarGenderAgeUploadState extends State<AvatarGenderAgeUpload> {
                     ),
                   ),
                   SizedBox(
-                    height:25,
+                    height: 25,
                   ),
                   InkWell(
                     onTap: _getImage,
@@ -278,7 +275,7 @@ class _AvatarGenderAgeUploadState extends State<AvatarGenderAgeUpload> {
             //   ),
             // ),
             SizedBox(
-              height:20,
+              height: 20,
             ),
             Container(
               margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -306,49 +303,48 @@ class _AvatarGenderAgeUploadState extends State<AvatarGenderAgeUpload> {
               child: ageTextFormField(),
             ),
             SizedBox(
-                    height: 20,
-                  ),
+              height: 20,
+            ),
 
-                  Container(
-                    margin: EdgeInsets.only(left: 20),
-                    child: Text(
-                      "About you",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2
-                          .copyWith(letterSpacing: 0.2, fontSize: 18.0),
-                    ),
-                  ),
-                  SizedBox(
-                    height:20,
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: aboutTextFormField(),
-                  ),
-                  SizedBox(
-                    height:20,
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: telegramIdTextFormField(),
-                  ),
-                  SizedBox(
-                    height:20,
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: twitterIdTextFormField(),
-                  ),
-                  SizedBox(
-                    height: 40,
-                  ),
-           
-            _isLoading?Center(child:CircularProgressIndicator()):
-            next(),
+            Container(
+              margin: EdgeInsets.only(left: 20),
+              child: Text(
+                "About you",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(letterSpacing: 0.2, fontSize: 18.0),
+              ),
+            ),
             SizedBox(
-                    height: 20,
-                  ),
+              height: 20,
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: aboutTextFormField(),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: telegramIdTextFormField(),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: twitterIdTextFormField(),
+            ),
+            SizedBox(
+              height: 40,
+            ),
+
+            _isLoading ? Center(child: CircularProgressIndicator()) : next(),
+            SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),
@@ -358,14 +354,14 @@ class _AvatarGenderAgeUploadState extends State<AvatarGenderAgeUpload> {
   Widget next() => InkWell(
         // onTap: () {
 
-          // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+        // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
 
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => ForgotPassword(),
-          //   ),
-          // );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => ForgotPassword(),
+        //   ),
+        // );
         // },
         onTap: _submit,
         child: Container(

@@ -2,12 +2,22 @@ import 'package:fireauth/screens/home/comment.dart';
 import 'package:fireauth/screens/home/fullPostView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class Feed_post extends StatefulWidget {
-  const Feed_post({Key key, this.name, this.text, this.time,this.imageAsset}) : super(key: key);
+  const Feed_post(
+      {Key key,
+      this.name,
+      this.text,
+      this.time,
+      this.imageAsset,
+      this.imageUrl,
+      this.isPost})
+      : super(key: key);
 
-  final String name, time, text;
+  final String name, time, text, imageUrl;
   final List imageAsset;
+  final bool isPost;
 
   @override
   _Feed_postState createState() => _Feed_postState();
@@ -23,7 +33,7 @@ class _Feed_postState extends State<Feed_post> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: widget.imageAsset==null?185:400,
+      height: widget.imageAsset == null ? 185 : 400,
       // color: Colors.lime,
       child: Column(
         children: <Widget>[
@@ -41,8 +51,9 @@ class _Feed_postState extends State<Feed_post> {
                         backgroundColor: Theme.of(context).accentColor,
                         child: CircleAvatar(
                             radius: 40,
-                            backgroundImage:
-                                AssetImage('assets/images/avatar.png')),
+                            backgroundImage: widget.imageUrl != null
+                                ? NetworkImage(widget.imageUrl)
+                                : AssetImage('assets/images/avatar.png')),
                       ),
                       SizedBox(
                         width: 12,
@@ -138,41 +149,59 @@ class _Feed_postState extends State<Feed_post> {
                     height: 1.3),
               )),
           SizedBox(
-            height: widget.imageAsset==null?2:15,
+            height: widget.imageAsset == null ? 2 : 15,
           ),
-          widget.imageAsset==null?SizedBox(height: 5,):
-          Container(
-            height: 200,
-            width: 277,
-            margin: EdgeInsets.only(left: 76, right: 20),
-            child: ListView.builder(
-              itemCount: widget.imageAsset.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: (){
-                     Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => FullpostView(image: widget.imageAsset[index],)));
-                  },
-                                  child: Container(
-                    margin: EdgeInsets.only(right: 10),
-                    height: 200,
-                    width: 264,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: widget.imageAsset[index], fit: BoxFit.fill),
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      // color: Colors.blue
-                    ),
-                  ),
-                );
-              },
+          widget.imageAsset == null
+              ? SizedBox(
+                  height: 5,
+                )
+              : Container(
+                  height: 200,
+                  width: 277,
+                  margin: EdgeInsets.only(left: 76, right: 20),
+                  child: ListView.builder(
+                    itemCount: widget.imageAsset.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FullpostView(
+                                        image: widget.imageAsset[index],
+                                      )));
+                        },
+                        child: widget.isPost?Container(
+                          margin: EdgeInsets.only(right: 10),
+
+                          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: AssetThumb(
+              asset: widget.imageAsset[index],
+              width: 264,
+              height: 200,
             ),
           ),
+                        ): Container(
+                          margin: EdgeInsets.only(right: 10),
+                          height: 200,
+                          width: 264,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: widget.imageAsset[index],
+                                fit: BoxFit.fill),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            // color: Colors.blue
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
           SizedBox(
-            height: widget.imageAsset==null?18:23,
+            height: widget.imageAsset == null ? 18 : 23,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -193,11 +222,15 @@ class _Feed_postState extends State<Feed_post> {
               Row(
                 children: <Widget>[
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Comment(name: widget.name,)));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Comment(
+                                    name: widget.name,
+                                  )));
                     },
-                                      child: SvgPicture.asset(
+                    child: SvgPicture.asset(
                       "assets/new_icons/comment.svg",
                       height: 20,
                       width: 25,
