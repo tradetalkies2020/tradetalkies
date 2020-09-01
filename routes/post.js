@@ -9,4 +9,5 @@ router.post("/post", isAuth, userLog, postController.postNewPost);
 router.post("/like", isAuth, userLog, postController.likePost);
 router.get("/post/:postId", isAuth, userLog, postController.getPost);
 router.get("/tickersuggestions", isAuth,userLog,postController.getTickerSuggestions);
+router.get('/all-tickers',isAuth,userLog,postController.allTickers);
 module.exports = router;
