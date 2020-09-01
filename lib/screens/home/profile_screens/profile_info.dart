@@ -64,12 +64,7 @@ class _Profile_infoState extends State<Profile_info> {
   void initState() {
     _getInfo();
   }
-  // @override
-  // void initState() {
-  //   _getInfo();
-
-  //   super.initState();
-  // }
+  
 
   Future<void> _getInfo() async {
     setState(() {

@@ -12,12 +12,13 @@ class Feed_post extends StatefulWidget {
       this.time,
       this.imageAsset,
       this.imageUrl,
-      this.isPost})
+      this.isPost
+      ,this.hasPhoto})
       : super(key: key);
 
   final String name, time, text, imageUrl;
   final List imageAsset;
-  final bool isPost;
+  final bool isPost,hasPhoto;
 
   @override
   _Feed_postState createState() => _Feed_postState();
@@ -172,7 +173,7 @@ class _Feed_postState extends State<Feed_post> {
                                         image: widget.imageAsset[index],
                                       )));
                         },
-                        child: widget.isPost?Container(
+                        child: (widget.isPost && widget.hasPhoto)?Container(
                           margin: EdgeInsets.only(right: 10),
 
                           child: ClipRRect(

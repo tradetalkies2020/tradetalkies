@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:fireauth/screens/home/home.dart';
+import 'package:fireauth/screens/home/stocks_data.dart';
 import 'package:fireauth/services/auth/services.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +33,70 @@ class post extends StatefulWidget {
 class _postState extends State<post> {
   List images = [];
   bool _isLoading = false;
+  bool _isgettingData = false;
   final _textController = TextEditingController();
   bool _isImageSelected = false;
+  GlobalKey<FlutterMentionsState> key = GlobalKey<FlutterMentionsState>();
+  Stocks ab = Stocks();
+
+  // Stocks ab = Stocks();
+
+  List stocks = [];
+  List<String> pickers = [];
+  // List<Map<String, dynamic>> readyStocks = [];
+  void initState() {
+    _getInfo();
+    // readyStocks = ab.data;
+  }
+
+  Future<void> _getInfo() async {
+    // setState(() {
+    //   _isgettingData = true;
+    // });
+    try {
+      print('trying');
+
+      // setState(() {
+      //   _isgettingData = true;
+      // });
+
+      stocks = await Provider.of<UserAuth>(context, listen: false).getData();
+      ab.insertData(stocks);
+
+      // setState(() {
+      //   print("done");
+      //   readyStocks = ab.data;
+
+      //   _isgettingData = false;
+      // });
+      print('yes');
+      print('datarecieved is $stocks');
+      // print(stocks.length);
+
+      print('data recieved');
+
+      // oldAge = output['age'];
+      // oldIndustry = output['industry'];
+      // imageUrl = output['image'];
+      // print("age=$oldAge");
+      // Info myinfo = new Info();
+      // myinfo.image=
+
+      // oldIndustry =
+      //     await Provider.of<UserAuth>(context, listen: false).getIndustry();
+      // print("industry=$oldIndustry");
+    } catch (err) {
+      print(err.toString());
+      Toast.show(
+        "error",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    }
+    // setState(() {
+    //   _isgettingData = false;
+    // });
+  }
 
   // buildItem(BuildContext context, Asset image) {
   //   return Padding(
@@ -213,7 +277,7 @@ class _postState extends State<post> {
       _isLoading = true;
     });
     List imageFiles = [];
-    String image,name;
+    String image, name;
 
     if (_isImageSelected == false) {
       imageFiles = ['one'];
@@ -236,7 +300,9 @@ class _postState extends State<post> {
 
     // print("filebase name is $fileName");
 
-    final String text = _textController.text;
+    final String text = key.currentState.controller.text;
+    print(text);
+    print(pickers);
 
     try {
       // imageFiles[0] = await MultipartFile.fromFile(imageFiles[0].path.toString(),
@@ -247,10 +313,10 @@ class _postState extends State<post> {
       // print(imageFiles);
 
       await Provider.of<UserAuth>(context, listen: false)
-          .post(text, imageFiles);
+          .post(text, imageFiles,pickers);
       Map output = await Provider.of<UserAuth>(context, listen: false).getAge();
       image = output['image'];
-      name=output['userName'];
+      name = output['userName'];
       print(image);
 
       // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
@@ -265,6 +331,7 @@ class _postState extends State<post> {
               postName: name,
               postText: text,
               profileUrl: image,
+              hasPhoto:_isImageSelected?true:false
             );
           },
         ),
@@ -354,26 +421,116 @@ class _postState extends State<post> {
         // crossAxisAlignment:  CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-              // color: Colors.yellow,
-              padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
-              child: TextFormField(
-                // minLines: 0,
-                maxLines: 10,
-                controller: _textController,
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Type here to share \nyour views..',
-                    hintStyle: TextStyle(
-                        height: 1.3,
-                        fontFamily: 'Inter',
-                        fontSize: 26,
-                        color: Color(0xff000000).withOpacity(0.3))),
-              )),
+            padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
+            // height: 100,
+            child: _isgettingData
+                ? Text('wait')
+                : FlutterMentions(
+                    onMentionAdd: (value) {
+                      pickers.add("\$${value['display']}");
+                      // pickers.add("\"abab\"");
+                      print(pickers);
+                    },
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Type here to share \nyor views..',
+                        hintStyle: TextStyle(
+                            height: 1.3,
+                            fontFamily: 'Inter',
+                            fontSize: 26,
+                            color: Color(0xff000000).withOpacity(0.3))),
+                    key: key,
+                    suggestionPosition: SuggestionPosition.Bottom,
+                    maxLines: 5,
+                    minLines: 1,
+                    mentions: [
+                      Mention(
+                          trigger: '@',
+                          style: TextStyle(
+                            color: Colors.blue,
+                          ),
+                          data: ab.data,
+                          matchAll: false,
+                          suggestionBuilder: (data) {
+                            return Container(
+                              // color: Colors.yellow,
+                              // margin: EdgeInsets.all(5),
+
+                              padding: EdgeInsets.only(
+                                left: 15,
+                                right: 15,
+                              ),
+                              child: InkWell(
+                                // onTap: () {
+                                //   pickers.add(data['display']);
+                                // },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      data['full_name'],
+                                      style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 16,
+                                          color: Colors.black),
+                                    ),
+                                    SizedBox(
+                                      height: 6,
+                                    ),
+                                    Text('\$${data['display']}',
+                                        style: TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 14,
+                                            color: Colors.grey)),
+                                    Divider()
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                      // Mention(
+                      //   trigger: '#',
+                      //   disableMarkup: true,
+                      //   style: TextStyle(
+                      //     color: Colors.blue,
+                      //   ),
+                      //   data: [
+                      //     {'id': 'reactjs', 'display': 'reactjs'},
+                      //     {'id': 'javascript', 'display': 'javascript'},
+                      //   ],
+                      //   matchAll: true,
+                      // )
+                    ],
+                  ),
+          ),
+
+          // Container(
+          //     // color: Colors.yellow,
+          //     padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
+          //     child: TextFormField(
+          //       // minLines: 0,
+          //       maxLines: 10,
+          //       controller: _textController,
+          //       style: TextStyle(
+          //         fontFamily: 'Inter',
+          //         fontSize: 18,
+          //         fontWeight: FontWeight.w500,
+          //       ),
+          //       decoration: InputDecoration(
+          //           border: InputBorder.none,
+          //           hintText: 'Type here to share \nyour views..',
+          //           hintStyle: TextStyle(
+          //               height: 1.3,
+          //               fontFamily: 'Inter',
+          //               fontSize: 26,
+          //               color: Color(0xff000000).withOpacity(0.3))),
+          //     )),
           Column(
             children: <Widget>[
               _isImageSelected == false

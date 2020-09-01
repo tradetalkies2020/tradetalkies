@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 ThemeData basicTheme() {
+  // visualDensity: VisualDensity.adaptivePlatformDensity,
   TextTheme _basicTextTheme(TextTheme base) {
     return base.copyWith(
       headline1: base.caption.copyWith(

@@ -349,7 +349,12 @@ class UserAuth with ChangeNotifier {
       String imageUrl = json.decode(response.body)['currentuser']['imageUrl'];
       String decodeIndustry =
           json.decode(response.body)['currentuser']['industry'];
-      Map output = {'age': decodeAge, 'industry': decodeIndustry,'image':imageUrl,'userName':_name};
+      Map output = {
+        'age': decodeAge,
+        'industry': decodeIndustry,
+        'image': imageUrl,
+        'userName': _name
+      };
       // print(output['age']);
       // print(output['industry']);
       print('vvhv');
@@ -359,6 +364,39 @@ class UserAuth with ChangeNotifier {
       print(imageUrl);
 
       return output;
+    } catch (err) {
+      print(err.toString());
+      throw err;
+    }
+  }
+
+  Future<List> getData() async {
+    try {
+      final response = await http.get(
+        "http://tradetalkies.herokuapp.com/all-tickers",
+        headers: {
+          "Content-type": "application/json",
+          "Cookie": "$_token",
+          HttpHeaders.authorizationHeader: "Bearer $_token",
+        },
+      );
+      // int decodeAge = json.decode(response.body)['currentuser']['age'];
+      // String imageUrl = json.decode(response.body)['currentuser']['imageUrl'];
+      // String decodeIndustry =
+      //     json.decode(response.body)['currentuser']['industry'];
+      // Map output = {'age': decodeAge, 'industry': decodeIndustry,'image':imageUrl,'userName':_name};
+      // print(output['age']);
+      // print(output['industry']);
+      // print('vvhv');
+      // print(response.body);
+      List data = json.decode(response.body);
+      // print('data is $data');
+      return data;
+
+      // print(output);
+      // print(imageUrl);
+
+      // return output;
     } catch (err) {
       print(err.toString());
       throw err;
@@ -413,7 +451,8 @@ class UserAuth with ChangeNotifier {
   Future<void> post(
       String desc,
       // List stocks,
-      List images) async {
+      List images,
+      List pickers) async {
     try {
       // if(images.length==)
       // String fileName = basename(images[0].path);
@@ -427,6 +466,7 @@ class UserAuth with ChangeNotifier {
       if (images[0] == 'one') {
         formData = new FormData.fromMap({
           "desc": desc,
+          "tickers":pickers,
         });
       } else if (images.length == 1) {
         formData = new FormData.fromMap({
@@ -435,6 +475,9 @@ class UserAuth with ChangeNotifier {
               filename: basename(images[0].path),
               contentType: MediaType(
                   "image", extension(images[0].path).replaceAll('.', ''))),
+          "tickers":pickers,
+
+
         });
       } else if (images.length == 2) {
         formData = new FormData.fromMap({
@@ -447,6 +490,8 @@ class UserAuth with ChangeNotifier {
               filename: basename(images[1].path),
               contentType: MediaType(
                   "image", extension(images[1].path).replaceAll('.', ''))),
+          "tickers":pickers,
+
         });
       } else if (images.length == 3) {
         formData = new FormData.fromMap({
@@ -463,6 +508,8 @@ class UserAuth with ChangeNotifier {
               filename: basename(images[2].path),
               contentType: MediaType(
                   "image", extension(images[2].path).replaceAll('.', ''))),
+          "tickers":pickers,
+
         });
       } else if (images.length == 4) {
         formData = new FormData.fromMap({
@@ -483,6 +530,8 @@ class UserAuth with ChangeNotifier {
               filename: basename(images[3].path),
               contentType: MediaType(
                   "image", extension(images[3].path).replaceAll('.', ''))),
+          "tickers":pickers,
+
         });
       }
 
@@ -538,7 +587,7 @@ class UserAuth with ChangeNotifier {
       //   ),
       // );
 
-      print(response);
+      // print(response);
 
       notifyListeners();
       // setLoginPrefs(decodeEmail, decodeUsername, headerToken, decodeUserId);

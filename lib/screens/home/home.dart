@@ -1,17 +1,29 @@
 import 'package:fireauth/screens/home/feeds.dart';
 import 'package:fireauth/screens/home/home_screen.dart';
+import 'package:fireauth/screens/home/stocks_data.dart';
+import 'package:fireauth/services/auth/services.dart';
 import 'package:flutter/material.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:fireauth/screens/home/profile.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 // importing auth screen
 import '../../widgets/drawer.dart';
 
 //
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key key, this.selectedIndex, this.fromPost,this.postImages,this.postName,this.postText,this.profileUrl}) : super(key: key);
+  HomeScreen(
+      {Key key,
+      this.selectedIndex,
+      this.fromPost,
+      this.postImages,
+      this.postName,
+      this.postText,
+      this.profileUrl,this.hasPhoto})
+      : super(key: key);
   final int selectedIndex;
-  final bool fromPost;
+  final bool fromPost,hasPhoto;
 
   final String postName, postText, profileUrl;
   List postImages;
@@ -27,6 +39,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController;
   int pageIndex = 0;
+  
 
   // _HomeScreenState(int selectedIndex);
 
@@ -35,6 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // _HomeScreenState(selectedIndex);
 
   // _HomeScreenState(int selectedPage);
+
+ 
 
   void _onChangePageIndex(index) {
     setState(() {
@@ -86,10 +101,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
           Feeds(
             isPost: widget.fromPost,
-            postImages: widget.fromPost?widget.postImages:null,
-            postName: widget.fromPost?widget.postName:null,
-            postText: widget.fromPost?widget.postText:null,
-            profileUrl: widget.fromPost?widget.profileUrl:null,),
+            postImages: widget.fromPost ? widget.postImages : null,
+            postName: widget.fromPost ? widget.postName : null,
+            postText: widget.fromPost ? widget.postText : null,
+            profileUrl: widget.fromPost ? widget.profileUrl : null,
+            hasPhoto:widget.fromPost?widget.hasPhoto:false
+          ),
           // Text('index= $pageIndex'),
           Profile(),
         ],
@@ -238,6 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+   
     _pageController =
         PageController(initialPage: widget.fromPost ? widget.selectedIndex : 0);
     pageIndex = widget.fromPost ? widget.selectedIndex : 0;

@@ -1,12 +1,16 @@
 import 'package:fireauth/screens/home/Edit_watchlist.dart';
 import 'package:fireauth/screens/home/post.dart';
 import 'package:fireauth/screens/home/search_screen.dart';
+import 'package:fireauth/screens/home/stocks_data.dart';
+import 'package:fireauth/services/auth/services.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:fireauth/widgets/responsive_ui.dart';
 import 'package:fireauth/widgets/trending_stock.dart';
 import 'package:fireauth/widgets/watchListItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 class homeScreen extends StatefulWidget {
   homeScreen({
@@ -23,21 +27,25 @@ class _homeScreenState extends State<homeScreen> {
   double _pixelRatio;
   bool _large;
   bool _medium;
+  
 
   buildItem(BuildContext context) {
-    return TrendingStock(name: 'Microsoft',code: 'MSFT',percent: '+0.39%',);
+    return TrendingStock(
+      name: 'Microsoft',
+      code: 'MSFT',
+      percent: '+0.39%',
+    );
   }
 
   buildwatchList(BuildContext context) {
     return Column(
       children: <Widget>[
-        WatchListItem(name: 'Apple Inc',code: 'AAPL',rate:'345.4'),
-          Container(
-            margin: EdgeInsets.only(left: 10,right: 10),
-            color:Color(0xFFEFEFEF),
-            height: 1,
-          )
-
+        WatchListItem(name: 'Apple Inc', code: 'AAPL', rate: '345.4'),
+        Container(
+          margin: EdgeInsets.only(left: 10, right: 10),
+          color: Color(0xFFEFEFEF),
+          height: 1,
+        )
       ],
     );
   }
@@ -174,11 +182,13 @@ class _homeScreenState extends State<homeScreen> {
                     .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: 8,),
+            SizedBox(
+              height: 8,
+            ),
             Container(
               // color: Colors.red,
               padding: EdgeInsets.only(right: 8.0),
-                            margin: EdgeInsets.only(left: 15),
+              margin: EdgeInsets.only(left: 15),
 
               height: 150,
               child: ListView.builder(
@@ -200,68 +210,68 @@ class _homeScreenState extends State<homeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                      padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(20.0),
 
                     // color: Colors.yellow,
                     // height: 70,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('Watchlist',style: Theme.of(context)
-                    .textTheme
-                    .headline1
-                    .copyWith(fontSize: 18, fontWeight: FontWeight.bold,letterSpacing: 0.2)),
+                        Text('Watchlist',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1
+                                .copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.2)),
                         InkWell(
-                          onTap: (){
-                             Navigator.push(
-              context, MaterialPageRoute(builder: (context) => EditWatchList()));
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditWatchList()));
                           },
-                                                  child: Text('Edit',style: TextStyle(
-                              color: Color(0xFF456DE8),
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w500)),
+                          child: Text('Edit',
+                              style: TextStyle(
+                                  color: Color(0xFF456DE8),
+                                  fontSize: 14,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w500)),
                         ),
                       ],
                     ),
                   ),
                   Container(
-
-                      margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                      decoration: BoxDecoration(
-                      color:Colors.white,
-                      // boxShadow: [
-                      //   BoxShadow(
-                      //     color:Colors.grey,
-                      //     offset: Offset(0.5, 0.5)
-                      //     // offset: Offset.fromDirection(2.0)
-                      //   )
-                      // ],
-                       borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          
-                        border: Border.all(
-                          color: Color(0xFFEFEFEF),width: 1.5
-                        )
-                      ),
-                      width: 330,
-                      height: 340,
-                      child: ListView.builder(
-                itemCount: 50,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, index) {
-                    return buildwatchList(context);
-                },
-              ),
+                    margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        // boxShadow: [
+                        //   BoxShadow(
+                        //     color:Colors.grey,
+                        //     offset: Offset(0.5, 0.5)
+                        //     // offset: Offset.fromDirection(2.0)
+                        //   )
+                        // ],
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        border:
+                            Border.all(color: Color(0xFFEFEFEF), width: 1.5)),
+                    width: 330,
+                    height: 340,
+                    child: ListView.builder(
+                      itemCount: 50,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, index) {
+                        return buildwatchList(context);
+                      },
                     ),
-                  
+                  ),
                 ],
               ),
             ),
             // SizedBox(
             //   height: 30,
             // ),
-
-            
           ],
         ),
       ),
@@ -281,5 +291,3 @@ class _homeScreenState extends State<homeScreen> {
     );
   }
 }
-
-

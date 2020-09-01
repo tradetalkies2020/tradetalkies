@@ -30,7 +30,7 @@ dependencies:
   google_sign_in: ^4.5.1
   cloud_firestore: ^0.13.7
   firebase_auth: ^0.16.1
-  flutter_svg: ^0.17.3+1
+  flutter_svg: ^0.18.1
   multi_image_picker: ^4.6.7
   firebase_messaging: ^6.0.16
   firebase_storage: ^3.1.6
@@ -44,6 +44,7 @@ dependencies:
   dio: ^3.0.9   
   http_parser: ^3.1.4
   jwt_decode: ^0.1.0
+  flutter_mentions: ^0.1.1
   shared_preferences: ^0.5.7+3
   flutter_absolute_path: ^1.0.6
   flutter_overboard: ^1.1.5

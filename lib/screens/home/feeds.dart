@@ -10,12 +10,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class Feeds extends StatefulWidget {
   Feeds({
-    Key key,this.profileUrl,this.postText,this.postName,this.postImages,this.isPost
+    Key key,this.profileUrl,this.postText,this.postName,this.postImages,this.isPost,this.hasPhoto
   }) : super(key: key);
 
   final String postName, postText, profileUrl;
   List postImages;
-  final bool isPost;
+  final bool isPost,hasPhoto;
 
   @override
   _FeedsState createState() => _FeedsState();
@@ -188,7 +188,7 @@ class _FeedsState extends State<Feeds> {
               //     ),
               // )
 
-              widget.isPost?Feed_post(name:widget.postName,text: widget.postText,time: '1min ago',imageAsset: widget.postImages,imageUrl: widget.profileUrl,isPost: true,):SizedBox(height: 1,),
+              widget.isPost?Feed_post(hasPhoto: widget.hasPhoto,name:widget.postName,text: widget.postText,time: '1min ago',imageAsset: widget.hasPhoto?widget.postImages:null,imageUrl: widget.profileUrl,isPost: true,):SizedBox(height: 1,),
               Feed_post(
                 name: 'Manikanth',
                 time: '2mins ago',

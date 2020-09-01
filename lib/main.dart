@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<UserAuth>(
         builder: (context, auth, _) => MaterialApp(
+          builder: (_, child) => Portal(child: child),
           title: 'Trade talkies',
           debugShowCheckedModeBanner: false,
           theme: basicTheme(),
