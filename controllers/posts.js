@@ -185,3 +185,13 @@ exports.getTickerSuggestions = (req, res, next) => {
             );
         });
 };
+
+exports.allTickers = (req, res, next) => {
+    Ticker.find()
+        .then((result) => {
+            return res.json(result);
+        })
+        .catch((err) => {
+            logger.error(`Error occured while fetching tickers`);
+        });
+};
