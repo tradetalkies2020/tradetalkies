@@ -17,7 +17,7 @@ class Feed_post extends StatefulWidget {
       : super(key: key);
 
   final String name, time, text, imageUrl;
-  final List imageAsset;
+  final List imageAsset; 
   final bool isPost,hasPhoto;
 
   @override
@@ -34,19 +34,19 @@ class _Feed_postState extends State<Feed_post> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: widget.imageAsset == null ? 185 : 400,
+      //height: widget.imageAsset == null ? 185 : 400,
       // color: Colors.lime,
       child: Column(
         children: <Widget>[
           Container(
-            // color: Colors.blue,
+            // color: Colors.blue, 
             child: Padding(
               padding: const EdgeInsets.fromLTRB(14, 10, 0, 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Row(
-                    children: <Widget>[
+                    children: <Widget>[         
                       CircleAvatar(
                         radius: 25,
                         backgroundColor: Theme.of(context).accentColor,
@@ -170,15 +170,15 @@ class _Feed_postState extends State<Feed_post> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => FullpostView(
-                                        image: widget.imageAsset[index],
+                                        image: widget.imageAsset[index],isPost: widget.isPost ,
                                       )));
                         },
                         child: (widget.isPost && widget.hasPhoto)?Container(
                           margin: EdgeInsets.only(right: 10),
 
-                          child: ClipRRect(
+                          child: ClipRRect( 
             borderRadius: BorderRadius.circular(8),
-            child: AssetThumb(
+            child: AssetThumb(   
               asset: widget.imageAsset[index],
               width: 264,
               height: 200,
@@ -187,7 +187,7 @@ class _Feed_postState extends State<Feed_post> {
                         ): Container(
                           margin: EdgeInsets.only(right: 10),
                           height: 200,
-                          width: 264,
+                          width: 264,       
                           decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: widget.imageAsset[index],
@@ -220,7 +220,7 @@ class _Feed_postState extends State<Feed_post> {
                   ),
                 ],
               ),
-              Row(
+              Row(        
                 children: <Widget>[
                   InkWell(
                     onTap: () {
@@ -257,7 +257,11 @@ class _Feed_postState extends State<Feed_post> {
                 ],
               ),
             ],
-          )
+          ),
+          SizedBox(height: 5,),
+              Divider(),
+
+
         ],
       ),
     );

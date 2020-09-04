@@ -1,13 +1,18 @@
 import 'package:fireauth/screens/home/Edit_watchlist.dart';
 import 'package:fireauth/screens/home/post.dart';
+import 'package:fireauth/screens/home/search.dart';
 import 'package:fireauth/screens/home/search_screen.dart';
+import 'package:fireauth/screens/home/stock_info.dart';
 import 'package:fireauth/screens/home/stocks_data.dart';
 import 'package:fireauth/services/auth/services.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:fireauth/widgets/responsive_ui.dart';
+import 'package:fireauth/widgets/search_bar.dart';
 import 'package:fireauth/widgets/trending_stock.dart';
 import 'package:fireauth/widgets/watchListItem.dart';
 import 'package:flutter/material.dart';
+import 'package:english_words/english_words.dart' as english_words;
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
@@ -27,7 +32,23 @@ class _homeScreenState extends State<homeScreen> {
   double _pixelRatio;
   bool _large;
   bool _medium;
-  
+  _MySearchDelegate _delegate;
+  final List<String> kEnglishWords;
+  List<String> stocks = ['ABC', 'def', 'qwerty'];
+  List<String> codes = ['ABC', 'DEF', 'QWERTY'];
+
+  _homeScreenState()
+      : kEnglishWords = List.from(Set.from(english_words.all))
+          ..sort(
+            (w1, w2) => w1.toLowerCase().compareTo(w2.toLowerCase()),
+          ),
+        super();
+
+  @override
+  void initState() {
+    super.initState();
+    _delegate = _MySearchDelegate(kEnglishWords ,kEnglishWords);
+  }
 
   buildItem(BuildContext context) {
     return TrendingStock(
@@ -113,9 +134,20 @@ class _homeScreenState extends State<homeScreen> {
               height: 5,
             ),
             InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => searchScreen()));
+              onTap: () async {
+                //   Navigator.push(context,
+                //       MaterialPageRoute(builder: (context) => AppBarSearchExample()));
+                final String selected = await showSearches<String>(
+                  context: context,
+                  delegate: _delegate,
+                );
+                if (selected != null) {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('You have selected the word: $selected'),
+                    ),
+                  );
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -288,6 +320,144 @@ class _homeScreenState extends State<homeScreen> {
               context, MaterialPageRoute(builder: (context) => post()));
         },
       ),
+    );
+  }
+}
+
+// Defines the content of the search page in `showSearch()`.
+// SearchDelegate has a member `query` which is the query string.
+class _MySearchDelegate extends SearchDelegates<String> {
+  final List<String> _words;
+  final List<String> _history;
+  final List<String> _codes;
+
+  _MySearchDelegate(List<String> words, List<String> codes)
+      : _words = words,
+        _codes = codes,
+        _history = <String>['Microsoft', 'Apple', 'Tesla', 'Reliance'],
+        super();
+
+  // Leading icon in search bar.
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      tooltip: 'Back',
+      icon: AnimatedIcon(
+        color: Colors.black,
+        icon: AnimatedIcons.menu_arrow,
+        progress: transitionAnimation,
+      ),
+      onPressed: () {
+        // SearchDelegate.close() can return vlaues, similar to Navigator.pop().
+        this.close(context, null);
+      },
+    );
+  }
+
+  // Widget of result page.
+  @override
+  Widget buildResults(BuildContext context) {
+    String code;
+    for (int i = 0; i < _words.length; i++) {
+      if (_words[i] == this.query) {
+        code = _codes[i];
+      }
+    }
+    return StockInfo(
+      name: this.query,
+      code: code,
+      fromSearch: true,
+    );
+  }
+
+  // Suggestions list while typing (this.query).
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final Iterable<String> suggestions = this.query.isEmpty
+        ? _history
+        : _words.where((word) => word.startsWith(query));
+
+    return _SuggestionList(
+      query: this.query,
+      suggestions: suggestions.toList(),
+      onSelected: (String suggestion) {
+        this.query = suggestion;
+        this._history.insert(0, suggestion);
+        showResults(context);
+      },
+    );
+  }
+
+  // Action buttons at the right of search bar.
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return <Widget>[
+      query.isEmpty
+          ? IconButton(
+              tooltip: 'Voice Search',
+              icon: const Icon(Icons.mic, color: Colors.white),
+              onPressed: () {
+                // this.query = 'TODO: implement voice input';
+              },
+            )
+          : IconButton(
+              tooltip: 'Clear',
+              icon: const Icon(
+                Icons.clear,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                query = '';
+                showSuggestions(context);
+              },
+            )
+    ];
+  }
+}
+
+// Suggestions list widget displayed in the search page.
+class _SuggestionList extends StatelessWidget {
+  const _SuggestionList({this.suggestions, this.query, this.onSelected});
+
+  final List<String> suggestions;
+  final String query;
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme.subtitle1;
+    return ListView.builder(
+      itemCount: suggestions.length,
+      itemBuilder: (BuildContext context, int i) {
+        final String suggestion = suggestions[i];
+        return ListTile(
+          leading: query.isEmpty ? Icon(Icons.history) : Icon(null),
+          // Highlight the substring that matched the query.
+          title: RichText(
+            text: TextSpan(
+              text: suggestion.substring(0, query.length),
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontFamily: 'Poppins',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500),
+              children: <TextSpan>[
+                TextSpan(
+                  text: suggestion.substring(query.length),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ),
+          onTap: () {
+            onSelected(suggestion);
+          },
+        );
+      },
     );
   }
 }

@@ -5,9 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class FullpostView extends StatefulWidget {
   FullpostView({
-    Key key,this.image
+    Key key,this.image,this.isPost,
   }) : super(key: key);
-  final AssetImage image;
+  final image;
+  final bool isPost;
+  
 
   @override
   _FullpostViewState createState() => _FullpostViewState();
@@ -57,7 +59,19 @@ class _FullpostViewState extends State<FullpostView> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Container(height: 1, color: Colors.black),
+          Container(height: 1, color: Colors.black),   
+          widget.isPost?Container(                  
+                          
+
+                          child: ClipRRect(         
+            
+            child: AssetThumb(   
+              asset: widget.image,
+              width: 340,  
+              height: 340,
+            ),
+          ),
+                        ) :  
           Container(
               height: 340,
               decoration: BoxDecoration(

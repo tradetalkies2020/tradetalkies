@@ -17,7 +17,7 @@ class _TrendingStockState extends State<TrendingStock> {
     return InkWell(
       onTap: (){
          Navigator.push(
-                context, MaterialPageRoute(builder: (context) => StockInfo(name: widget.name,code: widget.code,)));
+                context, MaterialPageRoute(builder: (context) => StockInfo(name: widget.name,code: widget.code, fromSearch: false,)));
       },
       child: Container(
         decoration: BoxDecoration(

@@ -554,7 +554,7 @@ class UserAuth with ChangeNotifier {
       //   "image2": await MultipartFile.fromFile(images[1].path.toString(),
       //       filename: fileName1, contentType: MediaType("image", ext)),
 
-      //   // "firebaseToken": newToken,
+      //   // "firebaseToken": newToken, 
       // });
 
       Dio dio = new Dio();

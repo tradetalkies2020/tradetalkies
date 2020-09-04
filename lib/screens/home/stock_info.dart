@@ -3,9 +3,10 @@ import 'package:fireauth/widgets/feed_post.dart';
 import 'package:flutter/material.dart';
 
 class StockInfo extends StatefulWidget {
-  StockInfo({Key key, this.name, this.code}) : super(key: key);
+  StockInfo({Key key, this.name, this.code,this.fromSearch}) : super(key: key);
 
   final name, code;
+  final bool fromSearch;
 
   @override
   _StockInfoState createState() => _StockInfoState();
@@ -14,7 +15,16 @@ class StockInfo extends StatefulWidget {
 class _StockInfoState extends State<StockInfo> {
   bool _isWatched = false;
   List filter_type = ['1D', '5D', '1M', '3M', '6M', '1Y', '2Y', '3Y'];
-  List<bool> selected_feed = [true, false, false, false,false, false, false, false];
+  List<bool> selected_feed = [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
   List imageAssets = [
     AssetImage('assets/images/avatar.png'),
     AssetImage('assets/images/avatar.png'),
@@ -25,8 +35,8 @@ class _StockInfoState extends State<StockInfo> {
     return InkWell(
       onTap: () {
         setState(() {
-        
-          selected_feed.setAll(0, [false, false, false, false,false, false, false, false]);
+          selected_feed.setAll(
+              0, [false, false, false, false, false, false, false, false]);
           // print(selected_feed);
           selected_feed[index] = true;
           // print(selected_feed);
@@ -63,10 +73,11 @@ class _StockInfoState extends State<StockInfo> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new PreferredSize(
+      appBar:widget.fromSearch?null: new PreferredSize(
           preferredSize:
               Size.fromHeight(58.0), // Change the height of the appbar
           child: CustomAppbar(
@@ -115,7 +126,7 @@ class _StockInfoState extends State<StockInfo> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(left:20,right:20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -134,7 +145,10 @@ class _StockInfoState extends State<StockInfo> {
                                   Icons.favorite,
                                   color: Colors.red,
                                 )
-                              : Icon(Icons.favorite_border,color: Colors.black,),
+                              : Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.black,
+                                ),
                           onPressed: () {
                             setState(() {
                               _isWatched = !_isWatched;
@@ -154,7 +168,7 @@ class _StockInfoState extends State<StockInfo> {
             ),
             // SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(left:20),
+              padding: const EdgeInsets.only(left: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
@@ -182,40 +196,78 @@ class _StockInfoState extends State<StockInfo> {
             SizedBox(height: 15),
             Container(height: 160),
             Container(
-                // color: Colors.red,
-                padding: EdgeInsets.only(right: 8.0),
-                margin: EdgeInsets.only(left: 15),
+              // color: Colors.red,
+              padding: EdgeInsets.only(right: 8.0),
+              margin: EdgeInsets.only(left: 15),
 
-                height: 43,
-                child: ListView.builder(
-                  itemCount: filter_type.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return buildItem(context, filter_type[index], index);
-                  },
-                ),
+              height: 43,
+              child: ListView.builder(
+                itemCount: filter_type.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return buildItem(context, filter_type[index], index);
+                },
               ),
-              SizedBox(height: 17,),
-              Container(
-                color:Color(0xFFF1F1F1),
-                height: 4,
-              ),
-              SizedBox(height: 10,),
-              
-              Feed_post(name: 'Manikanth',time: '2mins ago',text: 'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',imageAsset: null,),
-              Divider(),
+            ),
+            SizedBox(
+              height: 17,
+            ),
+            Container(
+              color: Color(0xFFF1F1F1),
+              height: 4,
+            ),
+            SizedBox(
+              height: 10,
+            ),
 
-              Feed_post(name: 'sarthak',time: '4mins ago',text: 'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',imageAsset: imageAssets,),
+            Feed_post(
+              name: 'Manikanth',
+              time: '2mins ago',
+              text:
+                  'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+              imageAsset: null,
+              isPost: false,
+            ),
+            Divider(),
 
-              Divider(),
-              Feed_post(name: 'AmanKumar',time: '6mins ago',text: 'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',imageAsset: null,),
-              
-              Divider(),
-              Feed_post(name: 'Manikanth',time: '2mins ago',text: 'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',imageAsset: imageAssets,),
+            Feed_post(
+              name: 'sarthak',
+              time: '4mins ago',
+              text:
+                  'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+              imageAsset: imageAssets,
+              isPost: false,
+            ),
 
-              Divider(),
-             Feed_post(name: 'Manikanth',time: '2mins ago',text: 'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',imageAsset: imageAssets,),
+            Divider(),
+            Feed_post(
+              name: 'AmanKumar',
+              time: '6mins ago',
+              text:
+                  'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+              imageAsset: null,
+              isPost: false,
+            ),
 
+            Divider(),
+            Feed_post(
+              name: 'Manikanth',
+              time: '2mins ago',
+              text:
+                  'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+              imageAsset: imageAssets,
+              isPost: false,
+            ),
+
+            Divider(),
+            Feed_post(
+              name: 'Manikanth',
+              time: '2mins ago',
+              text:
+                  'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+              imageAsset: imageAssets,
+              isPost: false,
+            ),
           ],
         ),
       ),

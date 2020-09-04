@@ -43,13 +43,14 @@ class _postState extends State<post> {
 
   List stocks = [];
   List<String> pickers = [];
+  List<Map<String, dynamic>> finalStocks = [];
   // List<Map<String, dynamic>> readyStocks = [];
   void initState() {
     _getInfo();
     // readyStocks = ab.data;
   }
 
-  Future<void> _getInfo() async {
+  Future<List> _getInfo() async {
     // setState(() {
     //   _isgettingData = true;
     // });
@@ -62,15 +63,19 @@ class _postState extends State<post> {
 
       stocks = await Provider.of<UserAuth>(context, listen: false).getData();
       ab.insertData(stocks);
+      print(ab.data);
+      print('sarthak');
+      finalStocks = ab.data;
+      print(finalStocks);
 
       // setState(() {
       //   print("done");
-      //   readyStocks = ab.data;
+        
 
       //   _isgettingData = false;
       // });
       print('yes');
-      print('datarecieved is $stocks');
+      // print('datarecieved is $stocks');
       // print(stocks.length);
 
       print('data recieved');
@@ -301,6 +306,8 @@ class _postState extends State<post> {
     // print("filebase name is $fileName");
 
     final String text = key.currentState.controller.text;
+    //text.replaceAllMapped(new RegExp(r'@'), (match) =>r'n' );
+
     print(text);
     print(pickers);
 
@@ -313,7 +320,7 @@ class _postState extends State<post> {
       // print(imageFiles);
 
       await Provider.of<UserAuth>(context, listen: false)
-          .post(text, imageFiles,pickers);
+          .post(text, imageFiles, pickers);
       Map output = await Provider.of<UserAuth>(context, listen: false).getAge();
       image = output['image'];
       name = output['userName'];
@@ -325,14 +332,13 @@ class _postState extends State<post> {
         MaterialPageRoute(
           builder: (context) {
             return HomeScreen(
-              fromPost: true,
-              selectedIndex: 3,
-              postImages: images,
-              postName: name,
-              postText: text,
-              profileUrl: image,
-              hasPhoto:_isImageSelected?true:false
-            );
+                fromPost: true,
+                selectedIndex: 3,
+                postImages: images,
+                postName: name,
+                postText: text,
+                profileUrl: image,
+                hasPhoto: _isImageSelected ? true : false);
           },
         ),
       );
@@ -430,6 +436,11 @@ class _postState extends State<post> {
                       pickers.add("\$${value['display']}");
                       // pickers.add("\"abab\"");
                       print(pickers);
+                      //setState(() {
+                      //key.currentState.controller.text.replaceAllMapped(new RegExp('@'), (match) =>'n' );
+                      //print(key.currentState.controller.text);
+                      //});
+                      //print(key.currentState.controller.text);
                     },
                     style: TextStyle(
                       fontFamily: 'Inter',
