@@ -48,6 +48,17 @@ exports.postNewPost = async (req, res, next) => {
                     if (result === true) {
                         post.save()
                             .then((result) => {
+                                new Comment({
+                                    postId: result._id,
+                                    comments: [],
+                                }).save((err, resul) => {
+                                    if (err) {
+                                        throw new Error(
+                                            "Error in saving commentt"
+                                        );
+                                    }
+                                    console.log(resul);
+                                });
                                 console.log(
                                     `Post created for userId :${currentUser._id}`
                                 );
@@ -193,5 +204,125 @@ exports.allTickers = (req, res, next) => {
         })
         .catch((err) => {
             logger.error(`Error occured while fetching tickers`);
+        });
+};
+
+//comment logic
+
+exports.postComment = (req, res, next) => {
+    var comment = {};
+    const currentUser = req.session.user;
+    comment.comment = req.body.comment;
+    comment.postedBy = currentUser._id;
+    //console.log(comment);
+    Comment.findOneAndUpdate(
+        { postId: req.body.postId },
+        { $push: { comments: comment } },
+        { new: true }
+    )
+        .populate("comments.postedBy postId")
+        .exec((err, result) => {
+            if (err) {
+                logger.error(
+                    "Error in updating request document in mongo",
+                    err
+                );
+                return res.status(400).json({ error: err });
+            } else {
+                const requester = result.postId;
+                if (
+                    requester.userId.toString() !== currentUser._id.toString()
+                ) {
+                    var payload = {
+                        title: "GO REFER NOTIFICATION",
+                        body: `You have a new comment on your post by ${currentUser.name}. Click to see`,
+                    };
+                    console.log(
+                        `${currentUser.name} is trying to comment on ${result.postId._id}'s post`
+                    );
+                    //     var promise = userServices.userExists(requester.userId);
+                    //     promise.then((results) => {
+
+                    //         //firebase notification service//
+
+                    //         // firebaseService.sendPushNotif(
+                    //         //     results[0].firebaseToken,
+                    //         //     payload
+                    //         // );
+
+                    //         //notification done
+                    //     });
+                }
+                var newComments = result.comments;
+                //console.log(newComments);
+                console.log(
+                    `${currentUser._id} tried to post a comment for ${req.body.postId}`
+                );
+                res.json({ comments: newComments, posttDoc: result.postId });
+            }
+        });
+};
+
+exports.postDelComment = (req, res, next) => {
+    var comment = req.body.comment;
+    Comment.findOneAndUpdate(
+        { comments: { $elemMatch: { _id: comment._id } } },
+        { $set: { "comments.$.markDel": true } }
+    )
+        .then((results) => {
+            res.json({
+                message: "Comment marked for deletion but not removed",
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+exports.getReqComments = (req, res, next) => {
+    const postId = req.params.postId;
+    const currentUser = req.session.user;
+    var comments = [];
+    console.log(
+        `${currentUser._id} tried to access the comments for ${postId}`
+    );
+    Comment.findOne({ postId: postId })
+        .populate("comments.postedBy", "name imageUrl _id number")
+        .then(async (results) => {
+            console.log(results);
+            if (results) {
+                comments = results.comments.filter((comment) => {
+                    return comment.markDel === false;
+                });
+                comments.map((comment) => {
+                    if (comment.postedBy.imageUrl === undefined) {
+                        comment.postedBy.imageUrl = "";
+                    }
+                    return comment;
+                });
+            } else {
+                comments = [];
+            }
+
+            await Post.findOne({
+                _id: postId,
+            }).then((post) => {
+                if (post) {
+                    res.json({
+                        comments: comments,
+                        postDoc: post,
+                    });
+                } else {
+                    logger.error(
+                        "Request not found for the corresponding postId",
+                        postId
+                    );
+                    res.json([]);
+                }
+            });
+        })
+        .catch((err) => {
+            logger.error("Comments not found for the specific postId", err);
+            return res.status(404).json({ message: "Comments not found" });
         });
 };
