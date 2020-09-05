@@ -70,7 +70,6 @@ class _postState extends State<post> {
 
       // setState(() {
       //   print("done");
-        
 
       //   _isgettingData = false;
       // });
@@ -319,12 +318,13 @@ class _postState extends State<post> {
       //     filename: fileName1, contentType: MediaType("image", "jpg"));
       // print(imageFiles);
 
-      await Provider.of<UserAuth>(context, listen: false)
+      String id = await Provider.of<UserAuth>(context, listen: false)
           .post(text, imageFiles, pickers);
       Map output = await Provider.of<UserAuth>(context, listen: false).getAge();
       image = output['image'];
       name = output['userName'];
-      print(image);
+      // print(image);
+      print('id is $id');
 
       // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
       Navigator.push(
@@ -338,6 +338,7 @@ class _postState extends State<post> {
                 postName: name,
                 postText: text,
                 profileUrl: image,
+                postId:id,
                 hasPhoto: _isImageSelected ? true : false);
           },
         ),

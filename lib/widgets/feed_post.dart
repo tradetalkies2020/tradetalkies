@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:fireauth/screens/home/comment.dart';
 import 'package:fireauth/screens/home/fullPostView.dart';
+import 'package:fireauth/services/auth/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
+import 'package:http/http.dart' as http;
 
 class Feed_post extends StatefulWidget {
   const Feed_post(
@@ -12,19 +18,53 @@ class Feed_post extends StatefulWidget {
       this.time,
       this.imageAsset,
       this.imageUrl,
-      this.isPost
-      ,this.hasPhoto})
+      this.isPost,
+      this.hasPhoto,
+      this.isLiked,
+      this.comment,
+      this.likes,
+      this.repost,
+      this.postId})
       : super(key: key);
 
-  final String name, time, text, imageUrl;
-  final List imageAsset; 
-  final bool isPost,hasPhoto;
+  final String name, time, text, imageUrl, postId;
+  final List imageAsset;
+  final bool isPost, hasPhoto;
+  final bool isLiked;
+  final int likes, comment, repost;
 
   @override
   _Feed_postState createState() => _Feed_postState();
 }
 
 class _Feed_postState extends State<Feed_post> {
+  bool isLiked = false;
+  int likeCount = 0, commentCount = 0, repostCount = 0;
+
+  void initState() {
+    isLiked = widget.isLiked;
+    likeCount = widget.likes;
+    commentCount = widget.comment;
+    repostCount = widget.repost;
+  }
+
+  Future<void> submit(bool liked) async {
+    try {
+      print(widget.postId);
+      if (!liked) {
+        await Provider.of<UserAuth>(context, listen: false).like(widget.postId);
+      } else {
+        print('unlike not done');
+      }
+    } catch (err) {
+      print(err.toString());
+      Toast.show(
+        "error in like",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    }
+  }
   // List imageAssets = [
   //   AssetImage('assets/images/avatar.png'),
   //   AssetImage('assets/images/avatar.png'),
@@ -39,14 +79,14 @@ class _Feed_postState extends State<Feed_post> {
       child: Column(
         children: <Widget>[
           Container(
-            // color: Colors.blue, 
+            // color: Colors.blue,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(14, 10, 0, 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Row(
-                    children: <Widget>[         
+                    children: <Widget>[
                       CircleAvatar(
                         radius: 25,
                         backgroundColor: Theme.of(context).accentColor,
@@ -170,33 +210,35 @@ class _Feed_postState extends State<Feed_post> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => FullpostView(
-                                        image: widget.imageAsset[index],isPost: widget.isPost ,
+                                        image: widget.imageAsset[index],
+                                        isPost: widget.isPost,
                                       )));
                         },
-                        child: (widget.isPost && widget.hasPhoto)?Container(
-                          margin: EdgeInsets.only(right: 10),
-
-                          child: ClipRRect( 
-            borderRadius: BorderRadius.circular(8),
-            child: AssetThumb(   
-              asset: widget.imageAsset[index],
-              width: 264,
-              height: 200,
-            ),
-          ),
-                        ): Container(
-                          margin: EdgeInsets.only(right: 10),
-                          height: 200,
-                          width: 264,       
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: widget.imageAsset[index],
-                                fit: BoxFit.fill),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                            // color: Colors.blue
-                          ),
-                        ),
+                        child: (widget.isPost && widget.hasPhoto)
+                            ? Container(
+                                margin: EdgeInsets.only(right: 10),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: AssetThumb(
+                                    asset: widget.imageAsset[index],
+                                    width: 264,
+                                    height: 200,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                margin: EdgeInsets.only(right: 10),
+                                height: 200,
+                                width: 264,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: widget.imageAsset[index],
+                                      fit: BoxFit.fill),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                  // color: Colors.blue
+                                ),
+                              ),
                       );
                     },
                   ),
@@ -209,26 +251,54 @@ class _Feed_postState extends State<Feed_post> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  SvgPicture.asset(
-                    "assets/new_icons/like.svg",
-                    height: 20,
-                    width: 20,
+                  InkWell(
+                    onTap: () {
+                      if (widget.isPost) {
+                        submit(isLiked);
+                      } else {
+                        print('not post');
+                      }
+                      setState(() {
+                        if (isLiked) {
+                          likeCount--;
+                          isLiked = !isLiked;
+                        } else {
+                          likeCount++;
+                          isLiked = !isLiked;
+                        }
+                      });
+                    },
+                    child: isLiked
+                        ? SvgPicture.asset(
+                            "assets/new_icons/liked.svg",
+                            height: 20,
+                            width: 20,
+                          )
+                        : SvgPicture.asset(
+                            "assets/new_icons/like.svg",
+                            height: 20,
+                            width: 20,
+                          ),
                   ),
                   Text(
-                    '  (34)',
+                    '  ($likeCount)',
                     style: TextStyle(fontSize: 14, fontFamily: 'Inter'),
                   ),
                 ],
               ),
-              Row(        
+              Row(
                 children: <Widget>[
                   InkWell(
                     onTap: () {
+                      // setState(() {
+                      //   commentCount++;
+
+                      // });
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => Comment(
-                                    name: widget.name,
+                                    name: widget.name,profileImage: widget.imageUrl,postId: widget.postId,
                                   )));
                     },
                     child: SvgPicture.asset(
@@ -238,30 +308,33 @@ class _Feed_postState extends State<Feed_post> {
                     ),
                   ),
                   Text(
-                    '  (04)',
+                    '  ($commentCount)',
                     style: TextStyle(fontSize: 14, fontFamily: 'Inter'),
                   ),
                 ],
               ),
               Row(
                 children: <Widget>[
-                  SvgPicture.asset(
-                    "assets/new_icons/repost.svg",
-                    height: 20,
-                    width: 25,
+                  InkWell(
+                    onTap: () {},
+                    child: SvgPicture.asset(
+                      "assets/new_icons/repost.svg",
+                      height: 20,
+                      width: 25,
+                    ),
                   ),
                   Text(
-                    '  (03)',
+                    '  ($repostCount)',
                     style: TextStyle(fontSize: 14, fontFamily: 'Inter'),
                   ),
                 ],
               ),
             ],
           ),
-          SizedBox(height: 5,),
-              Divider(),
-
-
+          SizedBox(
+            height: 5,
+          ),
+          Divider(),
         ],
       ),
     );

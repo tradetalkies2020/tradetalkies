@@ -29,6 +29,8 @@ var edit_profile = "http://tradetalkies.herokuapp.com/edit-profile";
 var user = "http://tradetalkies.herokuapp.com/user";
 var change_Password = "http://tradetalkies.herokuapp.com/change-password";
 var postUrl = "http://tradetalkies.herokuapp.com/post";
+var likeUrl = "http://tradetalkies.herokuapp.com/like";
+var commentUrl = "http://tradetalkies.herokuapp.com/comment";
 
 var signUp = "$baseUrl/signup";
 var signIn = "$baseUrl/auth/login";
@@ -448,7 +450,7 @@ class UserAuth with ChangeNotifier {
     }
   }
 
-  Future<void> post(
+  Future<String> post(
       String desc,
       // List stocks,
       List images,
@@ -466,7 +468,7 @@ class UserAuth with ChangeNotifier {
       if (images[0] == 'one') {
         formData = new FormData.fromMap({
           "desc": desc,
-          "tickers":pickers,
+          "tickers": pickers,
         });
       } else if (images.length == 1) {
         formData = new FormData.fromMap({
@@ -475,9 +477,7 @@ class UserAuth with ChangeNotifier {
               filename: basename(images[0].path),
               contentType: MediaType(
                   "image", extension(images[0].path).replaceAll('.', ''))),
-          "tickers":pickers,
-
-
+          "tickers": pickers,
         });
       } else if (images.length == 2) {
         formData = new FormData.fromMap({
@@ -490,8 +490,7 @@ class UserAuth with ChangeNotifier {
               filename: basename(images[1].path),
               contentType: MediaType(
                   "image", extension(images[1].path).replaceAll('.', ''))),
-          "tickers":pickers,
-
+          "tickers": pickers,
         });
       } else if (images.length == 3) {
         formData = new FormData.fromMap({
@@ -508,8 +507,7 @@ class UserAuth with ChangeNotifier {
               filename: basename(images[2].path),
               contentType: MediaType(
                   "image", extension(images[2].path).replaceAll('.', ''))),
-          "tickers":pickers,
-
+          "tickers": pickers,
         });
       } else if (images.length == 4) {
         formData = new FormData.fromMap({
@@ -530,8 +528,7 @@ class UserAuth with ChangeNotifier {
               filename: basename(images[3].path),
               contentType: MediaType(
                   "image", extension(images[3].path).replaceAll('.', ''))),
-          "tickers":pickers,
-
+          "tickers": pickers,
         });
       }
 
@@ -554,7 +551,7 @@ class UserAuth with ChangeNotifier {
       //   "image2": await MultipartFile.fromFile(images[1].path.toString(),
       //       filename: fileName1, contentType: MediaType("image", ext)),
 
-      //   // "firebaseToken": newToken, 
+      //   // "firebaseToken": newToken,
       // });
 
       Dio dio = new Dio();
@@ -564,6 +561,8 @@ class UserAuth with ChangeNotifier {
 
       Response response = await dio.post(postUrl, data: formData);
       print("File response ${response}");
+      print(response.data.runtimeType);
+      String id = response.data['post']['_id'];
 
       // imageFiles[0] = await MultipartFile.fromFile(imageFiles[0].path.toString(),
       //     filename: fileName, contentType: MediaType("image", "jpg"));
@@ -590,6 +589,7 @@ class UserAuth with ChangeNotifier {
       // print(response);
 
       notifyListeners();
+      return id;
       // setLoginPrefs(decodeEmail, decodeUsername, headerToken, decodeUserId);
     } catch (err) {
       print(err.toString());
@@ -774,5 +774,77 @@ class UserAuth with ChangeNotifier {
   //   }
   //   final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
   //   _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
+
   // }
+  Future<void> like(
+    String id,
+  ) async {
+    try {
+      final response = await http.post(
+        likeUrl,
+        headers: {
+          "Content-type": "application/json",
+          "Cookie": "$_token",
+          HttpHeaders.authorizationHeader: "Bearer $_token",
+        },
+        body: json.encode(
+          {
+            "postId": id,
+          },
+        ),
+      );
+
+      print(response.body);
+
+      notifyListeners();
+    } catch (err) {
+      print(err.toString());
+      throw err;
+    }
+  }
+
+  Future<void> comment(String text, String id) async {
+    try {
+      print("id is $id");
+      final response = await http.post(
+        commentUrl,
+        headers: {
+          "Content-type": "application/json",
+          "Cookie": "$_token",
+          HttpHeaders.authorizationHeader: "Bearer $_token",
+        },
+        body: json.encode(
+          {"postId": id, "comment": text},
+        ),
+      );
+
+      print(response.body);
+
+      notifyListeners();
+    } catch (err) {
+      print(err.toString());
+      throw err;
+    }
+  }
+  Future<void> getcomment(String id) async {
+    try {
+      print("id is $id");
+      final response = await http.get(
+        "http://tradetalkies.herokuapp.com/post/:$id/comments",
+        headers: {
+          "Content-type": "application/json",
+          "Cookie": "$_token",
+          HttpHeaders.authorizationHeader: "Bearer $_token",
+        },
+        
+      );
+
+      print(response.body);
+
+      notifyListeners();
+    } catch (err) {
+      print(err.toString());
+      throw err;
+    }
+  }
 }

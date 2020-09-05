@@ -1,13 +1,15 @@
+import 'package:fireauth/services/auth/services.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 class Comment extends StatefulWidget {
-  Comment({
-    Key key,this.name
-  }) : super(key: key);
-  final String name;
+  Comment({Key key, this.name, this.postId, this.profileImage})
+      : super(key: key);
+  final String name, profileImage, postId;
 
   @override
   _CommentState createState() => _CommentState();
@@ -16,6 +18,96 @@ class Comment extends StatefulWidget {
 class _CommentState extends State<Comment> {
   List<Asset> images = List<Asset>();
   bool _isLoading = false;
+  TextEditingController textController = TextEditingController();
+
+  Future<void> _submit() async {
+    setState(() {
+      _isLoading = true;
+    });
+    // List imageFiles = [];
+    // String image, name;
+
+    // if (_isImageSelected == false) {
+    //   imageFiles = ['one'];
+    // } else {
+    //   for (int i = 0; i < images.length; i++) {
+    //     final byteData = await images[i].getByteData();
+    //     final tempFile =
+    //         File("${(await getTemporaryDirectory()).path}/${images[i].name}");
+    //     final file = await tempFile.writeAsBytes(
+    //       byteData.buffer
+    //           .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+    //     );
+    //     imageFiles.add(file);
+    //   }
+    // }
+
+    // print(imageFiles);
+    // String fileName = path.basename(imageFiles[0].path);
+    // String fileName1 = path.basename(imageFiles[1].path);
+
+    // print("filebase name is $fileName");
+
+    final String text = textController.text;
+    //text.replaceAllMapped(new RegExp(r'@'), (match) =>r'n' );
+
+    print(text);
+    // print(pickers);
+
+    try {
+      // imageFiles[0] = await MultipartFile.fromFile(imageFiles[0].path.toString(),
+      //     filename: fileName, contentType: MediaType("image", "jpg"));
+      // print(imageFiles);
+      // imageFiles[1] = await MultipartFile.fromFile(imageFiles[1].path.toString(),
+      //     filename: fileName1, contentType: MediaType("image", "jpg"));
+      // print(imageFiles);
+
+      await Provider.of<UserAuth>(context, listen: false)
+          .comment(text, widget.postId);
+          await Provider.of<UserAuth>(context, listen: false)
+          .getcomment(widget.postId);
+      // Map output = await Provider.of<UserAuth>(context, listen: false).getAge();
+      // image = output['image'];
+      // name = output['userName'];
+      // print(image);
+      // print('id is $id');
+
+      // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       return HomeScreen(
+      //           fromPost: true,
+      //           selectedIndex: 3,
+      //           postImages: images,
+      //           postName: name,
+      //           postText: text,
+      //           profileUrl: image,
+      //           postId:id,
+      //           hasPhoto: _isImageSelected ? true : false);
+      //     },
+      //   ),
+      // );
+      Navigator.pop(context);
+      // print("posted");
+      Toast.show(
+        "Commented",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    } catch (err) {
+      print(err.toString());
+      // Toast.show(
+      //   "Could not post",
+      //   context,
+      //   duration: Toast.LENGTH_LONG,
+      // );
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   // buildItem(BuildContext context, Asset image) {
   //   return Padding(
@@ -212,13 +304,14 @@ class _CommentState extends State<Comment> {
                           height: 74,
                           width: 2,
                           color: Color(0xFFC2C2C2)),
-                          CircleAvatar(
+                      CircleAvatar(
                         radius: 25,
                         backgroundColor: Theme.of(context).accentColor,
                         child: CircleAvatar(
                             radius: 40,
-                            backgroundImage:
-                                AssetImage('assets/images/avatar.png')),
+                            backgroundImage: widget.profileImage != null
+                                ? NetworkImage(widget.profileImage)
+                                : AssetImage('assets/images/avatar.png')),
                       )
                       // Padding(
                       //   padding: const EdgeInsets.all(25),
@@ -235,7 +328,7 @@ class _CommentState extends State<Comment> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 25, 25,17),
+                        padding: const EdgeInsets.fromLTRB(0, 25, 25, 17),
                         child: Text('Reply to ${widget.name}',
                             style: TextStyle(
                                 fontFamily: 'Roboto',
@@ -252,6 +345,7 @@ class _CommentState extends State<Comment> {
 
                           margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
                           child: TextFormField(
+                            controller: textController,
                             // minLines: 0,
                             maxLines: 10,
                             style: TextStyle(
@@ -337,11 +431,7 @@ class _CommentState extends State<Comment> {
                         ],
                       ),
                       InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isLoading = true;
-                          });
-                        },
+                        onTap: _submit,
                         child: Container(
                           // padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
@@ -365,7 +455,8 @@ class _CommentState extends State<Comment> {
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline4
-                                        .copyWith(fontFamily: 'Roboto',
+                                        .copyWith(
+                                            fontFamily: 'Roboto',
                                             fontWeight: FontWeight.normal),
                                   ),
                           ),

@@ -227,6 +227,9 @@ class _StockInfoState extends State<StockInfo> {
                   'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
               imageAsset: null,
               isPost: false,
+              isLiked: false,
+              likes: 0,comment: 0,repost: 0,
+
             ),
             Divider(),
 
@@ -237,6 +240,9 @@ class _StockInfoState extends State<StockInfo> {
                   'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
               imageAsset: imageAssets,
               isPost: false,
+              isLiked: false,
+              likes: 0,comment: 0,repost: 0,
+
             ),
 
             Divider(),
@@ -247,6 +253,9 @@ class _StockInfoState extends State<StockInfo> {
                   'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
               imageAsset: null,
               isPost: false,
+              isLiked: false,
+              likes: 0,comment: 0,repost: 0,
+
             ),
 
             Divider(),
@@ -257,6 +266,9 @@ class _StockInfoState extends State<StockInfo> {
                   'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
               imageAsset: imageAssets,
               isPost: false,
+              isLiked: false,
+              likes: 0,comment: 0,repost: 0,
+
             ),
 
             Divider(),
@@ -267,6 +279,8 @@ class _StockInfoState extends State<StockInfo> {
                   'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
               imageAsset: imageAssets,
               isPost: false,
+              isLiked: false,
+              likes: 0,comment: 0,repost: 0,
             ),
           ],
         ),

@@ -20,12 +20,12 @@ class HomeScreen extends StatefulWidget {
       this.postImages,
       this.postName,
       this.postText,
-      this.profileUrl,this.hasPhoto})
+      this.profileUrl,this.hasPhoto,this.postId})
       : super(key: key);
   final int selectedIndex;
   final bool fromPost,hasPhoto;
 
-  final String postName, postText, profileUrl;
+  final String postName, postText, profileUrl,postId;
   List postImages;
 
   // HomeScreen({Key key}) : super(key: key);
@@ -105,7 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
             postName: widget.fromPost ? widget.postName : null,
             postText: widget.fromPost ? widget.postText : null,
             profileUrl: widget.fromPost ? widget.profileUrl : null,
-            hasPhoto:widget.fromPost?widget.hasPhoto:false
+            hasPhoto:widget.fromPost?widget.hasPhoto:false,
+            postId:widget.fromPost?widget.postId:null
           ),
           // Text('index= $pageIndex'),
           Profile(),

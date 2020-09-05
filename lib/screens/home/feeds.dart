@@ -14,10 +14,10 @@ import 'package:english_words/english_words.dart' as english_words;
 
 class Feeds extends StatefulWidget { 
   Feeds({
-    Key key,this.profileUrl,this.postText,this.postName,this.postImages,this.isPost,this.hasPhoto
+    Key key,this.profileUrl,this.postText,this.postName,this.postImages,this.isPost,this.hasPhoto,this.postId
   }) : super(key: key);
 
-  final String postName, postText, profileUrl;
+  final String postName, postText, profileUrl,postId;
   List postImages;
   final bool isPost,hasPhoto;
 
@@ -70,6 +70,7 @@ class _FeedsState extends State<Feeds> {
     AssetImage('assets/images/avatar.png')
   ],
                 isPost: false,
+                isLiked: false,likes: 10,comment: 10,repost: 10,
               ),
               //   Divider(),
 
@@ -84,6 +85,8 @@ class _FeedsState extends State<Feeds> {
     AssetImage('assets/images/avatar.png')
   ],
                 isPost: false,
+                isLiked: false,likes: 10,comment: 10,repost: 10,
+
               ),
 
               //Divider(),
@@ -98,6 +101,8 @@ class _FeedsState extends State<Feeds> {
     AssetImage('assets/images/avatar.png')
   ],
                 isPost: false,
+                isLiked: false,likes: 10,comment: 10,repost: 10,
+
               ),
 
               //Divider(),
@@ -112,6 +117,8 @@ class _FeedsState extends State<Feeds> {
     AssetImage('assets/images/avatar.png')
   ],
                 isPost: false,
+                isLiked: false,likes: 10,comment: 10,repost: 10,
+
               ),
 
               //Divider(),
@@ -126,6 +133,8 @@ class _FeedsState extends State<Feeds> {
     AssetImage('assets/images/avatar.png')
   ],
                 isPost: false,
+                isLiked: false,likes: 10,comment: 10,repost: 10,
+                
               ), 
     
   ];
@@ -141,6 +150,8 @@ class _FeedsState extends State<Feeds> {
     AssetImage('assets/images/avatar.png')
   ],
                 isPost: false,
+                isLiked: false,likes: 10,comment: 10,repost: 10,
+
               ),
               //   Divider(),
 
@@ -155,6 +166,8 @@ class _FeedsState extends State<Feeds> {
     AssetImage('assets/images/avatar.png')
   ],
                 isPost: false,
+                isLiked: false,likes: 10,comment: 10,repost: 10,
+
               ),
 
               //Divider(),
@@ -169,6 +182,8 @@ class _FeedsState extends State<Feeds> {
     AssetImage('assets/images/avatar.png')
   ],
                 isPost: false,
+                isLiked: false,likes: 10,comment: 10,repost: 10,
+
               ),
 
               //Divider(),
@@ -183,6 +198,8 @@ class _FeedsState extends State<Feeds> {
     AssetImage('assets/images/avatar.png')
   ],
                 isPost: false,
+                isLiked: false,likes: 10,comment: 10,repost: 10,
+
               ),
 
               //Divider(),
@@ -197,6 +214,8 @@ class _FeedsState extends State<Feeds> {
     AssetImage('assets/images/avatar.png')
   ],
                 isPost: false,
+                isLiked: false,likes: 10,comment: 10,repost: 10,
+
               ), 
     
   ]; 
@@ -368,7 +387,7 @@ class _FeedsState extends State<Feeds> {
               // )
 
               
-              widget.isPost?Feed_post(hasPhoto: widget.hasPhoto,name:widget.postName,text: widget.postText,time: '1min ago',imageAsset: widget.hasPhoto?widget.postImages:null,imageUrl: widget.profileUrl,isPost: true,):SizedBox(height: 1,),
+              widget.isPost?Feed_post(postId: widget.postId,hasPhoto: widget.hasPhoto,name:widget.postName,text: widget.postText,time: '1min ago',imageAsset: widget.hasPhoto?widget.postImages:null,imageUrl: widget.profileUrl,isPost: true,isLiked: false,likes: 0,comment: 0,repost: 0,):SizedBox(height: 1,),
                //Divider(), 
 
               
@@ -384,6 +403,7 @@ class _FeedsState extends State<Feeds> {
                     'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
                 imageAsset: imageAssets,
                 isPost: false,
+                isLiked: true,likes: 10,comment: 10,repost: 10,
               ),
               //   Divider(),
 
@@ -394,6 +414,7 @@ class _FeedsState extends State<Feeds> {
                     'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
                 imageAsset: imageAssets,
                 isPost: false,
+                isLiked: true,likes: 10,comment: 10,repost: 10,
               ),
 
               //Divider(),
@@ -404,6 +425,7 @@ class _FeedsState extends State<Feeds> {
                     'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
                 imageAsset: imageAssets,
                 isPost: false,
+                isLiked: true,likes: 10,comment: 10,repost: 10,
               ),
 
               //Divider(),
@@ -414,6 +436,7 @@ class _FeedsState extends State<Feeds> {
                     'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
                 imageAsset: imageAssets,
                 isPost: false,
+                isLiked: true,likes: 10,comment: 10,repost: 10,
               ),
 
               //Divider(),
@@ -424,6 +447,7 @@ class _FeedsState extends State<Feeds> {
                     'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
                 imageAsset: imageAssets,
                 isPost: false,
+                isLiked: true,likes: 10,comment: 10,repost: 10,
               ),
             ],
           ),
