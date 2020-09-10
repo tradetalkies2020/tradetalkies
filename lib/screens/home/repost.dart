@@ -1,3 +1,5 @@
+// import 'dart:html';
+
 import 'package:fireauth/services/auth/services.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -7,21 +9,21 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
-class Comment extends StatefulWidget {
-  Comment({Key key, this.name, this.postId, this.profileImage})
+class Repost extends StatefulWidget {
+  Repost({Key key, this.name, this.postId, this.profileImage,this.text,this.time})
       : super(key: key);
-  final String name, profileImage, postId;
+  final String name, profileImage, postId,time,text;
 
   @override
   _CommentState createState() => _CommentState();
 }
 
-class _CommentState extends State<Comment> {
+class _CommentState extends State<Repost> {
   List<Asset> images = List<Asset>();
   bool _isLoading = false;
   TextEditingController textController = TextEditingController();
-  bool wait = false;
   String imageUrl;
+  bool wait = false;
   void initState() {
     getImage();
   }
@@ -243,16 +245,16 @@ class _CommentState extends State<Comment> {
         elevation: 2,
         backgroundColor: Colors.white,
         iconTheme: IconThemeData.fallback(),
-        leading: InkWell(
-          // focusColor: Colors.yellow,
-          // highlightColor: Colors.yellow,
-          // hoverColor: Colors.yellow,
-          // splashColor: Colors.yellow,
-          onTap: () {
-            Navigator.maybePop(context);
-          },
-          child: Icon(Icons.close, size: 25, color: Colors.black),
-        ),
+        // leading: InkWell(
+        //   // focusColor: Colors.yellow,
+        //   // highlightColor: Colors.yellow,
+        //   // hoverColor: Colors.yellow,
+        //   // splashColor: Colors.yellow,
+        //   onTap: () {
+        //     Navigator.maybePop(context);
+        //   },
+        //   child: Icon(Icons.close, size: 25, color: Colors.black),
+        // ),
         // leading: Icon(Icons.cancel),
         // actions: widget.forEdit
         //     ? null
@@ -265,7 +267,7 @@ class _CommentState extends State<Comment> {
         //               Navigator.push(
         //                   context,
         //                   MaterialPageRoute(
-        //                       builder: (context) => Comment(
+        //                       builder: (context) => Repost(
         //                             firstVisit: true,forEdit: true,
         //                           )));
         //             },
@@ -276,6 +278,7 @@ class _CommentState extends State<Comment> {
         //       ],
       ),
       resizeToAvoidBottomPadding: false,
+      backgroundColor: Color(0xFFFFFFFF).withOpacity(0.97),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         // crossAxisAlignment:  CrossAxisAlignment.start,
@@ -292,7 +295,7 @@ class _CommentState extends State<Comment> {
                     children: <Widget>[
                       Container(
                           margin: EdgeInsets.fromLTRB(24, 0, 0, 0),
-                          height: 74,
+                          height: 210,
                           width: 2,
                           color: Color(0xFFC2C2C2)),
                       CircleAvatar(
@@ -300,11 +303,8 @@ class _CommentState extends State<Comment> {
                         backgroundColor: Theme.of(context).accentColor,
                         child: CircleAvatar(
                             radius: 40,
-                            backgroundImage: wait ? null : NetworkImage(imageUrl),
-                            // backgroundImage: widget.profileImage != null
-                            //     ? NetworkImage(widget.profileImage)
-                            //     : AssetImage('assets/images/avatar.png')
-                                ),
+                            backgroundImage:
+                                wait ? null : NetworkImage(imageUrl)),
                       )
                       // Padding(
                       //   padding: const EdgeInsets.all(25),
@@ -322,7 +322,7 @@ class _CommentState extends State<Comment> {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 25, 25, 17),
-                        child: Text('Reply to ${widget.name}',
+                        child: Text('Repost',
                             style: TextStyle(
                                 fontFamily: 'Roboto',
                                 fontSize: 16,
@@ -331,7 +331,81 @@ class _CommentState extends State<Comment> {
                       ),
                       Container(
                         // color:Colors.lime,
-                        height: 300,
+                        decoration: BoxDecoration(
+                        color: Colors.white,
+                        // boxShadow: [
+                        //   BoxShadow(
+                        //     color:Colors.grey,
+                        //     offset: Offset(0.5, 0.5)
+                        //     // offset: Offset.fromDirection(2.0)
+                        //   )
+                        // ],
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        border:
+                            Border.all(color: Color(0xFFE4E4E4), width: 1)),
+
+                        // height: 100,
+                        width: 270,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Theme.of(context).accentColor,
+                                child: CircleAvatar(
+                                    radius: 40,
+                                    backgroundImage: widget.profileImage != null
+                                      ? NetworkImage(widget.profileImage)
+                                      : AssetImage('assets/images/avatar.png')
+                                        ),
+                              ),
+                              SizedBox(width: 10,),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(widget.name,style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w600)),
+                                        SizedBox(height: 3,),
+                                  Text(widget.time,style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.normal)),
+                                  
+
+                                ],
+                              )
+                                ],
+                              ),
+                              SizedBox(height:2),
+                              Container(
+                                margin: EdgeInsets.only(left:48),
+                // color: Colors.blue,
+
+                                child: Text(widget.text,style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      color: Color(0xFF282828),
+                      height: 1.3),),
+                              ),
+                              SizedBox(height:2)
+                            ],
+                          ),
+
+                          
+                        ),
+                        // width: 250,
+                        
+                      ),
+                      
+                      Container(
+                        // color:Colors.lime,
+                        height: 200,
                         width: 270,
                         child: Container(
                           // color:Colors.blue,
@@ -349,7 +423,7 @@ class _CommentState extends State<Comment> {
                             decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText:
-                                    'Type here to comment on ${widget.name}’s post..',
+                                    'Write something to repost (optional)',
                                 hintStyle: TextStyle(
                                     height: 1.3,
                                     fontFamily: 'Inter',
@@ -444,7 +518,7 @@ class _CommentState extends State<Comment> {
                                       strokeWidth: 2,
                                     ))
                                 : Text(
-                                    "Comment",
+                                    "Repost",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline4

@@ -228,7 +228,8 @@ class _StockInfoState extends State<StockInfo> {
               imageAsset: null,
               isPost: false,
               isLiked: false,
-              likes: 0,comment: 0,repost: 0,
+                hasPhoto: true,
+              likes: 0,comment: 0,repost: 0,forComment: false,
 
             ),
             Divider(),
@@ -241,7 +242,8 @@ class _StockInfoState extends State<StockInfo> {
               imageAsset: imageAssets,
               isPost: false,
               isLiked: false,
-              likes: 0,comment: 0,repost: 0,
+                hasPhoto: true,
+              likes: 0,comment: 0,repost: 0,forComment: false,
 
             ),
 
@@ -254,7 +256,8 @@ class _StockInfoState extends State<StockInfo> {
               imageAsset: null,
               isPost: false,
               isLiked: false,
-              likes: 0,comment: 0,repost: 0,
+                hasPhoto: true,
+              likes: 0,comment: 0,repost: 0,forComment: false,
 
             ),
 
@@ -267,7 +270,8 @@ class _StockInfoState extends State<StockInfo> {
               imageAsset: imageAssets,
               isPost: false,
               isLiked: false,
-              likes: 0,comment: 0,repost: 0,
+                hasPhoto: true,
+              likes: 0,comment: 0,repost: 0,forComment: false,
 
             ),
 
@@ -280,7 +284,8 @@ class _StockInfoState extends State<StockInfo> {
               imageAsset: imageAssets,
               isPost: false,
               isLiked: false,
-              likes: 0,comment: 0,repost: 0,
+                hasPhoto: true,
+              likes: 0,comment: 0,repost: 0,forComment: false,
             ),
           ],
         ),

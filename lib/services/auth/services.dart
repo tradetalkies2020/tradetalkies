@@ -98,6 +98,8 @@ class UserAuth with ChangeNotifier {
     prefs.setString('USER_NAME', n);
     prefs.setString('USER_TOKEN', t);
     prefs.setString('USER_ID', i);
+    prefs.setString('USER_IMAGE',
+        "https://tradetalkies.s3.ap-south-1.amazonaws.com/profileImg/1598811137375_129b421f-1786-47b1-95eb-ff68e4e7f3b4_pimg.jpg");
   }
 
   loadLoginPrefs() async {
@@ -826,17 +828,17 @@ class UserAuth with ChangeNotifier {
       throw err;
     }
   }
+
   Future<void> getcomment(String id) async {
     try {
       print("id is $id");
       final response = await http.get(
-        "http://tradetalkies.herokuapp.com/post/:$id/comments",
+        "http://tradetalkies.herokuapp.com/post/$id/comments",
         headers: {
           "Content-type": "application/json",
           "Cookie": "$_token",
           HttpHeaders.authorizationHeader: "Bearer $_token",
         },
-        
       );
 
       print(response.body);

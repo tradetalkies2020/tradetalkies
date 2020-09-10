@@ -44,6 +44,7 @@ class CustomTextField extends StatelessWidget {
       child: TextFormField(
         textAlign: TextAlign.left,
         maxLines: max,
+        
         // validator: validator,
         obscureText: obscureText,
         minLines: min,

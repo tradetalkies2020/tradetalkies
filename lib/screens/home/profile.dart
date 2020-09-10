@@ -8,9 +8,9 @@ import 'package:fireauth/screens/home/profile_screens/profile_info.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 // importing service....
 import 'package:fireauth/services/auth/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 class Profile extends StatefulWidget {
@@ -47,8 +47,13 @@ class _ProfileState extends State<Profile> {
       // oldIndustry = output['industry'];
       setState(() {
         imageUrl = output['image'];
+
         _isloading = false;
       });
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      prefs.setString('USER_IMAGE', imageUrl);
+      // print(prefs.getString('USER_IMAGE'));
       print("image is $imageUrl");
       // print("age=$oldAge");
       // oldIndustry =
@@ -106,9 +111,13 @@ class _ProfileState extends State<Profile> {
                       CircleAvatar(
                         radius: 40,
                         backgroundColor: Colors.white,
-                        child: _isloading?Center(child: CircularProgressIndicator(),): CircleAvatar(
-                            radius: 40,
-                            backgroundImage: NetworkImage(imageUrl)),
+                        child: _isloading
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : CircleAvatar(
+                                radius: 40,
+                                backgroundImage: NetworkImage(imageUrl)),
                       ),
                       SizedBox(
                         width: 25.0,

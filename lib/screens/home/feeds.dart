@@ -11,15 +11,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:english_words/english_words.dart' as english_words;
 
+class Feeds extends StatefulWidget {
+  Feeds(
+      {Key key,
+      this.profileUrl,
+      this.postText,
+      this.postName,
+      this.postImages,
+      this.isPost,
+      this.hasPhoto,
+      this.postId})
+      : super(key: key);
 
-class Feeds extends StatefulWidget { 
-  Feeds({
-    Key key,this.profileUrl,this.postText,this.postName,this.postImages,this.isPost,this.hasPhoto,this.postId
-  }) : super(key: key);
-
-  final String postName, postText, profileUrl,postId;
+  final String postName, postText, profileUrl, postId;
   List postImages;
-  final bool isPost,hasPhoto;
+  final bool isPost, hasPhoto;
 
   @override
   _FeedsState createState() => _FeedsState();
@@ -35,6 +41,18 @@ class _FeedsState extends State<Feeds> {
   final List<String> kEnglishWords;
   List<String> stocks = ['ABC', 'def', 'qwerty'];
   List<String> codes = ['ABC', 'DEF', 'QWERTY'];
+  List selectedFilter = [];
+  int selectedRadio = 0;
+  DateTime from, to;
+  bool isfromSelected = false;
+  bool istoSelected = false;
+  // int selectedRadio = 0;
+
+  // setSelectedRadio(int val) {
+  //   setState(() {
+  //     selectedRadio = val;
+  //   });
+  // }
 
   _FeedsState()
       : kEnglishWords = List.from(Set.from(english_words.all))
@@ -46,191 +64,230 @@ class _FeedsState extends State<Feeds> {
   @override
   void initState() {
     super.initState();
-    _delegate = _MySearchDelegate(kEnglishWords ,kEnglishWords);
+    _delegate = _MySearchDelegate(kEnglishWords, kEnglishWords);
+    // selectedRadio = 0;
   }
 
-  List feed_type = ['Trending', 'Watchlist', 'Following', 'Suggestions'];
-  List<bool> selected_feed = [true, false, false, false];
+  List feed_type = ['All', 'Trending', 'Watchlist', 'Following', 'Suggestions'];
+  List<bool> selected_feed = [true, false, false, false, false];
+  bool isFilter = false;
 
   List imageAssets = [
     AssetImage('assets/images/avatar.png'),
     AssetImage('assets/images/avatar.png'),
     AssetImage('assets/images/avatar.png')
   ];
-  int Index=0;
-  List <Widget> ac =  [
+  int Index = 0;
+  List<Widget> ac = [
     Feed_post(
-                name: 'Manikanth',
-                time: '2mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
-  ],
-                isPost: false,
-                isLiked: false,likes: 10,comment: 10,repost: 10,
-              ),
-              //   Divider(),
+      name: 'Manikanth',
+      time: '2mins ago',
+      text:
+          'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+      imageAsset: [
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png')
+      ],
+      isPost: false,
+      isLiked: false,
+      likes: 10,
+      comment: 10,
+      repost: 10,
+      forComment: false,
+      hasPhoto: true,
+    ),
+    //   Divider(),
 
-              Feed_post(
-                name: 'sarthak',
-                time: '4mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
-  ],
-                isPost: false,
-                isLiked: false,likes: 10,comment: 10,repost: 10,
+    Feed_post(
+      name: 'sarthak',
+      time: '4mins ago',
+      text:
+          'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+      imageAsset: [
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png')
+      ],
+      isPost: false,
+      isLiked: false,
+      likes: 10,
+      comment: 10,
+      repost: 10,
+      hasPhoto: true,
+      forComment: false,
+    ),
 
-              ),
+    //Divider(),
+    Feed_post(
+      name: 'AmanKumar',
+      time: '6mins ago',
+      text:
+          'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+      imageAsset: [
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png')
+      ],
+      isPost: false,
+      hasPhoto: true,
+      isLiked: false,
+      likes: 10,
+      comment: 10,
+      repost: 10,
+      forComment: false,
+    ),
 
-              //Divider(),
-              Feed_post(
-                name: 'AmanKumar',
-                time: '6mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
-  ],
-                isPost: false,
-                isLiked: false,likes: 10,comment: 10,repost: 10,
+    //Divider(),
+    Feed_post(
+      name: 'Manikanth',
+      time: '2mins ago',
+      text:
+          'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+      imageAsset: [
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png')
+      ],
+      hasPhoto: true,
+      isPost: false,
+      isLiked: false,
+      likes: 10,
+      comment: 10,
+      repost: 10,
+      forComment: false,
+    ),
 
-              ),
-
-              //Divider(),
-              Feed_post(
-                name: 'Manikanth',
-                time: '2mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
-  ],
-                isPost: false,
-                isLiked: false,likes: 10,comment: 10,repost: 10,
-
-              ),
-
-              //Divider(),
-              Feed_post(
-                name: 'Manikanth',
-                time: '2mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
-  ],
-                isPost: false,
-                isLiked: false,likes: 10,comment: 10,repost: 10,
-                
-              ), 
-    
+    //Divider(),
+    Feed_post(
+      name: 'Manikanth',
+      time: '2mins ago',
+      text:
+          'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+      imageAsset: [
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png')
+      ],
+      hasPhoto: true,
+      isPost: false,
+      isLiked: false,
+      likes: 10,
+      comment: 10,
+      repost: 10,
+      forComment: false,
+    ),
   ];
 
- List <Widget> sc =  [
+  List<Widget> sc = [
     Feed_post(
-                name: 'Sahak',
-                time: '2mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
-  ],
-                isPost: false,
-                isLiked: false,likes: 10,comment: 10,repost: 10,
+      name: 'Sahak',
+      time: '2mins ago',
+      text:
+          'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+      imageAsset: [
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png')
+      ],
+      hasPhoto: true,
+      isPost: false,
+      isLiked: false,
+      likes: 10,
+      comment: 10,
+      repost: 10,
+      forComment: false,
+    ),
+    //   Divider(),
 
-              ),
-              //   Divider(),
+    Feed_post(
+      name: 'syiyiyi',
+      time: '4mins ago',
+      text:
+          'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+      imageAsset: [
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png')
+      ],
+      hasPhoto: true,
+      isPost: false,
+      isLiked: false,
+      likes: 10,
+      comment: 10,
+      repost: 10,
+      forComment: false,
+    ),
 
-              Feed_post(
-                name: 'syiyiyi',
-                time: '4mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
-  ],
-                isPost: false,
-                isLiked: false,likes: 10,comment: 10,repost: 10,
+    //Divider(),
+    Feed_post(
+      name: 'AmanKumar',
+      time: '6mins ago',
+      text:
+          'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+      imageAsset: [
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png')
+      ],
+      isPost: false,
+      hasPhoto: true,
+      isLiked: false,
+      likes: 10,
+      comment: 10,
+      repost: 10,
+      forComment: false,
+    ),
 
-              ),
+    //Divider(),
+    Feed_post(
+      name: 'Manikanth',
+      time: '2mins ago',
+      text:
+          'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+      imageAsset: [
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png')
+      ],
+      isPost: false,
+      hasPhoto: true,
+      isLiked: false,
+      likes: 10,
+      comment: 10,
+      repost: 10,
+      forComment: false,
+    ),
 
-              //Divider(),
-              Feed_post(
-                name: 'AmanKumar',
-                time: '6mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
-  ],
-                isPost: false,
-                isLiked: false,likes: 10,comment: 10,repost: 10,
+    //Divider(),
+    Feed_post(
+      name: 'Manikanth',
+      time: '2mins ago',
+      text:
+          'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+      imageAsset: [
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png'),
+        AssetImage('assets/images/avatar.png')
+      ],
+      isPost: false,
+      isLiked: false,
+      likes: 10,
+      comment: 10,
+      repost: 10,
+      forComment: false,
+      hasPhoto: true,
+    ),
+  ];
 
-              ),
-
-              //Divider(),
-              Feed_post(
-                name: 'Manikanth',
-                time: '2mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
-  ],
-                isPost: false,
-                isLiked: false,likes: 10,comment: 10,repost: 10,
-
-              ),
-
-              //Divider(),
-              Feed_post(
-                name: 'Manikanth',
-                time: '2mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
-  ],
-                isPost: false,
-                isLiked: false,likes: 10,comment: 10,repost: 10,
-
-              ), 
-    
-  ]; 
-
- 
-  
   buildItem(BuildContext context, String value, int index) {
     return InkWell(
       onTap: () {
         setState(() {
-          selected_feed.setAll(0, [false, false, false, false]);
+          selected_feed.setAll(0, [false, false, false, false, false]);
           // print(selected_feed);
           selected_feed[index] = true;
           // print(selected_feed);
-          Index=index;
+          Index = index;
         });
       },
       child: Container(
@@ -248,7 +305,7 @@ class _FeedsState extends State<Feeds> {
         ),
 
         // margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-        width: index == 3 ? 110 : 90,
+        width: index == 3 ? 110 : (index == 0 ? 60 : 90),
 
         // height: 42,
         child: Center(
@@ -290,20 +347,20 @@ class _FeedsState extends State<Feeds> {
                 height: 5,
               ),
               InkWell(
-                onTap: () async{
+                onTap: () async {
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) => searchScreen()));
                   final String selected = await showSearches<String>(
-                  context: context,
-                  delegate: _delegate,
-                );
-                if (selected != null) {
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('You have selected the word: $selected'),
-                    ),
+                    context: context,
+                    delegate: _delegate,
                   );
-                }
+                  if (selected != null) {
+                    Scaffold.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('You have selected the word: $selected'),
+                      ),
+                    );
+                  }
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -364,16 +421,423 @@ class _FeedsState extends State<Feeds> {
                 padding: EdgeInsets.only(right: 8.0),
                 margin: EdgeInsets.only(left: 15),
 
-                height: 55,
+                height: 50,
                 child: ListView.builder(
                   itemCount: feed_type.length,
-                  scrollDirection: Axis.horizontal,    
+                  scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     return buildItem(context, feed_type[index], index);
                   },
                 ),
               ),
-              SizedBox(height: 10),
+              // SizedBox(height: 10),
+              Container(
+                // color:Colors.yellow,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: Row(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(Index == 0 ? 'All Feeds' : '',
+                          style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600)),
+                      GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20))),
+                            context: context,
+                            builder: (context) {
+                              return StatefulBuilder(builder:
+                                  (BuildContext context, StateSetter set) {
+                                return Container(
+                                  height: selectedRadio != 2 ? 320 : null,
+                                  // color: Colors.white,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                          margin: EdgeInsets.only(left: 20),
+                                          child: Text('Filter',
+                                              style: TextStyle(
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Poppins'))),
+                                      SizedBox(height: 15),
+                                      ListTile(
+                                        title: Text(
+                                          'Last 1 hour',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14,
+                                              fontFamily: 'Inter',
+                                              color: Color(0xFF000000)),
+                                        ),
+                                        trailing: Radio(
+                                          toggleable: true,
+                                          value: 1,
+                                          groupValue: selectedRadio,
+                                          activeColor: Colors.black,
+                                          onChanged: (val) {
+                                            print("Radio $val");
+                                            set(() {
+                                              selectedRadio = val;
+                                              print(selectedRadio);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      // BottomSheetItem(
+                                      //   title: 'Last 1 hour',
+                                      //   value: 1,
+                                      // ),
+                                      ListTile(
+                                        title: Text(
+                                          'Custom dates',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14,
+                                              fontFamily: 'Inter',
+                                              color: Color(0xFF000000)),
+                                        ),
+                                        trailing: Radio(
+                                          toggleable: true,
+                                          value: 2,
+                                          groupValue: selectedRadio,
+                                          activeColor: Colors.black,
+                                          onChanged: (val) {
+                                            print("Radio $val");
+                                            set(() {
+                                              selectedRadio = val;
+                                              print(selectedRadio);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      selectedRadio == 2
+                                          ? Container(
+                                              // color: Colors.yellow,
+                                              height: 80,
+                                              child: Row(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      showDatePicker(
+                                                              context: context,
+                                                              initialDate:
+                                                                  DateTime
+                                                                      .now(),
+                                                              firstDate:
+                                                                  DateTime(
+                                                                      2015),
+                                                              lastDate: DateTime(
+                                                                  DateTime.now()
+                                                                          .year +
+                                                                      1))
+                                                          .then((value) {
+                                                        print(value);
+                                                        set(() {
+                                                          from = value;
+                                                          isfromSelected = true;
+                                                        });
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      // margin: EdgeInsets.all(7),
+                                                      margin: EdgeInsets.only(
+                                                          left: 20),
+                                                      // padding: EdgeInsets.all(2),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          6)),
+                                                          // color: Colors.white,
+                                                          // color: selected_feed[index]
+                                                          //     ? Color(0xFF3d96ff).withOpacity(0.1)
+                                                          //     : Color(0xFFa5a5a5).withOpacity(0.1),
+                                                          // border: selected_feed[index]
+                                                          //     ? Border.all(color: Color(0xFF3D96FF), width: 1)
+                                                          //     : null,
+                                                          border: Border.all(
+                                                              color: Color(
+                                                                  0xFFE0E0E0),
+                                                              width: 1)),
+
+                                                      // margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                                      width: 130,
+
+                                                      height: 45,
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .calendar_today,
+                                                            color: Colors.black,
+                                                          ),
+                                                          Text(
+                                                            isfromSelected
+                                                                ? '${from.day}/${from.month}/${from.year}'
+                                                                : 'From Date',
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Inter',
+                                                                fontSize: 14,
+                                                                letterSpacing:
+                                                                    0.4,
+                                                                color: Colors
+                                                                    .black),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      showDatePicker(
+                                                              context: context,
+                                                              initialDate:
+                                                                  DateTime
+                                                                      .now(),
+                                                              firstDate:
+                                                                  DateTime(
+                                                                      2015),
+                                                              lastDate: DateTime(
+                                                                  DateTime.now()
+                                                                          .year +
+                                                                      1))
+                                                          .then((value) {
+                                                        print(value);
+                                                        set(() {
+                                                          to = value;
+                                                          istoSelected = true;
+                                                        });
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      // margin: EdgeInsets.all(7),
+                                                      margin: EdgeInsets.only(
+                                                          left: 20),
+                                                      // padding: EdgeInsets.all(2),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          6)),
+                                                          // color: Colors.white,
+                                                          // color: selected_feed[index]
+                                                          //     ? Color(0xFF3d96ff).withOpacity(0.1)
+                                                          //     : Color(0xFFa5a5a5).withOpacity(0.1),
+                                                          // border: selected_feed[index]
+                                                          //     ? Border.all(color: Color(0xFF3D96FF), width: 1)
+                                                          //     : null,
+                                                          border: Border.all(
+                                                              color: Color(
+                                                                  0xFFE0E0E0),
+                                                              width: 1)),
+
+                                                      // margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                                      width: 130,
+
+                                                      height: 45,
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .calendar_today,
+                                                            color: Colors.black,
+                                                          ),
+                                                          Text(
+                                                            istoSelected
+                                                                ? '${to.day}/${to.month}/${to.year}'
+                                                                : 'To Date',
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Inter',
+                                                                fontSize: 14,
+                                                                letterSpacing:
+                                                                    0.4,
+                                                                color: Colors
+                                                                    .black),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          : SizedBox(height: 1),
+                                      ListTile(
+                                        title: Text(
+                                          'Last 7 days',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14,
+                                              fontFamily: 'Inter',
+                                              color: Color(0xFF000000)),
+                                        ),
+                                        trailing: Radio(
+                                          toggleable: true,
+                                          value: 3,
+                                          groupValue: selectedRadio,
+                                          activeColor: Colors.black,
+                                          onChanged: (val) {
+                                            print("Radio $val");
+                                            set(() {
+                                              selectedRadio = val;
+                                              print(selectedRadio);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            if (selectedRadio == null) {
+                                              isFilter = false;
+                                            }
+                                            else
+                                            isFilter = true;
+                                          });
+                                          print(
+                                              "selected radio is $selectedRadio");
+                                          Navigator.pop(context);
+                                        },
+                                        // onTap: widget.forEdit ? _submit : null,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8)),
+                                            color: selectedRadio != null
+                                                ? Color(0xFF3D96FF)
+                                                : Color(0xFFABABAB),
+                                          ),
+                                          margin:
+                                              EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                          width: _large
+                                              ? _width - 45
+                                              : (_medium
+                                                  ? _width - 35
+                                                  : _width - 25),
+                                          height: 50,
+                                          child: Center(
+                                            child: Text(
+                                              "Apply",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline4,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              });
+                            },
+
+                            // builder: (context) =>
+                          );
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.all(7),
+
+                              // padding: EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(6)),
+                                color: isFilter
+                                    ? Color(0xFF3d96ff).withOpacity(0.1)
+                                    : Color(0xFFa5a5a5).withOpacity(0.1),
+                                // color: Color(0xFFa5a5a5).withOpacity(0.1),
+                                border: isFilter
+                                    ? Border.all(
+                                        color: Color(0xFF3D96FF), width: 1)
+                                    : null,
+                              ),
+
+                              // margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                              // width: index == 3 ? 110 : (index==0?60:90),
+                              width: 80,
+                              height: 30,
+
+                              // height: 42,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SvgPicture.asset(
+                                      "assets/new_icons/filter.svg"),
+                                  Text('Filter',
+                                      style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 15,
+                                          letterSpacing: 0.4,
+                                          color: Colors.black)
+                                      // color: selected_feed[index] ? Color(0xFF3D96FF) : Colors.black),
+                                      ),
+                                ],
+                              ),
+                            ),
+                            isFilter
+                                ? Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: InkWell(
+                                      child: Material(
+                                        elevation: 0.0,
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        child: Container(
+                                          height: 18.0,
+                                          width: 18.0,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                              color:
+                                                  Colors.red.withOpacity(0.8)),
+                                          child: Center(
+                                            child: Text('1',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12)),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Container()
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
 
               // Container(
               //   height: 450,
@@ -386,16 +850,33 @@ class _FeedsState extends State<Feeds> {
               //     ),
               // )
 
-              
-              widget.isPost?Feed_post(postId: widget.postId,hasPhoto: widget.hasPhoto,name:widget.postName,text: widget.postText,time: '1min ago',imageAsset: widget.hasPhoto?widget.postImages:null,imageUrl: widget.profileUrl,isPost: true,isLiked: false,likes: 0,comment: 0,repost: 0,):SizedBox(height: 1,),
-               //Divider(), 
-
-              
+              widget.isPost
+                  ? Feed_post(
+                      forComment: false,
+                      postId: widget.postId,
+                      hasPhoto: widget.hasPhoto,
+                      name: widget.postName,
+                      text: widget.postText,
+                      time: '1min ago',
+                      imageAsset: widget.hasPhoto ? widget.postImages : null,
+                      imageUrl: widget.profileUrl,
+                      isPost: true,
+                      isLiked: false,
+                      likes: 0,
+                      comment: 0,
+                      repost: 0,
+                    )
+                  : SizedBox(
+                      height: 1,
+                    ),
+              //Divider(),
 
               Column(
-                children: Index==0?ac:(Index==1?sc:(Index==2?ac:sc)),
+                children: Index == 0
+                    ? ac
+                    : (Index == 1 ? sc : (Index == 2 ? ac : sc)),
               ),
-              
+
               Feed_post(
                 name: 'Manikanth',
                 time: '2mins ago',
@@ -403,7 +884,12 @@ class _FeedsState extends State<Feeds> {
                     'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
                 imageAsset: imageAssets,
                 isPost: false,
-                isLiked: true,likes: 10,comment: 10,repost: 10,
+                isLiked: true,
+                likes: 10,
+                comment: 10,
+                repost: 10,
+                hasPhoto: true,
+                forComment: false,
               ),
               //   Divider(),
 
@@ -414,7 +900,12 @@ class _FeedsState extends State<Feeds> {
                     'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
                 imageAsset: imageAssets,
                 isPost: false,
-                isLiked: true,likes: 10,comment: 10,repost: 10,
+                isLiked: true,
+                likes: 10,
+                comment: 10,
+                repost: 10,
+                hasPhoto: true,
+                forComment: false,
               ),
 
               //Divider(),
@@ -425,7 +916,12 @@ class _FeedsState extends State<Feeds> {
                     'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
                 imageAsset: imageAssets,
                 isPost: false,
-                isLiked: true,likes: 10,comment: 10,repost: 10,
+                isLiked: true,
+                likes: 10,
+                comment: 10,
+                repost: 10,
+                hasPhoto: true,
+                forComment: false,
               ),
 
               //Divider(),
@@ -436,7 +932,12 @@ class _FeedsState extends State<Feeds> {
                     'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
                 imageAsset: imageAssets,
                 isPost: false,
-                isLiked: true,likes: 10,comment: 10,repost: 10,
+                isLiked: true,
+                likes: 10,
+                comment: 10,
+                repost: 10,
+                hasPhoto: true,
+                forComment: false,
               ),
 
               //Divider(),
@@ -447,11 +948,16 @@ class _FeedsState extends State<Feeds> {
                     'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
                 imageAsset: imageAssets,
                 isPost: false,
-                isLiked: true,likes: 10,comment: 10,repost: 10,
+                isLiked: true,
+                likes: 10,
+                comment: 10,
+                repost: 10,
+                hasPhoto: true,
+                forComment: false,
               ),
             ],
           ),
-        ),  
+        ),
         backgroundColor: Color(0xFFFFFFFF),
         floatingActionButton: FloatingActionButton(
           elevation: 0.0,
@@ -467,7 +973,6 @@ class _FeedsState extends State<Feeds> {
         ));
   }
 }
-
 
 // Defines the content of the search page in `showSearch()`.
 // SearchDelegate has a member `query` which is the query string.
@@ -607,3 +1112,44 @@ class _SuggestionList extends StatelessWidget {
   }
 }
 
+// class BottomSheetItem extends StatefulWidget {
+//   const BottomSheetItem({Key key, this.value, this.title}) : super(key: key);
+//   final String title;
+//   final int value;
+
+//   @override
+//   _BottomSheetItemState createState() => _BottomSheetItemState();
+// }
+
+// class _BottomSheetItemState extends State<BottomSheetItem> {
+//   @override
+//   Widget build(BuildContext context) {
+//     setSelectedRadio(int val) {
+//       setState(() {
+//         selectedRadio = val;
+//         print(selectedRadio);
+//       });
+//     }
+
+//     return ListTile(
+//       title: Text(
+//         widget.title,
+//         style: TextStyle(
+//             fontWeight: FontWeight.normal,
+//             fontSize: 14,
+//             fontFamily: 'Inter',
+//             color: Color(0xFF000000)),
+//       ),
+//       trailing: Radio(
+//         toggleable: true,
+//         value: widget.value,
+//         groupValue: selectedRadio,
+//         activeColor: Colors.black,
+//         onChanged: (val) {
+//           print("Radio $val");
+//           setSelectedRadio(val);
+//         },
+//       ),
+//     );
+//   }
+// }
