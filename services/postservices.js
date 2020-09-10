@@ -5,7 +5,7 @@ const { ProcessCredentials } = require("aws-sdk");
 
 exports.ifLiked = (userId, postId) => {
     return new Promise((resolve, reject) => {
-        Post.findOne({ _id: postId, likes: userId })
+        Post.findOne({ _id: postId, "likes.like":userId })
             .then((result) => {
                 if (!result) {
                     return resolve(false);

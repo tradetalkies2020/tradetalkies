@@ -107,24 +107,66 @@ exports.postNewPost = async (req, res, next) => {
 exports.likePost = (req, res, next) => {
     const currentUser = req.session.user;
     const postId = req.body.postId;
-    Post.findOneAndUpdate(
-        { _id: postId },
-        { $push: { likes: currentUser._id } },
-        { new: true }
-    )
-        .then((post) => {})
+    postServices
+        .ifLiked(currentUser._id, postId)
+        .then((liked) => {
+            console.log(liked);
+            if (liked === true) {
+                Post.findOneAndUpdate(
+                    { _id: postId },
+                    { $pull: { likes: { like: currentUser._id } } },
+                )
+                    .then((post) => {
+                        return res.json({
+                            post: post,
+                            liked: false,
+                            message: `Removed like for ${currentUser._id}`,
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(
+                            `Error in posting a like due for ${currentUser._id}`,
+                            err
+                        );
+                        logger.error(
+                            `Error in posting a like due for ${currentUser._id}`,
+                            err
+                        );
+                        return res.json({
+                            errorMessage: `Error in posting like : ${err} for ${currentUser._id}`,
+                        });
+                    });
+            } else {
+                Post.findOneAndUpdate(
+                    { _id: postId },
+                    {
+                        $push: {
+                            likes: { like: currentUser._id, time: Date.now() },
+                        },
+                    },
+                    { new: true }
+                )
+                    .then((post) => {
+                        return res.json({ post: post, liked: true });
+                    })
+                    .catch((err) => {
+                        console.log(
+                            `Error in posting a like due for ${currentUser._id}`,
+                            err
+                        );
+                        logger.error(
+                            `Error in posting a like due for ${currentUser._id}`,
+                            err
+                        );
+                        return res.json({
+                            errorMessage: `Error in posting like : ${err} for ${currentUser._id}`,
+                        });
+                    });
+            }
+        })
         .catch((err) => {
-            console.log(
-                `Error in posting a like due for ${currentUser._id}`,
-                err
-            );
-            logger.error(
-                `Error in posting a like due for ${currentUser._id}`,
-                err
-            );
-            return res.json({
-                errorMessage: `Error in posting like : ${err} for ${currentUser._id}`,
-            });
+            console.log(`Error in finding ifLiked for ${currentUser._id}`);
+            logger.error(`Error in finding ifLiked for ${currentUser._id}`);
         });
 };
 

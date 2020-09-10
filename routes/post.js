@@ -4,7 +4,6 @@ const { validator } = require("../middleware/validator");
 const isAuth = require("../middleware/isAuth");
 const userLog = require("../middleware/userLog");
 const postController = require("../controllers/posts");
-const { post } = require("request-promise");
 
 router.post("/post", isAuth, userLog, postController.postNewPost);
 router.post("/like", isAuth, userLog, postController.likePost);

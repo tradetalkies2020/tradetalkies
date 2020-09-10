@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-var postSchema = new Schema({
+var repostSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: "User" },
     tickers: [{ type: String }],
     desc: { type: String, required: true },
@@ -10,7 +10,8 @@ var postSchema = new Schema({
     updatedAt: { type: Date },
     images: [{ type: String }],
     likes: [{ like:{type: Schema.Types.ObjectId, ref: "User"},time:Date ,_id:false}],
+    repostFrom:{type:Schema.Types.ObjectId,ref:'Post'}
 });
 
 
-module.exports = mongoose.model("Post", postSchema);
+module.exports = mongoose.model("Repost", repostSchema);
