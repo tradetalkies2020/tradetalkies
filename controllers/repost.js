@@ -69,7 +69,7 @@ exports.postNewRepost = async (req, res, next) => {
                                     `Post created for userId :${currentUser._id}`
                                 );
                                 return res.json({
-                                    messgae: `Repost created for postId : ${repostFrom}`,
+                                    message: `Repost created for postId : ${repostFrom}`,
                                     post: repost,
                                 });
                             })
@@ -107,21 +107,21 @@ exports.postNewRepost = async (req, res, next) => {
         });
 };
 
-exports.likePost = (req, res, next) => {
+exports.likeRepost = (req, res, next) => {
     const currentUser = req.session.user;
-    const postId = req.body.postId;
+    const repostId = req.body.repostId;
     postServices
-        .ifLiked(currentUser._id, postId)
+        .ifLiked(currentUser._id, repostId)
         .then((liked) => {
             console.log(liked);
             if (liked === true) {
-                Post.findOneAndUpdate(
-                    { _id: postId },
+                Repost.findOneAndUpdate(
+                    { _id: repostId },
                     { $pull: { likes: { like: currentUser._id } } }
                 )
-                    .then((post) => {
+                    .then((repost) => {
                         return res.json({
-                            post: post,
+                            repost: repost,
                             liked: false,
                             message: `Removed like for ${currentUser._id}`,
                         });
@@ -140,8 +140,8 @@ exports.likePost = (req, res, next) => {
                         });
                     });
             } else {
-                Post.findOneAndUpdate(
-                    { _id: postId },
+                Repost.findOneAndUpdate(
+                    { _id: repostId },
                     {
                         $push: {
                             likes: { like: currentUser._id, time: Date.now() },
@@ -149,8 +149,8 @@ exports.likePost = (req, res, next) => {
                     },
                     { new: true }
                 )
-                    .then((post) => {
-                        return res.json({ post: post, liked: true });
+                    .then((repost) => {
+                        return res.json({ repost: repost, liked: true });
                     })
                     .catch((err) => {
                         console.log(

@@ -7,6 +7,8 @@ const userServices = require("../services/userservices");
 const postServices = require("../services/postservices");
 const logger = require("../middleware/logger");
 const Tickers = require("../models/Tickers");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 exports.postNewPost = async (req, res, next) => {
     const currentUser = req.session.user;
@@ -66,7 +68,7 @@ exports.postNewPost = async (req, res, next) => {
                                     `Post created for userId :${currentUser._id}`
                                 );
                                 return res.json({
-                                    messgae: `Post created`,
+                                    message: `Post created`,
                                     post: post,
                                 });
                             })
@@ -114,7 +116,7 @@ exports.likePost = (req, res, next) => {
             if (liked === true) {
                 Post.findOneAndUpdate(
                     { _id: postId },
-                    { $pull: { likes: { like: currentUser._id } } },
+                    { $pull: { likes: { like: currentUser._id } } }
                 )
                     .then((post) => {
                         return res.json({
@@ -179,6 +181,10 @@ exports.getPost = (req, res, next) => {
         .then((result) => {
             liked = result;
             Post.findOne({ _id: postId })
+                .populate(
+                    "userId",
+                    "local.username google.name linkedin.name facebook.name twitter.name imageUrl"
+                )
                 .then((result) => {
                     return res.json({ post: result, liked: liked });
                 })
@@ -271,6 +277,7 @@ exports.postComment = (req, res, next) => {
                 );
                 return res.status(400).json({ error: err });
             } else {
+               
                 const requester = result.postId;
                 if (
                     requester.userId.toString() !== currentUser._id.toString()
@@ -329,7 +336,7 @@ exports.getReqComments = (req, res, next) => {
         `${currentUser._id} tried to access the comments for ${postId}`
     );
     Comment.findOne({ postId: postId })
-        .populate("comments.postedBy", "name imageUrl _id number")
+        .populate("comments.postedBy")
         .then(async (results) => {
             console.log(results);
             if (results) {
@@ -367,4 +374,72 @@ exports.getReqComments = (req, res, next) => {
             logger.error("Comments not found for the specific postId", err);
             return res.status(404).json({ message: "Comments not found" });
         });
+};
+
+exports.trendingPosts = (req, res, next) => {
+    const now = new Date();
+    const yesterday = new Date();
+    yesterday.setHours(now.getHours() - 48);
+    console.log(yesterday);
+    Post.aggregate([
+        { $match: { "likes.time": { $gte: yesterday } } },
+        {
+            $lookup: {
+                from: "comments",
+                localField: "_id",
+                foreignField: "postId",
+                as: "comments",
+            },
+        },
+        {
+            $project: {
+                _id: 1,
+                comments:1,
+                liked: {
+                    $filter: {
+                        input: "$likes",
+                        as: "item",
+                        cond: {
+                            $and: [
+                                { $gte: ["$$item.time", yesterday] },
+                                { $lte: ["$$item.time", now] },
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+        // {
+        //     $project: {
+        //         _id: "$_id",
+        //         liked: {
+        //             $reduce: {
+        //                 input: "$likes",
+        //                 initialValue: "Bad",
+        //                 in: {
+        //                   $cond: [
+        //                     {
+        //                       $gte: [
+        //                         "$$this.time",
+        //                         yesterday
+        //                       ]
+        //                     },
+        //                     "$$this",
+        //                     "$$REMOVE"
+        //                   ]
+        //                 }
+        //               }
+        //             // $push: {
+        //             //     $cond: [
+        //             //         { $gte: ["$likes.time", yesterday] },
+        //             //         { like: "$likes.like", time: "$likes.time" },
+        //             //         "$$REMOVE",
+        //             //     ],
+        //             // },
+        //         },
+        //     },
+        // },
+    ]).then((result) => {
+        return res.json(result);
+    });
 };
