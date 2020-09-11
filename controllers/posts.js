@@ -116,7 +116,8 @@ exports.likePost = (req, res, next) => {
             if (liked === true) {
                 Post.findOneAndUpdate(
                     { _id: postId },
-                    { $pull: { likes: { like: currentUser._id } } }
+                    { $pull: { likes: { like: currentUser._id } } },
+                    { new: true }
                 )
                     .then((post) => {
                         return res.json({
@@ -277,7 +278,6 @@ exports.postComment = (req, res, next) => {
                 );
                 return res.status(400).json({ error: err });
             } else {
-               
                 const requester = result.postId;
                 if (
                     requester.userId.toString() !== currentUser._id.toString()
@@ -394,7 +394,7 @@ exports.trendingPosts = (req, res, next) => {
         {
             $project: {
                 _id: 1,
-                comments:1,
+                comments: 1,
                 liked: {
                     $filter: {
                         input: "$likes",
