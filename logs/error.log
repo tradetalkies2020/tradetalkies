@@ -42,3 +42,13 @@
 {"message":"Error in logging in Linkedin user Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client","level":"error","timestamp":"2020-08-16T13:03:57.451Z"}
 {"message":"Error occcured while creating post: ValidationError: desc: Path `desc` is required.","level":"error","timestamp":"2020-08-26T15:05:17.711Z"}
 {"message":[{"value":"test123@test1.com","msg":"E-mail already exists, try something else.","param":"email","location":"body"}],"level":"error","timestamp":"2020-08-29T16:36:12.407Z"}
+{"message":"Error in finding trending topics : ReferenceError: now is not defined","level":"error","timestamp":"2020-09-11T17:46:08.238Z"}
+{"message":"Error in finding trending topics : ReferenceError: now is not defined","level":"error","timestamp":"2020-09-11T17:48:00.714Z"}
+{"message":"Error in finding trending topics : ReferenceError: now is not defined","level":"error","timestamp":"2020-09-11T17:49:08.898Z"}
+{"message":"Error in finding trending topics : ReferenceError: now is not defined","level":"error","timestamp":"2020-09-11T17:49:09.101Z"}
+{"message":"Error in finding trending topics : Error: Arguments must be aggregate pipeline operators","level":"error","timestamp":"2020-09-11T17:57:03.244Z"}
+{"message":"Error in finding trending topics : Error: Arguments must be aggregate pipeline operators","level":"error","timestamp":"2020-09-11T17:57:33.833Z"}
+{"message":"Error in finding trending topics : Error: Arguments must be aggregate pipeline operators","level":"error","timestamp":"2020-09-11T18:00:06.673Z"}
+{"message":"Error in updating user to follow's following list for uer id : 5f3b8f78b83e090017d40a16","level":"error","timestamp":"2020-09-14T19:13:55.884Z"}
+{"message":"Error in updating user to follow's following list for uer id : 5f3b8f78b83e090017d40a16","level":"error","timestamp":"2020-09-14T19:15:35.003Z"}
+{"message":"Error in updating user to follow's following list for uer id : 5f3b8f78b83e090017d40a16","level":"error","timestamp":"2020-09-14T19:18:25.725Z"}

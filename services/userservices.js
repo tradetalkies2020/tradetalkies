@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Constant = require("../models/constants");
+const Follow = require("../models/Follow");
 const { v4: uuidv4 } = require("uuid");
 exports.userType = (userId) => {
     return new Promise((resolve, reject) => {
@@ -83,19 +84,39 @@ exports.userExists = (...userList) => {
 
 exports.addPoints = (userId, points) => {
     return new Promise((resolve, reject) => {
-        User.findOneAndUpdate({ _id: userId },{ $inc: { points: points }},{new:true})
+        User.findOneAndUpdate(
+            { _id: userId },
+            { $inc: { points: points } },
+            { new: true }
+        )
             .then((user) => {
-                if(!user)
-                {
+                if (!user) {
                     reject(`No user found wityh ID ${userId}`);
                 }
                 return resolve(true);
-
             })
             .catch((err) => {
                 console.log(err);
                 logger.error(`Error in finding user with user ID : ${userId}`);
                 reject(err);
+            });
+    });
+};
+
+exports.ifFollowed = (userId, userToFollowId) => {
+    return new Promise((resolve, reject) => {
+        Follow.findOne({ userId: userId, "following": userToFollowId })
+            .then((result) => {
+                if (!result) {
+                    return resolve(false);
+                } else {
+                    return resolve(true);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                logger.error(err);
+                return reject(err);
             });
     });
 };

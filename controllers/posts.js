@@ -8,6 +8,7 @@ const postServices = require("../services/postservices");
 const logger = require("../middleware/logger");
 const Tickers = require("../models/Tickers");
 const mongoose = require("mongoose");
+const { NetworkManager } = require("aws-sdk");
 const ObjectId = mongoose.Types.ObjectId;
 
 exports.postNewPost = async (req, res, next) => {
@@ -287,7 +288,7 @@ exports.postComment = (req, res, next) => {
                         body: `You have a new comment on your post by ${currentUser.name}. Click to see`,
                     };
                     console.log(
-                        `${currentUser.name} is trying to comment on ${result.postId._id}'s post`
+                        `${currentUser._id} is trying to comment on ${result.postId._id}'s post`
                     );
                     //     var promise = userServices.userExists(requester.userId);
                     //     promise.then((results) => {
@@ -376,70 +377,28 @@ exports.getReqComments = (req, res, next) => {
         });
 };
 
-exports.trendingPosts = (req, res, next) => {
-    const now = new Date();
+exports.dailytrendingPosts = (req, res, next) => {
+    const today = new Date();
     const yesterday = new Date();
-    yesterday.setHours(now.getHours() - 48);
-    console.log(yesterday);
-    Post.aggregate([
-        { $match: { "likes.time": { $gte: yesterday } } },
-        {
-            $lookup: {
-                from: "comments",
-                localField: "_id",
-                foreignField: "postId",
-                as: "comments",
-            },
-        },
-        {
-            $project: {
-                _id: 1,
-                comments: 1,
-                liked: {
-                    $filter: {
-                        input: "$likes",
-                        as: "item",
-                        cond: {
-                            $and: [
-                                { $gte: ["$$item.time", yesterday] },
-                                { $lte: ["$$item.time", now] },
-                            ],
-                        },
-                    },
-                },
-            },
-        },
-        // {
-        //     $project: {
-        //         _id: "$_id",
-        //         liked: {
-        //             $reduce: {
-        //                 input: "$likes",
-        //                 initialValue: "Bad",
-        //                 in: {
-        //                   $cond: [
-        //                     {
-        //                       $gte: [
-        //                         "$$this.time",
-        //                         yesterday
-        //                       ]
-        //                     },
-        //                     "$$this",
-        //                     "$$REMOVE"
-        //                   ]
-        //                 }
-        //               }
-        //             // $push: {
-        //             //     $cond: [
-        //             //         { $gte: ["$likes.time", yesterday] },
-        //             //         { like: "$likes.like", time: "$likes.time" },
-        //             //         "$$REMOVE",
-        //             //     ],
-        //             // },
-        //         },
-        //     },
-        // },
-    ]).then((result) => {
-        return res.json(result);
-    });
+    yesterday.setHours(today.getHours() - 24);
+
+    let trendinPromise = postServices.trendingService(yesterday, today);
+    trendinPromise
+        .then(async (result) => {
+            return res.json(result);
+        })
+        .catch((err) => {
+            logger.error(`Error in finding trending topics : ${err}`);
+            console.log(`Error in finding trending topics : ${err}`);
+        });
+};
+
+exports.getFeed = (req, res, next) => {
+    // let endTimestamp = new Date();
+    // let starTimeStamp = new Date();
+    // let currentUser=req.session.user;
+    // let hourly=req.query.hourly;
+    // let weekly=req.query.weekly;
+    const startTimestamp=req.body.startTimestamp;
+    console.log(startTimestamp);
 };

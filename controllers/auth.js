@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Follow = require("../models/Follow");
 const Activity = require("../models/Activity");
 const { validationResult } = require("express-validator");
 const logger = require("../middleware/logger");
@@ -92,23 +93,33 @@ exports.postSignup = async (req, res, next) => {
             return newUser
                 .save()
                 .then((result) => {
-                    // Update referrer point before successful completion of sign up!//
-                    let referPromise = userservices.referralBonus(referrerCode);
-                    referPromise
-                        .then((response) => {
-                            res.json({ message: "User signed up" });
-                        })
-                        .catch((err) => {
-                            logger.error(
-                                `Error occured in referCode Promise before saving`
-                            );
-                            console.log(
-                                `Error occured in referCode Promise before saving`
-                            );
-                            return res.json({
-                                errorMessage: `Error occured in referCode Promise before saving`,
+                    let followInit = new Follow({
+                        userId: newUser._id,
+                        followers: [],
+                        following: [],
+                    });
+
+                    followInit.save().then((result) => {
+                        // Update referrer point before successful completion of sign up!//
+                        let referPromise = userservices.referralBonus(
+                            referrerCode
+                        );
+                        referPromise
+                            .then((response) => {
+                                res.json({ message: "User signed up" });
+                            })
+                            .catch((err) => {
+                                logger.error(
+                                    `Error occured in referCode Promise before saving`
+                                );
+                                console.log(
+                                    `Error occured in referCode Promise before saving`
+                                );
+                                return res.json({
+                                    errorMessage: `Error occured in referCode Promise before saving`,
+                                });
                             });
-                        });
+                    });
                 })
                 .catch((err) => {
                     console.log(err);

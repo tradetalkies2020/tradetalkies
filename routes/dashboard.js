@@ -34,5 +34,13 @@ router.post(
     dashboardController.editProfile
 );
 
-router.post("/change-password",isAuth,userLog, dashboardController.passworChange);
+router.post(
+    "/change-password",
+    isAuth,
+    userLog,
+    dashboardController.passworChange
+);
+
+//follow routes//
+router.post("/follow", dashboardController.followUser);
 module.exports = router;
