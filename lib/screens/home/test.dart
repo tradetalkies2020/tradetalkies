@@ -23,6 +23,7 @@ class _searchScreenState extends State<searchScreen> {
   String trigger = r'$';
   List stocks = [];
   DateTime jbcabscj;
+  List vh;
 
   void initState() {
     _getInfo();
