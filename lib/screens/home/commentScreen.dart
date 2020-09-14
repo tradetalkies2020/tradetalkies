@@ -33,6 +33,8 @@ class _FeedsState extends State<commentScreen> {
   TextEditingController commentController = TextEditingController();
   bool _isLoading = false;
   bool _isSending = false;
+  List comments;
+  Future myFuture;
 
   Widget commentFormfield() {
     return CustomTextField(
@@ -75,7 +77,7 @@ class _FeedsState extends State<commentScreen> {
       //     },
       //   ),
       // );
-      // Navigator.pop(context);
+      Navigator.pop(context);
       // print("posted");
       Toast.show(
         "Commented",
@@ -95,15 +97,20 @@ class _FeedsState extends State<commentScreen> {
     });
   }
 
-  Future<void> getComment(String id) async {
-    setState(() {
-      _isLoading = true;
-    });
+  Future getComment(String id) async {
+    // setState(() {
+    //   _isLoading = true;
+    // });
 
     try {
       print("id is $id");
       // await Provider.of<UserAuth>(context, listen: false).comment(text, id);
-      await Provider.of<UserAuth>(context, listen: false).getcomment(id);
+      comments =
+          await Provider.of<UserAuth>(context, listen: false).getcomment(id);
+      print(comments);
+      // setState(() {
+      //   comments = comment;
+      // });
 
       // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
       // Navigator.push(
@@ -137,13 +144,15 @@ class _FeedsState extends State<commentScreen> {
       //   duration: Toast.LENGTH_LONG,
       // );
     }
-    setState(() {
-      _isLoading = false;
-    });
+
+    // setState(() {
+    //   _isLoading = false;
+    // });
   }
 
   void initState() {
-    getComment(widget.post.postId);
+    // getComment(widget.post.postId);
+    myFuture = getComment(widget.post.postId);
   }
 
   @override
@@ -200,51 +209,108 @@ class _FeedsState extends State<commentScreen> {
         //         )
         //       ],
       ),
-      
-      body: 
-          SingleChildScrollView(
-                      child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 10),
-                widget.post,
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                    children: [
-                      Container(
-                        width: 270,
-                        // margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                        child: commentFormfield(),
-                      ),
-                      GestureDetector(
-                          onTap: () {
-                            String text = commentController.text;
-                            print(text);
-                            _submit(widget.post.postId, text);
-                          },
-                          child: _isSending
-                              ? Container(
-                                  height: 25,
-                                  width: 25,
-                                  child: CircularProgressIndicator(),
-                                )
-                              : Icon(Icons.send,color: Colors.blue,size: 40,))
-                    ],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 10),
+            widget.post,
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    width: 270,
+                    // margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: commentFormfield(),
                   ),
-                ),
-            _isLoading?Center(
-              child: Container(
-                height: 100,child: Center(child: CircularProgressIndicator()),
+                  GestureDetector(
+                      onTap: () {
+                        String text = commentController.text;
+                        print(text);
+                        _submit(widget.post.postId, text);
+                      },
+                      child: _isSending
+                          ? Container(
+                              height: 25,
+                              width: 25,
+                              child: CircularProgressIndicator(),
+                            )
+                          : Icon(
+                              Icons.send,
+                              color: Colors.blue,
+                              size: 40,
+                            ))
+                ],
               ),
-            ):SizedBox(height: 1,),
-
-              ],
-
             ),
-          ),
+            // _isLoading
+            //     ? Center(
+            //         child: Container(
+            //           height: 100,
+            //           child: Center(child: CircularProgressIndicator()),
+            //         ),
+            //       )
+            //     : Feed_post(
+            //         comment: 0,
+            //         forComment: true,
+            //         hasPhoto: false,
+            //         imageUrl: comments[0]['postedBy']['imageUrl'],
+            //         isLiked: false,
+            //         isPost: false,
+            //         likes: 0,
+            //         name: comments[0]['postedBy']['local']['username'],
+            //         imageAsset: null,
+            //         repost: 0,
+            //         text: comments[0]['comment'],
+            //         time: '1 min ago',
+            //       ),
+
+            FutureBuilder(
+                // future: getComment(widget.post.postId),
+                future: myFuture,
+                builder: (ctx, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Column(
+                        children: comments != null
+                            ? List.generate(
+                                comments.length,
+                                (i) => Feed_post(
+                                      comment: 0,
+                                      forComment: true,
+                                      hasPhoto: false,
+                                      imageUrl: comments[i]['postedBy']
+                                          ['imageUrl'],
+                                      isLiked: false,
+                                      isPost: false,
+                                      likes: 0,
+                                      name: comments[i]['postedBy']['local']
+                                          ['username'],
+                                      imageAsset: null,
+                                      repost: 0,
+                                      text: comments[i]['comment'],
+                                      time: '1 min ago',
+                                    ))
+                            : [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'No comments found till now..',
+                                    style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 15,
+                                        color: Colors.grey),
+                                  ),
+                                )
+                              ]);
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                })
+          ],
+        ),
+      ),
       backgroundColor: Color(0xFFFFFFFF),
       resizeToAvoidBottomPadding: false,
     );

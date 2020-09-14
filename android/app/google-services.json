@@ -1,43 +1,50 @@
 {
   "project_info": {
-    "project_number": "771079674580",
-    "firebase_url": "https://fireauth-ac72d.firebaseio.com",
-    "project_id": "fireauth-ac72d",
-    "storage_bucket": "fireauth-ac72d.appspot.com"
+    "project_number": "269660422002",
+    "firebase_url": "https://tradetalkies.firebaseio.com",
+    "project_id": "tradetalkies",
+    "storage_bucket": "tradetalkies.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:771079674580:android:1045e63db8987fb0f07941",
+        "mobilesdk_app_id": "1:269660422002:android:03b1e7d763d3a8dc1d27eb",
         "android_client_info": {
-          "package_name": "com.example.fireauth"
+          "package_name": "com.tradetalkie.trade"
         }
       },
       "oauth_client": [
         {
-          "client_id": "771079674580-ce3tn7ekke31q21c820jnqsjfhdlcbi2.apps.googleusercontent.com",
+          "client_id": "269660422002-7aai04sv527eekb5ua713pkp70bh8qie.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.fireauth",
-            "certificate_hash": "72a60a673f87bc7b8d2b515c9d1cd62dc2eee0dc"
+            "package_name": "com.tradetalkie.trade",
+            "certificate_hash": "0f277e5085fa4c893d72771b324f546d588429d2"
           }
         },
         {
-          "client_id": "771079674580-2n4dsphkkmdcmrg02s8ejsai48uav716.apps.googleusercontent.com",
+          "client_id": "269660422002-jl161hg0703ak425ffgier0t18p62pni.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB9BFyotsurAB4N06-ZHHLP9IR4bQUCqYM"
+          "current_key": "AIzaSyAs7I7NznFt7m9hZTOdHBI_8nISu0xqLTc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "771079674580-2n4dsphkkmdcmrg02s8ejsai48uav716.apps.googleusercontent.com",
+              "client_id": "269660422002-jl161hg0703ak425ffgier0t18p62pni.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "269660422002-gach7sqr1eo8acv27trtfu6apelstk65.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tradetalkie.trade"
+              }
             }
           ]
         }

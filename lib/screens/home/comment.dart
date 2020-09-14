@@ -300,7 +300,7 @@ class _CommentState extends State<Comment> {
                         backgroundColor: Theme.of(context).accentColor,
                         child: CircleAvatar(
                             radius: 40,
-                            backgroundImage: wait ? null : NetworkImage(imageUrl),
+                            backgroundImage: wait ? null : imageUrl!=null? NetworkImage(imageUrl):AssetImage('assets/images/avatar.png'),
                             // backgroundImage: widget.profileImage != null
                             //     ? NetworkImage(widget.profileImage)
                             //     : AssetImage('assets/images/avatar.png')

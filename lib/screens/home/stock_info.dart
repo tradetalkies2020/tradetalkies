@@ -1,6 +1,7 @@
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:fireauth/widgets/feed_post.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sparkline/flutter_sparkline.dart';
 
 class StockInfo extends StatefulWidget {
   StockInfo({Key key, this.name, this.code,this.fromSearch}) : super(key: key);
@@ -15,6 +16,9 @@ class StockInfo extends StatefulWidget {
 class _StockInfoState extends State<StockInfo> {
   bool _isWatched = false;
   List filter_type = ['1D', '5D', '1M', '3M', '6M', '1Y', '2Y', '3Y'];
+  var data = [0.0,1.0,1.5,2.0,0.0,0.0,-0.5,-1.0,-0.5,-0.0,-0.0];
+  // var data = [0.0,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5];
+
   List<bool> selected_feed = [
     true,
     false,
@@ -194,7 +198,24 @@ class _StockInfoState extends State<StockInfo> {
               ),
             ),
             SizedBox(height: 15),
-            Container(height: 160),
+            Container(
+              margin: EdgeInsets.all(8),
+              height: 144,
+              // color: Colors.yellow,
+              child: new Sparkline(
+                // sharpCorners: true,
+                data: data,
+                fillMode: FillMode.below,
+                fillGradient: new LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFFc5dfcf),
+                  // Color(0xFFeff7f2)
+                  Color(0xFFfcfdfd)
+                  ]),
+                lineWidth: 1.0,
+                lineColor: Color(0xFF569862),
+                ),),
             Container(
               // color: Colors.red,
               padding: EdgeInsets.only(right: 8.0),

@@ -1,6 +1,7 @@
 import 'package:fireauth/screens/home/post.dart';
 import 'package:fireauth/screens/home/search_screen.dart';
 import 'package:fireauth/screens/home/stock_info.dart';
+import 'package:fireauth/services/auth/services.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:fireauth/widgets/feed_post.dart';
 import 'package:fireauth/widgets/responsive_ui.dart';
@@ -10,6 +11,8 @@ import 'package:fireauth/widgets/watchListItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:english_words/english_words.dart' as english_words;
+import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 class Feeds extends StatefulWidget {
   Feeds(
@@ -44,8 +47,11 @@ class _FeedsState extends State<Feeds> {
   List selectedFilter = [];
   int selectedRadio = 0;
   DateTime from, to;
+
   bool isfromSelected = false;
   bool istoSelected = false;
+  // List comments;
+  // Future myFuture;
   // int selectedRadio = 0;
 
   // setSelectedRadio(int val) {
@@ -64,8 +70,54 @@ class _FeedsState extends State<Feeds> {
   @override
   void initState() {
     super.initState();
+    // _test();
     _delegate = _MySearchDelegate(kEnglishWords, kEnglishWords);
+    // myFuture = getComment('5f5be2749ae7fe00171b88fd');
     // selectedRadio = 0;
+  }
+
+  Future<void> _test() async {
+    try {
+      // print("text is $text and id is $id");
+      DateTime ab = DateTime.now();
+      print(ab);
+      await Provider.of<UserAuth>(context, listen: false).feed(ab);
+      print('done');
+      // await Provider.of<UserAuth>(context, listen: false)
+      //     .getcomment(widget.postId);
+
+      // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       return HomeScreen(
+      //           fromPost: true,
+      //           selectedIndex: 3,
+      //           postImages: images,
+      //           postName: name,
+      //           postText: text,
+      //           profileUrl: image,
+      //           postId:id,
+      //           hasPhoto: _isImageSelected ? true : false);
+      //     },
+      //   ),
+      // );
+      // Navigator.pop(context);
+      // print("posted");
+      Toast.show(
+        "Commented",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    } catch (err) {
+      print(err.toString());
+      // Toast.show(
+      //   "Could not post",
+      //   context,
+      //   duration: Toast.LENGTH_LONG,
+      // );
+    }
   }
 
   List feed_type = ['All', 'Trending', 'Watchlist', 'Following', 'Suggestions'];
@@ -717,9 +769,8 @@ class _FeedsState extends State<Feeds> {
                                           setState(() {
                                             if (selectedRadio == null) {
                                               isFilter = false;
-                                            }
-                                            else
-                                            isFilter = true;
+                                            } else
+                                              isFilter = true;
                                           });
                                           print(
                                               "selected radio is $selectedRadio");
@@ -870,6 +921,51 @@ class _FeedsState extends State<Feeds> {
                       height: 1,
                     ),
               //Divider(),
+              // Index == 1
+              //     ? FutureBuilder(
+              //         // future: getComment(widget.post.postId),
+              //         future: myFuture,
+              //         builder: (ctx, snapshot) {
+              //           if (snapshot.connectionState == ConnectionState.done) {
+              //             return Column(
+              //                 children: comments != null
+              //                     ? List.generate(
+              //                         comments.length,
+              //                         (i) => Feed_post(
+              //                               comment: 0,
+              //                               forComment: true,
+              //                               hasPhoto: false,
+              //                               imageUrl: comments[i]['postedBy']
+              //                                   ['imageUrl'],
+              //                               isLiked: false,
+              //                               isPost: false,
+              //                               likes: 0,
+              //                               name: comments[i]['postedBy']
+              //                                   ['local']['username'],
+              //                               imageAsset: null,
+              //                               repost: 0,
+              //                               text: comments[i]['comment'],
+              //                               time: '1 min ago',
+              //                             ))
+              //                     : [
+              //                         Padding(
+              //                           padding: const EdgeInsets.all(8.0),
+              //                           child: Text(
+              //                             'No comments found till now..',
+              //                             style: TextStyle(
+              //                                 fontFamily: 'Inter',
+              //                                 fontSize: 15,
+              //                                 color: Colors.grey),
+              //                           ),
+              //                         )
+              //                       ]);
+              //           } else {
+              //             return CircularProgressIndicator();
+              //           }
+              //         })
+              //     : SizedBox(
+              //         height: 1,
+              //       ),
 
               Column(
                 children: Index == 0

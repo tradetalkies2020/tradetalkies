@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sparkline/flutter_sparkline.dart';
 
 class WatchListItem extends StatefulWidget {
   final String name, code, rate;
@@ -10,6 +11,7 @@ class WatchListItem extends StatefulWidget {
   _WatchListItemState createState() => _WatchListItemState();
 }
 
+  var data = [0.0,1.0,1.5,2.0,0.0,0.0,-0.5,-1.0,-0.5,-0.0,-0.0];
 class _WatchListItemState extends State<WatchListItem> {
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,17 @@ class _WatchListItemState extends State<WatchListItem> {
                               .headline4
                               .copyWith(color: Colors.black,fontSize: 15,fontWeight: FontWeight.normal,letterSpacing: 0.4))
             ],
+          ),
+          Container(
+            height: 50,
+            width: 120,
+            // color: Colors.yellow,
+            child: new Sparkline(
+                // sharpCorners: true,
+                data: data,
+                lineWidth: 1.0,
+                lineColor: Color(0xFF219653),
+                ),
           ),
           Container(
                       // padding: EdgeInsets.all(16),

@@ -31,6 +31,8 @@ var change_Password = "http://tradetalkies.herokuapp.com/change-password";
 var postUrl = "http://tradetalkies.herokuapp.com/post";
 var likeUrl = "http://tradetalkies.herokuapp.com/like";
 var commentUrl = "http://tradetalkies.herokuapp.com/comment";
+var repostUrl = "http://tradetalkies.herokuapp.com/repost";
+var feedUrl = "http://tradetalkies.herokuapp.com/feed";
 
 var signUp = "$baseUrl/signup";
 var signIn = "$baseUrl/auth/login";
@@ -599,6 +601,160 @@ class UserAuth with ChangeNotifier {
     }
   }
 
+  Future<String> repost(
+      String desc,
+      // List stocks,
+      List images,
+      List pickers,
+      String postId) async {
+    try {
+      // if(images.length==)
+      // String fileName = basename(images[0].path);
+      // String fileName1 = basename(images[1].path);
+
+      // final ext = extension(images[0].path).replaceAll('.', '');
+      // print(ext);
+
+      FormData formData;
+      print(images.length);
+      if (images[0] == 'one') {
+        formData = new FormData.fromMap({
+          "repostId": postId,
+          "desc": desc,
+          "tickers": pickers,
+        });
+      } else if (images.length == 1) {
+        formData = new FormData.fromMap({
+          "repostId": postId,
+          "desc": desc,
+          "image1": await MultipartFile.fromFile(images[0].path.toString(),
+              filename: basename(images[0].path),
+              contentType: MediaType(
+                  "image", extension(images[0].path).replaceAll('.', ''))),
+          "tickers": pickers,
+        });
+      } else if (images.length == 2) {
+        formData = new FormData.fromMap({
+          "repostId": postId,
+          "desc": desc,
+          "image1": await MultipartFile.fromFile(images[0].path.toString(),
+              filename: basename(images[0].path),
+              contentType: MediaType(
+                  "image", extension(images[0].path).replaceAll('.', ''))),
+          "image2": await MultipartFile.fromFile(images[1].path.toString(),
+              filename: basename(images[1].path),
+              contentType: MediaType(
+                  "image", extension(images[1].path).replaceAll('.', ''))),
+          "tickers": pickers,
+        });
+      } else if (images.length == 3) {
+        formData = new FormData.fromMap({
+          "repostId": postId,
+          "desc": desc,
+          "image1": await MultipartFile.fromFile(images[0].path.toString(),
+              filename: basename(images[0].path),
+              contentType: MediaType(
+                  "image", extension(images[0].path).replaceAll('.', ''))),
+          "image2": await MultipartFile.fromFile(images[1].path.toString(),
+              filename: basename(images[1].path),
+              contentType: MediaType(
+                  "image", extension(images[1].path).replaceAll('.', ''))),
+          "image3": await MultipartFile.fromFile(images[2].path.toString(),
+              filename: basename(images[2].path),
+              contentType: MediaType(
+                  "image", extension(images[2].path).replaceAll('.', ''))),
+          "tickers": pickers,
+        });
+      } else if (images.length == 4) {
+        formData = new FormData.fromMap({
+          "repostId": postId,
+          "desc": desc,
+          "image1": await MultipartFile.fromFile(images[0].path.toString(),
+              filename: basename(images[0].path),
+              contentType: MediaType(
+                  "image", extension(images[0].path).replaceAll('.', ''))),
+          "image2": await MultipartFile.fromFile(images[1].path.toString(),
+              filename: basename(images[1].path),
+              contentType: MediaType(
+                  "image", extension(images[1].path).replaceAll('.', ''))),
+          "image3": await MultipartFile.fromFile(images[2].path.toString(),
+              filename: basename(images[2].path),
+              contentType: MediaType(
+                  "image", extension(images[2].path).replaceAll('.', ''))),
+          "image4": await MultipartFile.fromFile(images[3].path.toString(),
+              filename: basename(images[3].path),
+              contentType: MediaType(
+                  "image", extension(images[3].path).replaceAll('.', ''))),
+          "tickers": pickers,
+        });
+      }
+
+      print(formData);
+
+      // print("filebase name is $fileName");
+      // FirebaseMessaging firebaseMessaging = new FirebaseMessaging();4
+      // String newToken = await firebaseMessaging.getToken();
+
+      // FormData formData = new FormData.fromMap({4444
+      //   "desc": desc,
+      //   // "images": await http.MultipartFile.fromPath(fileName,image.path   ,contentType:),
+
+      //   // for (int i = 0;i<images.length; i++){
+      //     // "image$i": await MultipartFile.fromFile(images[i].path.toString(),
+      //         // filename: basename(images[i].path), contentType: MediaType("image", "jpg")),
+
+      //     "image1": await MultipartFile.fromFile(images[0].path.toString(),
+      //         filename: fileName, contentType: MediaType("image", "jpg")),
+      //   "image2": await MultipartFile.fromFile(images[1].path.toString(),
+      //       filename: fileName1, contentType: MediaType("image", ext)),
+
+      //   // "firebaseToken": newToken,
+      // });
+
+      Dio dio = new Dio();
+      dio.options.headers["content-type"] = "multipart/form-data";
+      dio.options.headers["authorization"] = "Bearer $_token";
+      dio.options.headers["cookie"] = "$_token";
+
+      Response response = await dio.post(repostUrl, data: formData);
+      print("File response ${response}");
+      print(response.data.runtimeType);
+      String id = response.data['post']['_id'];
+      // String id = 'see json for id';
+
+      // imageFiles[0] = await MultipartFile.fromFile(imageFiles[0].path.toString(),
+      //     filename: fileName, contentType: MediaType("image", "jpg"));
+      // print(imageFiles);
+      // imageFiles[1] = await MultipartFile.fromFile(imageFiles[1].path.toString(),
+      //     filename: fileName1, contentType: MediaType("image", "jpg"));
+      // print(imageFiles);
+
+      // final response = await http.post(4
+      //   postUrl,
+      //   headers: {
+      //     "Content-type": "application/json",
+      //     "Cookie": "$_token",
+      //     HttpHeaders.authorizationHeader: "Bearer $_token",
+      //   },
+      //   body: json.encode(
+      //     {
+      //       "desc": desc,
+      //       "images": images,
+      //     },
+      //   ),
+      // );
+
+      // print(response);
+
+      notifyListeners();
+      return id;
+      // setLoginPrefs(decodeEmail, decodeUsername, headerToken, decodeUserId);
+    } catch (err) {
+      print(err.toString());
+      throw err;
+    }
+  }
+
   Future<void> signInWithFacebook() async {
     try {
       // firebase token generating....
@@ -639,27 +795,42 @@ class UserAuth with ChangeNotifier {
   Future<void> signInWithGoogle() async {
     try {
       // firebase token generating....
+      print('1');
       FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+      print('2');
+
       String newToken = await firebaseMessaging.getToken();
+      print('3');
 
       // google login methods...
       GoogleSignIn _googleSignIn = GoogleSignIn();
+      print('4');
+
       _googleSignIn.disconnect();
+      print('5');
+
       final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+      print('6');
 
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      print('7');
+
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
+      print('8');
 
       AuthCredential credential = GoogleAuthProvider.getCredential(
         idToken: googleAuth.idToken,
         accessToken: googleAuth.accessToken,
       );
+      print('1');
 
       final FirebaseUser firebseUser =
           (await firebaseAuth.signInWithCredential(credential)).user;
+      print('1');
 
       if (FirebaseUser != null) {
+        print('yes');
         final response = await http.post(
           google_sign_in,
           headers: headers,
@@ -681,6 +852,7 @@ class UserAuth with ChangeNotifier {
         print("its error");
       }
     } catch (err) {
+      print('jj');
       print(err.toString());
       throw err;
     }
@@ -782,6 +954,7 @@ class UserAuth with ChangeNotifier {
     String id,
   ) async {
     try {
+      // String cid="5f4632eb2225433c38b718f6";
       final response = await http.post(
         likeUrl,
         headers: {
@@ -829,7 +1002,7 @@ class UserAuth with ChangeNotifier {
     }
   }
 
-  Future<void> getcomment(String id) async {
+  Future<List> getcomment(String id) async {
     try {
       print("id is $id");
       final response = await http.get(
@@ -839,6 +1012,44 @@ class UserAuth with ChangeNotifier {
           "Cookie": "$_token",
           HttpHeaders.authorizationHeader: "Bearer $_token",
         },
+      );
+
+      // print(response.body);
+
+      List comments = json.decode(response.body)['comments'];
+      // print(comments);
+      print(comments[0]['comment']);
+      print(comments[0]['postedBy']['local']['username']);
+      print(comments[0]['postedBy']['createdAt']);
+      // print(DateTime(comments[0]['createdAt']));
+      print(comments[0]['postedBy']['imageUrl']);
+      // Map output = {
+
+      //   'image': '',
+      //   'userName': '_name'
+      // };
+
+      notifyListeners();
+      return comments;
+    } catch (err) {
+      print(err.toString());
+      throw err;
+    }
+  }
+
+  Future<void> feed(DateTime date) async {
+    try {
+      // print("id is $id");
+      print('shs');
+      print(date.toIso8601String());
+      final response = await http.get(
+        "http://tradetalkies.herokuapp.com/feed?startTimestamp=${date}",
+        headers: {
+          "Content-type": "application/json",
+          "Cookie": "$_token",
+          HttpHeaders.authorizationHeader: "Bearer $_token",
+        },
+        
       );
 
       print(response.body);

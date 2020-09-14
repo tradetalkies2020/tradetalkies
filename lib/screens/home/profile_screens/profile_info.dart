@@ -226,8 +226,10 @@ class _Profile_infoState extends State<Profile_info> {
                           child: CircleAvatar(
                             radius: 40,
                             backgroundImage: _image == null
-                                ? NetworkImage(imageUrl)
+                                ? imageUrl!=null? NetworkImage(imageUrl):AssetImage('assets/images/avatar.png')
                                 : FileImage(_image),
+                            // backgroundImage: imageUrl!=null?(_image == null?NetworkImage(imageUrl)
+                            //     : FileImage(_image)):AssetImage('assets/images/avatar.png'),
                           ),
                         ),
                         SizedBox(

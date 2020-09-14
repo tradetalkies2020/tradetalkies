@@ -117,7 +117,7 @@ class _ProfileState extends State<Profile> {
                               )
                             : CircleAvatar(
                                 radius: 40,
-                                backgroundImage: NetworkImage(imageUrl)),
+                                backgroundImage:imageUrl!=null? NetworkImage(imageUrl):AssetImage('assets/images/avatar.png')),
                       ),
                       SizedBox(
                         width: 25.0,

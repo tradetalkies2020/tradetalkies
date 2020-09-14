@@ -55,8 +55,10 @@ class _Feed_postState extends State<Feed_post> {
       print(widget.postId);
       if (!liked) {
         await Provider.of<UserAuth>(context, listen: false).like(widget.postId);
+        print('liked');
       } else {
-        print('unlike not done');
+        await Provider.of<UserAuth>(context, listen: false).like(widget.postId);
+        print('unliked');
       }
     } catch (err) {
       print(err.toString());
@@ -91,10 +93,10 @@ Navigator.push(
                                         imageAsset: widget.hasPhoto?widget.imageAsset:null,
                                         imageUrl: widget.imageUrl,
                                         isPost: widget.isPost,
-                                        isLiked: widget.isLiked,
-                                        likes: widget.likes,
-                                        comment: widget.comment,
-                                        repost: widget.repost,
+                                        isLiked: isLiked,
+                                        likes: likeCount,
+                                        comment: commentCount,
+                                        repost: repostCount,
                                         forComment: true,
                                       )) ));
         }

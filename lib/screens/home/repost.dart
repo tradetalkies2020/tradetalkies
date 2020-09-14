@@ -1,18 +1,29 @@
 // import 'dart:html';
 
+import 'dart:io';
+
+import 'package:fireauth/screens/home/stocks_data.dart';
 import 'package:fireauth/services/auth/services.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 class Repost extends StatefulWidget {
-  Repost({Key key, this.name, this.postId, this.profileImage,this.text,this.time})
+  Repost(
+      {Key key,
+      this.name,
+      this.postId,
+      this.profileImage,
+      this.text,
+      this.time})
       : super(key: key);
-  final String name, profileImage, postId,time,text;
+  final String name, profileImage, postId, time, text;
 
   @override
   _CommentState createState() => _CommentState();
@@ -24,8 +35,72 @@ class _CommentState extends State<Repost> {
   TextEditingController textController = TextEditingController();
   String imageUrl;
   bool wait = false;
+  bool _isImageSelected = false;
+  GlobalKey<FlutterMentionsState> key = GlobalKey<FlutterMentionsState>();
+  Stocks ab = Stocks();
+
+  // Stocks ab = Stocks();
+
+  List stocks = [];
+  List<String> pickers = [];
+  List<Map<String, dynamic>> finalStocks = [];
+  // List<Map<String, dynamic>> readyStocks = [];
+
   void initState() {
     getImage();
+    _getInfo();
+  }
+
+  Future<List> _getInfo() async {
+    // setState(() {
+    //   _isgettingData = true;
+    // });
+    try {
+      print('trying');
+
+      // setState(() {
+      //   _isgettingData = true;
+      // });
+
+      stocks = await Provider.of<UserAuth>(context, listen: false).getData();
+      ab.insertData(stocks);
+      print(ab.data);
+      print('sarthak');
+      finalStocks = ab.data;
+      print(finalStocks);
+
+      // setState(() {
+      //   print("done");
+
+      //   _isgettingData = false;
+      // });
+      print('yes');
+      // print('datarecieved is $stocks');
+      // print(stocks.length);
+
+      print('data recieved');
+
+      // oldAge = output['age'];
+      // oldIndustry = output['industry'];
+      // imageUrl = output['image'];
+      // print("age=$oldAge");
+      // Info myinfo = new Info();
+      // myinfo.image=
+
+      // oldIndustry =
+      //     await Provider.of<UserAuth>(context, listen: false).getIndustry();
+      // print("industry=$oldIndustry");
+    } catch (err) {
+      print(err.toString());
+      Toast.show(
+        "error",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    }
+    // setState(() {
+    //   _isgettingData = false;
+    // });
   }
 
   Future<void> getImage() async {
@@ -54,16 +129,52 @@ class _CommentState extends State<Repost> {
     setState(() {
       _isLoading = true;
     });
+    List imageFiles = [];
+    String image, name;
 
-    final String text = textController.text;
+    if (_isImageSelected == false) {
+      imageFiles = ['one'];
+    } else {
+      for (int i = 0; i < images.length; i++) {
+        final byteData = await images[i].getByteData();
+        final tempFile =
+            File("${(await getTemporaryDirectory()).path}/${images[i].name}");
+        final file = await tempFile.writeAsBytes(
+          byteData.buffer
+              .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+        );
+        imageFiles.add(file);
+      }
+    }
+
+    print(imageFiles);
+    // String fileName = path.basename(imageFiles[0].path);
+    // String fileName1 = path.basename(imageFiles[1].path);
+
+    // print("filebase name is $fileName");
+
+    final String text = key.currentState.controller.text;
+    //text.replaceAllMapped(new RegExp(r'@'), (match) =>r'n' );
 
     print(text);
+    print(pickers);
 
     try {
-      await Provider.of<UserAuth>(context, listen: false)
-          .comment(text, widget.postId);
-      await Provider.of<UserAuth>(context, listen: false)
-          .getcomment(widget.postId);
+      // imageFiles[0] = await MultipartFile.fromFile(imageFiles[0].path.toString(),
+      //     filename: fileName, contentType: MediaType("image", "jpg"));
+      // print(imageFiles);
+      // imageFiles[1] = await MultipartFile.fromFile(imageFiles[1].path.toString(),
+      //     filename: fileName1, contentType: MediaType("image", "jpg"));
+      // print(imageFiles);
+
+      String id = await Provider.of<UserAuth>(context, listen: false)
+          .repost(text, imageFiles, pickers, widget.postId);
+      // Map output = await Provider.of<UserAuth>(context, listen: false).getAge();
+      // image = output['image'];
+      // name = output['userName'];
+      // print(image);
+      print('repost id is $id');
+      Navigator.pop(context);
 
       // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
       // Navigator.push(
@@ -82,10 +193,9 @@ class _CommentState extends State<Repost> {
       //     },
       //   ),
       // );
-      Navigator.pop(context);
-      // print("posted");
+      print("posted");
       Toast.show(
-        "Commented",
+        "Posted",
         context,
         duration: Toast.LENGTH_LONG,
       );
@@ -101,6 +211,58 @@ class _CommentState extends State<Repost> {
       _isLoading = false;
     });
   }
+
+  // Future<void> _submit() async {
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+
+  //   final String text = textController.text;
+
+  //   print(text);
+
+  //   try {
+  //     await Provider.of<UserAuth>(context, listen: false)
+  //         .comment(text, widget.postId);
+  //     await Provider.of<UserAuth>(context, listen: false)
+  //         .getcomment(widget.postId);
+
+  //     // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+  //     // Navigator.push(
+  //     //   context,
+  //     //   MaterialPageRoute(
+  //     //     builder: (context) {
+  //     //       return HomeScreen(
+  //     //           fromPost: true,
+  //     //           selectedIndex: 3,
+  //     //           postImages: images,
+  //     //           postName: name,
+  //     //           postText: text,
+  //     //           profileUrl: image,
+  //     //           postId:id,
+  //     //           hasPhoto: _isImageSelected ? true : false);
+  //     //     },
+  //     //   ),
+  //     // );
+  //     Navigator.pop(context);
+  //     // print("posted");
+  //     Toast.show(
+  //       "Commented",
+  //       context,
+  //       duration: Toast.LENGTH_LONG,
+  //     );
+  //   } catch (err) {
+  //     print(err.toString());
+  //     // Toast.show(
+  //     //   "Could not post",
+  //     //   context,
+  //     //   duration: Toast.LENGTH_LONG,
+  //     // );
+  //   }
+  //   setState(() {
+  //     _isLoading = false;
+  //   });
+  // }
 
   // buildItem(BuildContext context, Asset image) {
   //   return Padding(
@@ -186,24 +348,30 @@ class _CommentState extends State<Repost> {
 
   Future<void> loadAssets() async {
     setState(() {
-      images = List<Asset>();
+      images = [];
       print(images);
     });
 
-    List<Asset> resultList;
+    List resultList;
 
     try {
       resultList = await MultiImagePicker.pickImages(
         maxImages: 4,
       );
+      _isImageSelected = true;
+      // print(resultList);
     } on NoImagesSelectedException catch (e) {
-      Scaffold.of(context).showSnackBar(new SnackBar(
-        content: new Text(e.message),
-      ));
+      print(e.message);
+      _isImageSelected = false;
+
+      // images = [];
+      // Scaffold.of(context).showSnackBar(new SnackBar(
+      //   content: new Text(e.message),
+
     } catch (e) {
-      Scaffold.of(context).showSnackBar(new SnackBar(
-        content: new Text(e.message),
-      ));
+      print(e.toString());
+      _isImageSelected = false;
+      // images == [];
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -212,11 +380,79 @@ class _CommentState extends State<Repost> {
     if (!mounted) return;
 
     setState(() {
-      images = resultList;
-      print(images);
+      // images = resultList;
+      // print(images);
+      // _isImageSelected = false;
+      if (_isImageSelected) {
+        // _isImageSelected = false;
+        images = resultList;
+        print(images);
+        // _isImageSelected = false;
+        // } else {
+        //   images = resultList;
+        //   print(images);
+        //   _isImageSelected = false;
+        // }
+      }
     });
+
+    // print(images[0].identifier.)
+
+    // final byteData = await images[0].getByteData();
+    // final tempFile =
+    //     File("${(await getTemporaryDirectory()).path}/${images[0].name}");
+    // final file = await tempFile.writeAsBytes(
+    //   byteData.buffer
+    //       .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+    // );
+
+    // print(file);
+
+    // final byteData = await resultList[0].getByteData();
+    // final tempFile =
+    //     File("${(await getTemporaryDirectory()).path}/${resultList[0].}");
+    // final file = await tempFile.writeAsBytes(
+    //   byteData.buffer
+    //       .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+    // );
+
+    // print(file);
     // widget.updateAssetImages(resultList);
   }
+
+  // Future<void> loadAssets() async {
+  //   setState(() {
+  //     images = List<Asset>();
+  //     print(images);
+  //   });
+
+  //   List<Asset> resultList;
+
+  //   try {
+  //     resultList = await MultiImagePicker.pickImages(
+  //       maxImages: 4,
+  //     );
+  //   } on NoImagesSelectedException catch (e) {
+  //     Scaffold.of(context).showSnackBar(new SnackBar(
+  //       content: new Text(e.message),
+  //     ));
+  //   } catch (e) {
+  //     Scaffold.of(context).showSnackBar(new SnackBar(
+  //       content: new Text(e.message),
+  //     ));
+  //   }
+
+  //   // If the widget was removed from the tree while the asynchronous platform
+  //   // message was in flight, we want to discard the reply rather than calling
+  //   // setState to update our non-existent appearance.
+  //   if (!mounted) return;
+
+  //   setState(() {
+  //     images = resultList;
+  //     print(images);
+  //   });
+  //   // widget.updateAssetImages(resultList);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -302,9 +538,13 @@ class _CommentState extends State<Repost> {
                         radius: 25,
                         backgroundColor: Theme.of(context).accentColor,
                         child: CircleAvatar(
-                            radius: 40,
-                            backgroundImage:
-                                wait ? null : NetworkImage(imageUrl)),
+                          radius: 40,
+                          backgroundImage: wait
+                              ? null
+                              : imageUrl != null
+                                  ? NetworkImage(imageUrl)
+                                  : AssetImage('assets/images/avatar.png'),
+                        ),
                       )
                       // Padding(
                       //   padding: const EdgeInsets.all(25),
@@ -332,17 +572,18 @@ class _CommentState extends State<Repost> {
                       Container(
                         // color:Colors.lime,
                         decoration: BoxDecoration(
-                        color: Colors.white,
-                        // boxShadow: [
-                        //   BoxShadow(
-                        //     color:Colors.grey,
-                        //     offset: Offset(0.5, 0.5)
-                        //     // offset: Offset.fromDirection(2.0)
-                        //   )
-                        // ],
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        border:
-                            Border.all(color: Color(0xFFE4E4E4), width: 1)),
+                            color: Colors.white,
+                            // boxShadow: [
+                            //   BoxShadow(
+                            //     color:Colors.grey,
+                            //     offset: Offset(0.5, 0.5)
+                            //     // offset: Offset.fromDirection(2.0)
+                            //   )
+                            // ],
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                            border:
+                                Border.all(color: Color(0xFFE4E4E4), width: 1)),
 
                         // height: 100,
                         width: 270,
@@ -354,55 +595,62 @@ class _CommentState extends State<Repost> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CircleAvatar(
-                                radius: 20,
-                                backgroundColor: Theme.of(context).accentColor,
-                                child: CircleAvatar(
-                                    radius: 40,
-                                    backgroundImage: widget.profileImage != null
-                                      ? NetworkImage(widget.profileImage)
-                                      : AssetImage('assets/images/avatar.png')
-                                        ),
-                              ),
-                              SizedBox(width: 10,),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(widget.name,style: TextStyle(
-                                        fontSize: 14,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w600)),
-                                        SizedBox(height: 3,),
-                                  Text(widget.time,style: TextStyle(
-                                        fontSize: 12,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.normal)),
-                                  
-
+                                    radius: 20,
+                                    backgroundColor:
+                                        Theme.of(context).accentColor,
+                                    child: CircleAvatar(
+                                        radius: 40,
+                                        backgroundImage: widget.profileImage !=
+                                                null
+                                            ? NetworkImage(widget.profileImage)
+                                            : AssetImage(
+                                                'assets/images/avatar.png')),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(widget.name,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.w600)),
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Text(widget.time,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.normal)),
+                                    ],
+                                  )
                                 ],
-                              )
-                                ],
                               ),
-                              SizedBox(height:2),
+                              SizedBox(height: 2),
                               Container(
-                                margin: EdgeInsets.only(left:48),
-                // color: Colors.blue,
+                                margin: EdgeInsets.only(left: 48),
+                                // color: Colors.blue,
 
-                                child: Text(widget.text,style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'Inter',
-                      color: Color(0xFF282828),
-                      height: 1.3),),
+                                child: Text(
+                                  widget.text,
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: 'Inter',
+                                      color: Color(0xFF282828),
+                                      height: 1.3),
+                                ),
                               ),
-                              SizedBox(height:2)
+                              SizedBox(height: 2)
                             ],
                           ),
-
-                          
                         ),
                         // width: 250,
-                        
                       ),
-                      
+
                       Container(
                         // color:Colors.lime,
                         height: 200,
@@ -411,25 +659,115 @@ class _CommentState extends State<Repost> {
                           // color:Colors.blue,
 
                           margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                          child: TextFormField(
-                            controller: textController,
-                            // minLines: 0,
-                            maxLines: 10,
+                          child: FlutterMentions(
+                            onMentionAdd: (value) {
+                              pickers.add("\$${value['display']}");
+                              // pickers.add("\"abab\"");
+                              print(pickers);
+                              //setState(() {
+                              //key.currentState.controller.text.replaceAllMapped(new RegExp('@'), (match) =>'n' );
+                              //print(key.currentState.controller.text);
+                              //});
+                              //print(key.currentState.controller.text);
+                            },
                             style: TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
+                              color: Colors.black,
                             ),
                             decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText:
-                                    'Write something to repost (optional)',
+                                    'Write something to \nrepost (optional)',
                                 hintStyle: TextStyle(
                                     height: 1.3,
                                     fontFamily: 'Inter',
                                     fontSize: 22,
                                     color: Color(0xff000000).withOpacity(0.3))),
+                            key: key,
+                            suggestionPosition: SuggestionPosition.Bottom,
+                            maxLines: 5,
+                            minLines: 1,
+                            mentions: [
+                              Mention(
+                                  trigger: '@',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                  ),
+                                  data: ab.data,
+                                  matchAll: false,
+                                  suggestionBuilder: (data) {
+                                    return Container(
+                                      // color: Colors.yellow,
+                                      // margin: EdgeInsets.all(5),
+
+                                      padding: EdgeInsets.only(
+                                        left: 15,
+                                        right: 15,
+                                      ),
+                                      child: InkWell(
+                                        // onTap: () {
+                                        //   pickers.add(data['display']);
+                                        // },
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              data['full_name'],
+                                              style: TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 16,
+                                                  color: Colors.black),
+                                            ),
+                                            SizedBox(
+                                              height: 6,
+                                            ),
+                                            Text('\$${data['display']}',
+                                                style: TextStyle(
+                                                    fontFamily: 'Inter',
+                                                    fontSize: 14,
+                                                    color: Colors.grey)),
+                                            Divider()
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                              // Mention(
+                              //   trigger: '#',
+                              //   disableMarkup: true,
+                              //   style: TextStyle(
+                              //     color: Colors.blue,
+                              //   ),
+                              //   data: [
+                              //     {'id': 'reactjs', 'display': 'reactjs'},
+                              //     {'id': 'javascript', 'display': 'javascript'},
+                              //   ],
+                              //   matchAll: true,
+                              // )
+                            ],
                           ),
+                          // child: TextFormField(
+                          //   controller: textController,
+                          //   // minLines: 0,
+                          //   maxLines: 10,
+                          //   style: TextStyle(
+                          //     fontFamily: 'Inter',
+                          //     fontSize: 18,
+                          //     fontWeight: FontWeight.w500,
+                          //   ),
+                          //   decoration: InputDecoration(
+                          //       border: InputBorder.none,
+                          //       hintText:
+                          //           'Write something to repost (optional)',
+                          //       hintStyle: TextStyle(
+                          //           height: 1.3,
+                          //           fontFamily: 'Inter',
+                          //           fontSize: 22,
+                          //           color: Color(0xff000000).withOpacity(0.3))),
+                          // ),
                         ),
                       )
                       //         Container(
