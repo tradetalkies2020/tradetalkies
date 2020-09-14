@@ -399,6 +399,7 @@ exports.getFeed = (req, res, next) => {
     // let currentUser=req.session.user;
     // let hourly=req.query.hourly;
     // let weekly=req.query.weekly;
-    const startTimestamp=req.body.startTimestamp;
+    const startTimestamp=req.query.startTimestamp;
     console.log(startTimestamp);
+    console.log(typeof(startTimestamp));
 };
