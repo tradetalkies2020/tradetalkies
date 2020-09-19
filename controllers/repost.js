@@ -39,10 +39,10 @@ exports.postNewRepost = async (req, res, next) => {
     Constants.findOne({ name: "points" })
         .select("value")
         .then((pointSet) => {
-            let postvalue = pointSet.value.post;
+            let repostvalue = pointSet.value.repost;
             let userPromise = userServices.addPoints(
                 currentUser._id,
-                postvalue
+                repostvalue
             );
             userPromise
                 .then((result) => {
@@ -120,6 +120,7 @@ exports.likeRepost = (req, res, next) => {
                     { $pull: { likes: { like: currentUser._id } } }
                 )
                     .then((repost) => {
+
                         return res.json({
                             repost: repost,
                             liked: false,
@@ -150,7 +151,33 @@ exports.likeRepost = (req, res, next) => {
                     { new: true }
                 )
                     .then((repost) => {
-                        return res.json({ repost: repost, liked: true });
+                        Constants.findOne({ name: "points" })
+                        .select("value")
+                        .then((pointSet) => {
+                            let likevalue = pointSet.value.like;
+                            let pointPromise = userServices.addPoints(
+                                currentUser._id,
+                                likevalue
+                            );
+                            pointPromise
+                                .then((result) => {
+                                    return res.json({
+                                        repost: repost,
+                                        liked: true,
+                                    });
+                                })
+                                .catch((err) => {
+                                    logger.error(
+                                        `Error in updating points in point promise for likes : ${err}`
+                                    );
+                                    console.log(
+                                        `Error in updating points in point promise for likes : ${err}`
+                                    );
+                                    return res.json({
+                                        errorMessage: `Error in updating points in point promise for likes : ${err}`,
+                                    });
+                                });
+                        });
                     })
                     .catch((err) => {
                         console.log(

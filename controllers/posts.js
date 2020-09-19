@@ -151,7 +151,33 @@ exports.likePost = (req, res, next) => {
                     { new: true }
                 )
                     .then((post) => {
-                        return res.json({ post: post, liked: true });
+                        Constants.findOne({ name: "points" })
+                            .select("value")
+                            .then((pointSet) => {
+                                let likevalue = pointSet.value.like;
+                                let pointPromise = userServices.addPoints(
+                                    currentUser._id,
+                                    likevalue
+                                );
+                                pointPromise
+                                    .then((result) => {
+                                        return res.json({
+                                            post: post,
+                                            liked: true,
+                                        });
+                                    })
+                                    .catch((err) => {
+                                        logger.error(
+                                            `Error in updating points in point promise for likes : ${err}`
+                                        );
+                                        console.log(
+                                            `Error in updating points in point promise for likes : ${err}`
+                                        );
+                                        return res.json({
+                                            errorMessage: `Error in updating points in point promise for likes : ${err}`,
+                                        });
+                                    });
+                            });
                     })
                     .catch((err) => {
                         console.log(
@@ -308,7 +334,31 @@ exports.postComment = (req, res, next) => {
                 console.log(
                     `${currentUser._id} tried to post a comment for ${req.body.postId}`
                 );
-                res.json({ comments: newComments, posttDoc: result.postId });
+                Constants.findOne({ name: "points" })
+                    .select("value")
+                    .then((pointSet) => {
+                        let commentvalue = pointSet.value.comment;
+                        let pointPromise = userServices.addPoints(
+                            currentUser._id,
+                            commentvalue
+                        );
+                        pointPromise.then((result) => {
+                            res.json({
+                                comments: newComments,
+                                posttDoc: result.postId,
+                            }).catch((err) => {
+                                logger.error(
+                                    `Error in updating points in point promise for comments : ${err}`
+                                );
+                                console.log(
+                                    `Error in updating points in point promise for comments : ${err}`
+                                );
+                                return res.json({
+                                    errorMessage: `Error in updating points in point promise for comments : ${err}`,
+                                });
+                            });
+                        });
+                    });
             }
         });
 };
@@ -394,12 +444,19 @@ exports.dailytrendingPosts = (req, res, next) => {
 };
 
 exports.getFeed = (req, res, next) => {
-    // let endTimestamp = new Date();
-    // let starTimeStamp = new Date();
-    // let currentUser=req.session.user;
-    // let hourly=req.query.hourly;
-    // let weekly=req.query.weekly;
-    const startTimestamp=req.query.startTimestamp;
+    let endTimestamp = new Date();
+    let currentUser = req.session.user;
+    let hourly = Boolean(req.query.hourly);
+    let weekly = Boolean(req.query.weekly);
+    let startTimestamp = new Date();
+    console.log(typeof hourly);
+    if (hourly === true) {
+        startTimestamp.setHours(endTimestamp.getHours() - 24);
+    } else if (weekly === true) {
+        startTimestamp.setHours(endTimestamp.getHours() - 24 * 7);
+    } else {
+        startTimestamp = new Date(req.query.startTimestamp);
+    }
+
     console.log(startTimestamp);
-    console.log(typeof(startTimestamp));
 };
