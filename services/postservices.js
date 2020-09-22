@@ -166,6 +166,8 @@ exports.feedService = (startTimestamp, endTimestamp, currentUserId) => {
                     createdAt: { $gte: startTimestamp, $lte: endTimestamp },
                 },
             },
+            
+
             {
                 $lookup: {
                     from: "users",
@@ -175,6 +177,23 @@ exports.feedService = (startTimestamp, endTimestamp, currentUserId) => {
                 },
             },
             { $unwind: "$userDetails" },
+            {
+                $lookup: {
+                    from: "comments",
+                    localField: "_id",
+                    foreignField: "postId",
+                    as: "comments",
+                },
+            },
+            { $unwind: "$comments" },
+            {
+                $lookup: {
+                    from: "reposts",
+                    localField: "_id",
+                    foreignField: "repostFrom",
+                    as: "reposts",
+                },
+            },
             { $sort: { createdAt: -1 } },
         ]).then(async (results) => {
             console.log(results.length);
