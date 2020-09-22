@@ -456,7 +456,14 @@ exports.getFeed = (req, res, next) => {
         startTimestamp.setHours(endTimestamp.getHours() - 24 * 7);
     } else {
         startTimestamp = new Date(req.query.startTimestamp);
+
+        if (req.query.endTimestamp !== undefined) {
+            endTimestamp = new Date(req.query.endTimestamp);
+        }
     }
 
-    console.log(startTimestamp);
+    let feedPromise = postServices.feedService(startTimestamp, endTimestamp,currentUser._id);
+    feedPromise.then((result) => {
+        return res.json(result);
+    });
 };

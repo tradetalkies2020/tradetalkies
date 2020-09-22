@@ -1,7 +1,9 @@
 const User = require("../models/User");
 const Constant = require("../models/constants");
 const Post = require("../models/Post");
-
+const mongoose = require("mongoose");
+const Follow = require("../models/Follow");
+const async = require("async");
 exports.ifLiked = (userId, postId) => {
     return new Promise((resolve, reject) => {
         Post.findOne({ _id: postId, "likes.like": userId })
@@ -25,7 +27,7 @@ exports.trendingService = (startTimeStamp, endTimeStamp) => {
     return new Promise((resolve, reject) => {
         Post.aggregate([
             // { $match: { "likes.time": { $gte: yesterday } } },
-            
+
             //stage for looking up comments for each post
             {
                 $lookup: {
@@ -152,5 +154,82 @@ exports.trendingService = (startTimeStamp, endTimeStamp) => {
                 logger.error(`Error in trending serviecs : ${err}`);
                 reject(err);
             });
+    });
+};
+
+exports.feedService = (startTimestamp, endTimestamp, currentUserId) => {
+    console.log(startTimestamp, endTimestamp);
+    return new Promise((resolve, reject) => {
+        Post.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: startTimestamp, $lte: endTimestamp },
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "userDetails",
+                },
+            },
+            { $unwind: "$userDetails" },
+            { $sort: { createdAt: -1 } },
+        ]).then(async (results) => {
+            console.log(results.length);
+            const filteredFollowing = [];
+            async.forEach(
+                results,
+                (result, callback) => {
+                    let likedPromise = this.ifLiked(currentUserId, result._id);
+                    likedPromise
+                        .then((liked) => {
+                            result.liked = liked;
+                            if (
+                                result.userId.toString() ===
+                                currentUserId.toString()
+                            ) {
+                                console.log(result);
+                                filteredFollowing.push(result);
+                                callback();
+                            } else {
+                                Follow.findOne({
+                                    userId: currentUserId,
+                                    following: result.userId,
+                                }).then((foundFollower) => {
+                                    if (foundFollower) {
+                                        // console.log(foundFollower);
+                                        filteredFollowing.push(result);
+                                        return callback();
+                                    } else {
+                                        return callback();
+                                    }
+                                });
+                            }
+                        })
+                        .catch((err) => {
+                            logger.error(
+                                `Error occured in fetching like for ${currentUserId}`
+                            );
+                            console.log(
+                                `Error occured in fetching like for ${currentUserId}`
+                            );
+                            reject(err);
+                        });
+                },
+                (err) => {
+                    if (err) {
+                        console.log(err);
+                        logger.error(err);
+                        reject(err);
+                    }
+                    console.log(`Iterating done`);
+                    //console.log(filteredFollowing);
+                    console.log(filteredFollowing.length);
+                    return resolve(filteredFollowing);
+                }
+            );
+        });
     });
 };
