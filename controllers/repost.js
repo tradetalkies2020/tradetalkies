@@ -111,7 +111,7 @@ exports.likeRepost = (req, res, next) => {
     const currentUser = req.session.user;
     const repostId = req.body.repostId;
     postServices
-        .ifLiked(currentUser._id, repostId)
+        .ifRepostLiked(currentUser._id, repostId)
         .then((liked) => {
             console.log(liked);
             if (liked === true) {

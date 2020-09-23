@@ -29,6 +29,7 @@ router.get(
 
 //Repost Logic
 router.post("/repost", isAuth, userLog, repostController.postNewRepost);
+router.post("/like-repost", isAuth, userLog, repostController.likeRepost);
 
 //trending logic
 router.get(
@@ -37,6 +38,6 @@ router.get(
     userLog,
     postController.dailytrendingPosts
 );
-router.get("/feed", postController.getFeed);
+router.get("/feed", isAuth, userLog, postController.getFeed);
 
 module.exports = router;

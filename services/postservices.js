@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Constant = require("../models/constants");
 const Post = require("../models/Post");
+const Repost = require("../models/Repost");
 const mongoose = require("mongoose");
 const Follow = require("../models/Follow");
 const async = require("async");
@@ -21,6 +22,58 @@ exports.ifLiked = (userId, postId) => {
             });
     });
 };
+
+exports.ifRepostLiked = (userId, repostId) => {
+    return new Promise((resolve, reject) => {
+        Repost.findOne({ _id: repostId, "likes.like": userId })
+            .then((result) => {
+                if (!result) {
+                    return resolve(false);
+                } else {
+                    return resolve(true);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                logger.error(err);
+                return reject(err);
+            });
+    });
+};
+function ifRepostLiked (userId, repostId)  {
+    return new Promise((resolve, reject) => {
+        Repost.findOne({ _id: repostId, "likes.like": userId })
+            .then((result) => {
+                if (!result) {
+                    return resolve(false);
+                } else {
+                    return resolve(true);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                logger.error(err);
+                return reject(err);
+            });
+    });
+};
+function ifLiked(userId, postId) {
+    return new Promise((resolve, reject) => {
+        Post.findOne({ _id: postId, "likes.like": userId })
+            .then((result) => {
+                if (!result) {
+                    return resolve(false);
+                } else {
+                    return resolve(true);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                logger.error(err);
+                return reject(err);
+            });
+    });
+}
 
 exports.trendingService = (startTimeStamp, endTimeStamp) => {
     console.log(startTimeStamp, endTimeStamp);
@@ -160,95 +213,214 @@ exports.trendingService = (startTimeStamp, endTimeStamp) => {
 exports.feedService = (startTimestamp, endTimestamp, currentUserId) => {
     console.log(startTimestamp, endTimestamp);
     return new Promise((resolve, reject) => {
-        Post.aggregate([
-            {
-                $match: {
-                    createdAt: { $gte: startTimestamp, $lte: endTimestamp },
-                },
-            },
-            
+        //parallelluy compute results for posts and reposts and sort them according to time//
+        async.parallel(
+            [
+                function (outercallback) {
+                    Post.aggregate([
+                        {
+                            $match: {
+                                createdAt: {
+                                    $gte: startTimestamp,
+                                    $lte: endTimestamp,
+                                },
+                            },
+                        },
 
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "userId",
-                    foreignField: "_id",
-                    as: "userDetails",
-                },
-            },
-            { $unwind: "$userDetails" },
-            {
-                $lookup: {
-                    from: "comments",
-                    localField: "_id",
-                    foreignField: "postId",
-                    as: "comments",
-                },
-            },
-            { $unwind: "$comments" },
-            {
-                $lookup: {
-                    from: "reposts",
-                    localField: "_id",
-                    foreignField: "repostFrom",
-                    as: "reposts",
-                },
-            },
-            { $sort: { createdAt: -1 } },
-        ]).then(async (results) => {
-            console.log(results.length);
-            const filteredFollowing = [];
-            async.forEach(
-                results,
-                (result, callback) => {
-                    let likedPromise = this.ifLiked(currentUserId, result._id);
-                    likedPromise
-                        .then((liked) => {
-                            result.liked = liked;
-                            if (
-                                result.userId.toString() ===
-                                currentUserId.toString()
-                            ) {
-                                console.log(result);
-                                filteredFollowing.push(result);
-                                callback();
-                            } else {
-                                Follow.findOne({
-                                    userId: currentUserId,
-                                    following: result.userId,
-                                }).then((foundFollower) => {
-                                    if (foundFollower) {
-                                        // console.log(foundFollower);
-                                        filteredFollowing.push(result);
-                                        return callback();
-                                    } else {
-                                        return callback();
-                                    }
-                                });
+                        {
+                            $lookup: {
+                                from: "users",
+                                localField: "userId",
+                                foreignField: "_id",
+                                as: "userDetails",
+                            },
+                        },
+                        { $unwind: "$userDetails" },
+                        {
+                            $lookup: {
+                                from: "comments",
+                                localField: "_id",
+                                foreignField: "postId",
+                                as: "comments",
+                            },
+                        },
+                        { $unwind: "$comments" },
+                        {
+                            $lookup: {
+                                from: "reposts",
+                                localField: "_id",
+                                foreignField: "repostFrom",
+                                as: "reposts",
+                            },
+                        },
+                        { $sort: { createdAt: -1 } },
+                    ]).then(async (results) => {
+                        console.log(results.length);
+                        const filteredFollowing = [];
+                        async.forEach(
+                            results,
+                            (result, callback) => {
+                                let likedPromise = ifLiked(
+                                    currentUserId,
+                                    result._id
+                                );
+                                likedPromise
+                                    .then((liked) => {
+                                        result.liked = liked;
+                                        if (
+                                            result.userId.toString() ===
+                                            currentUserId.toString()
+                                        ) {
+                                            //console.log(result);
+                                            filteredFollowing.push(result);
+                                            callback();
+                                        } else {
+                                            Follow.findOne({
+                                                userId: currentUserId,
+                                                following: result.userId,
+                                            }).then((foundFollower) => {
+                                                if (foundFollower) {
+                                                    // console.log(foundFollower);
+                                                    filteredFollowing.push(
+                                                        result
+                                                    );
+                                                    return callback();
+                                                } else {
+                                                    return callback();
+                                                }
+                                            });
+                                        }
+                                    })
+                                    .catch((err) => {
+                                        logger.error(
+                                            `Error occured in fetching like for ${currentUserId}`
+                                        );
+                                        console.log(
+                                            `Error occured in fetching like for ${currentUserId}`
+                                        );
+                                        reject(err);
+                                    });
+                            },
+                            (err) => {
+                                if (err) {
+                                    console.log(err);
+                                    logger.error(err);
+                                    reject(err);
+                                }
+                                console.log(`Iterating done`);
+                                //console.log(filteredFollowing);
+                                if (filteredFollowing.length > 0) {
+                                    outercallback(null, filteredFollowing);
+                                } else {
+                                    outercallback([]);
+                                }
                             }
-                        })
-                        .catch((err) => {
-                            logger.error(
-                                `Error occured in fetching like for ${currentUserId}`
-                            );
-                            console.log(
-                                `Error occured in fetching like for ${currentUserId}`
-                            );
-                            reject(err);
-                        });
+                        );
+                    });
                 },
-                (err) => {
-                    if (err) {
-                        console.log(err);
-                        logger.error(err);
-                        reject(err);
-                    }
-                    console.log(`Iterating done`);
-                    //console.log(filteredFollowing);
-                    console.log(filteredFollowing.length);
-                    return resolve(filteredFollowing);
-                }
-            );
-        });
+                function (outercallback) {
+                    Repost.aggregate([
+                        {
+                            $match: {
+                                createdAt: {
+                                    $gte: startTimestamp,
+                                    $lte: endTimestamp,
+                                },
+                            },
+                        },
+
+                        {
+                            $lookup: {
+                                from: "users",
+                                localField: "userId",
+                                foreignField: "_id",
+                                as: "userDetails",
+                            },
+                        },
+                        { $unwind: "$userDetails" },
+                        {
+                            $lookup: {
+                                from: "comments",
+                                localField: "_id",
+                                foreignField: "postId",
+                                as: "comments",
+                            },
+                        },
+                        { $unwind: "$comments" },
+                        { $sort: { createdAt: -1 } },
+                    ]).then(async (results) => {
+                        console.log(results.length);
+                        const filteredFollowing = [];
+                        async.forEach(
+                            results,
+                            (result, callback) => {
+                                let likedPromise = ifRepostLiked(
+                                    currentUserId,
+                                    result._id
+                                );
+                                likedPromise
+                                    .then((liked) => {
+                                        result.liked = liked;
+                                        if (
+                                            result.userId.toString() ===
+                                            currentUserId.toString()
+                                        ) {
+                                            //console.log(result);
+                                            filteredFollowing.push(result);
+                                            callback();
+                                        } else {
+                                            Follow.findOne({
+                                                userId: currentUserId,
+                                                following: result.userId,
+                                            }).then((foundFollower) => {
+                                                if (foundFollower) {
+                                                    // console.log(foundFollower);
+                                                    filteredFollowing.push(
+                                                        result
+                                                    );
+                                                    return callback();
+                                                } else {
+                                                    return callback();
+                                                }
+                                            });
+                                        }
+                                    })
+                                    .catch((err) => {
+                                        logger.error(
+                                            `Error occured in fetching like for ${currentUserId}`
+                                        );
+                                        console.log(
+                                            `Error occured in fetching like for ${currentUserId}`
+                                        );
+                                        reject(err);
+                                    });
+                            },
+                            (err) => {
+                                if (err) {
+                                    console.log(err);
+                                    logger.error(err);
+                                    reject(err);
+                                }
+                                console.log(`Iterating done`);
+                                //console.log(filteredFollowing);
+                                if (filteredFollowing.length > 0) {
+                                    outercallback(null, filteredFollowing);
+                                } else {
+                                    outercallback([]);
+                                }
+                            }
+                        );
+                    });
+                },
+            ],
+            (err, result) => {
+                console.log(result.length);
+                const results = [].concat
+                    .apply([], result)
+                    .slice()
+                    .sort((a, b) => b.createdAt - a.createdAt);
+                return resolve(results);
+            }
+        );
     });
 };
