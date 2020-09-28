@@ -306,76 +306,82 @@ exports.passworChange = async (req, res, next) => {
 exports.followUser = (req, res, next) => {
     let currentUser = req.session.user;
     let userToFollow = req.body.followUser;
-
-    let followPromise = userservices.ifFollowed(currentUser._id, userToFollow);
-    followPromise.then((result) => {
-        console.log(result);
-        if (result === true) {
-            Follow.findOneAndUpdate(
-                { userId: currentUser._id },
-                { $pull: { following: userToFollow } },
-                { new: true }
-            ).then(async (result) => {
-                if (result) {
-                    Follow.findOneAndUpdate(
-                        { userId: userToFollow },
-                        { $pull: { followers: currentUser._id } },
-                        { new: true }
-                    )
-                        .then((result) => {
-                            //notification logic//
-                            //notification logic ends//
-                            return res.json({
-                                message: `User with userId : ${currentUser._id} has successfully unfollowed ${userToFollow}`,
+    if (userToFollow.toString() === currentUser._id.toString()) {
+        return res.status(503).json({ errorMessage: `Cannot follow self.` });
+    } else {
+        let followPromise = userservices.ifFollowed(
+            currentUser._id,
+            userToFollow
+        );
+        followPromise.then((result) => {
+            console.log(result);
+            if (result === true) {
+                Follow.findOneAndUpdate(
+                    { userId: currentUser._id },
+                    { $pull: { following: userToFollow } },
+                    { new: true }
+                ).then(async (result) => {
+                    if (result) {
+                        Follow.findOneAndUpdate(
+                            { userId: userToFollow },
+                            { $pull: { followers: currentUser._id } },
+                            { new: true }
+                        )
+                            .then((result) => {
+                                //notification logic//
+                                //notification logic ends//
+                                return res.json({
+                                    message: `User with userId : ${currentUser._id} has successfully unfollowed ${userToFollow}`,
+                                });
+                            })
+                            .catch((err) => {
+                                logger.error(
+                                    `Error in updating user to follow's following list for user id : ${currentUser._id}`
+                                );
                             });
-                        })
-                        .catch((err) => {
-                            logger.error(
-                                `Error in updating user to follow's following list for uer id : ${currentUser._id}`
-                            );
+                    } else {
+                        logger.error(
+                            `Error in updating following list for user : ${currentUser._id}`
+                        );
+                        res.json({
+                            errorMessage: `Error in updating following list for user : ${currentUser._id}`,
                         });
-                } else {
-                    logger.error(
-                        `Error in updating following list for user : ${currentUser._id}`
-                    );
-                    res.json({
-                        errorMessage: `Error in updating following list for user : ${currentUser._id}`,
-                    });
-                }
-            });
-        } else {
-            Follow.findOneAndUpdate(
-                { userId: currentUser._id },
-                { $push: { following: userToFollow } },
-                { new: true }
-            ).then(async (result) => {
-                if (result) {
-                    await Follow.findOneAndUpdate(
-                        { userId: userToFollow },
-                        { $push: { followers: currentUser._id } },
-                        { new: true }
-                    )
-                        .then((result) => {
-                            //notification logic//
-                            //notification logic ends//
-                            return res.json({
-                                message: `User with userId : ${currentUser._id} has successfully followed ${userToFollow}`,
+                    }
+                });
+            } else {
+                Follow.findOneAndUpdate(
+                    { userId: currentUser._id },
+                    { $push: { following: userToFollow } },
+                    { new: true }
+                ).then(async (result) => {
+                    if (result) {
+                        await Follow.findOneAndUpdate(
+                            { userId: userToFollow },
+                            { $push: { followers: currentUser._id } },
+                            { new: true }
+                        )
+                            .then((result) => {
+                                //notification logic//
+                                //notification logic ends//
+                                return res.json({
+                                    message: `User with userId : ${currentUser._id} has successfully followed ${userToFollow}`,
+                                });
+                            })
+                            .catch((err) => {
+                                logger.error(
+                                    `Error in updating user to follow's following list for uer id : ${currentUser._id}`
+                                );
                             });
-                        })
-                        .catch((err) => {
-                            logger.error(
-                                `Error in updating user to follow's following list for uer id : ${currentUser._id}`
-                            );
+                    } else {
+                        logger.error(
+                            `Error in updating following list for user : ${currentUser._id}`
+                        );
+                        res.json({
+                            errorMessage: `Error in updating following list for user : ${currentUser._id}`,
                         });
-                } else {
-                    logger.error(
-                        `Error in updating following list for user : ${currentUser._id}`
-                    );
-                    res.json({
-                        errorMessage: `Error in updating following list for user : ${currentUser._id}`,
-                    });
-                }
-            });
-        }
-    });
+                    }
+                });
+            }
+        });
+    }
 };

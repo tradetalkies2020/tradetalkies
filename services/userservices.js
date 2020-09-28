@@ -105,7 +105,7 @@ exports.addPoints = (userId, points) => {
 
 exports.ifFollowed = (userId, userToFollowId) => {
     return new Promise((resolve, reject) => {
-        Follow.findOne({ userId: userId, "following": userToFollowId })
+        Follow.findOne({ userId: userId, following: userToFollowId })
             .then((result) => {
                 if (!result) {
                     return resolve(false);
@@ -116,6 +116,47 @@ exports.ifFollowed = (userId, userToFollowId) => {
             .catch((err) => {
                 console.log(err);
                 logger.error(err);
+                return reject(err);
+            });
+    });
+};
+
+exports.getUserFollowers = (userId) => {
+    return new Promise((resolve, reject) => {
+        Follow.findOne({ userId: userId })
+            .select("followers")
+            .then((result) => {
+                if (result !== undefined) {
+                    return resolve(result.followers);
+                } else {
+                    return resolve([]);
+                }
+            })
+            .catch((err) => {
+                return reject(err);
+            });
+    });
+};
+
+exports.getUserDetails = (userId) => {
+    return new Promise((resolve, reject) => {
+        User.findOne({ _id: userId })
+            .then((user) => {
+                if (user) {
+                    return resolve(user);
+                } else {
+                    reject({
+                        errorMessage: `No user found for the _id : ${userId}`,
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(
+                    `Error in finding user details for _id : ${userId}`
+                );
+                logger.error(
+                    `Error in finding user details for _id : ${userId}`
+                );
                 return reject(err);
             });
     });

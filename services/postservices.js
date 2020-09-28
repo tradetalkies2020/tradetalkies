@@ -108,6 +108,10 @@ exports.trendingService = (startTimeStamp, endTimeStamp) => {
                                     {
                                         $lte: ["$$el.createdAt", endTimeStamp],
                                     },
+                                    //also taking into account comments timeline,can be removed if needed
+                                    // {
+                                    //     $gte: ["$$el.createdAt", startTimeStamp],
+                                    // },
                                     {
                                         $eq: ["$$el.markDel", false],
                                     },

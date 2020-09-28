@@ -52,3 +52,4 @@
 {"message":"Error in updating user to follow's following list for uer id : 5f3b8f78b83e090017d40a16","level":"error","timestamp":"2020-09-14T19:13:55.884Z"}
 {"message":"Error in updating user to follow's following list for uer id : 5f3b8f78b83e090017d40a16","level":"error","timestamp":"2020-09-14T19:15:35.003Z"}
 {"message":"Error in updating user to follow's following list for uer id : 5f3b8f78b83e090017d40a16","level":"error","timestamp":"2020-09-14T19:18:25.725Z"}
+{"message":"Error in updating following list for user : 5f3ac9c4c7f2c60017cc934e","level":"error","timestamp":"2020-09-28T11:05:38.810Z"}

@@ -14,8 +14,11 @@ module.exports = function (app, passport) {
             if (errorMessages.length > 0) {
                 return res.status(402).json({ message: errorMessages[0] });
             } else if (user != false) {
-                const firebaseToken = req.body.firebaseToken;
-
+                let firebaseToken = req.body.firebaseToken;
+                if(firebaseToken===undefined)
+                {
+                    firebaseToken=user.firebaseToken;
+                }
                 User.findOneAndUpdate(
                     { _id: user._id },
                     { $set: { firebaseToken: firebaseToken } },

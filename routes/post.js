@@ -39,5 +39,5 @@ router.get(
     postController.dailytrendingPosts
 );
 router.get("/feed", isAuth, userLog, postController.getFeed);
-
+router.get('/user-post/:checkUser',isAuth,userLog,postController.getUserPosts);
 module.exports = router;
