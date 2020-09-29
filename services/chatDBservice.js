@@ -12,7 +12,7 @@ var firebaseService = require("./firebaseDBService");
 // var fs = require("fs");
 var _ = require("lodash");
 
-exports.postMessage = (chatId, message, userUId, createdAt) => {
+exports.postMessage = (chatId, message, images, userUId, createdAt) => {
     logger.info(
         "chatDBService.postMessage: posting a message " +
             message +
@@ -58,6 +58,7 @@ exports.postMessage = (chatId, message, userUId, createdAt) => {
                                             messages: {
                                                 message: message,
                                                 createdAt: createdAt,
+                                                images: images,
                                             },
                                         },
                                     },
@@ -243,20 +244,34 @@ exports.postMessage = (chatId, message, userUId, createdAt) => {
                                                                         innerCallback
                                                                     ) => {
                                                                         dataJson.title =
-                                                                            "GO_REFER";
+                                                                            "TRADE TALKIES";
                                                                         dataJson.firebaseToken =
                                                                             _myData.firebaseToken;
                                                                         dataJson.body = message;
                                                                         dataJson.chatId = chatId;
                                                                         dataJson.userid = userUId;
                                                                         dataJson.name =
-                                                                            _myData.name;
+                                                                            _myData
+                                                                                .local
+                                                                                .username ||
+                                                                            _myData
+                                                                                .google
+                                                                                .name ||
+                                                                            _myData
+                                                                                .facebook
+                                                                                .name ||
+                                                                            _myData
+                                                                                .twitter
+                                                                                .name ||
+                                                                            _myData
+                                                                                .linkedin
+                                                                                .name;
                                                                         dataJson.imageUrl =
                                                                             _myData.imageUrl;
-                                                                        dataJson.icon =
-                                                                            "";
-                                                                        dataJson.action =
-                                                                            "";
+                                                                        // dataJson.icon =
+                                                                        //     "";
+                                                                        // dataJson.action =
+                                                                        //     "";
                                                                         dataJson.createdAt = createdAt.toString();
                                                                         console.log(
                                                                             dataJson,
@@ -322,7 +337,10 @@ exports.postMessage = (chatId, message, userUId, createdAt) => {
                                 return reject(err);
                             }
 
-                            var status = { status: "Success",createdAt:createdAt };
+                            var status = {
+                                status: "Success",
+                                createdAt: createdAt,
+                            };
                             console.log(status);
                             return resolve(status);
                         }
@@ -335,7 +353,6 @@ exports.postMessage = (chatId, message, userUId, createdAt) => {
                     return reject(
                         "Error adding messages to chat: No such chat found! or user not in chat"
                     );
-                    
                 }
             });
     });
@@ -387,7 +404,10 @@ exports.getChatList = (userid, page, lastTimestamp) => {
             .select(
                 "lastMessage lastTimestamp unmatched deActivated users createdAt _id"
             )
-            .populate("users.userid", "_id name imageUrl firebaseToken isAdmin")
+            .populate(
+                "users.userid",
+                "_id name imageUrl firebaseToken isAdmin local facebook twitter linkedin"
+            )
             .sort({ lastTimestamp: -1 })
             .skip((page - 1) * noOfItems)
             .limit(noOfItems)
@@ -960,7 +980,7 @@ exports.chatExists = (user1, user2) => {
         );
     });
 };
-exports.createChat = (messager,reciever, mutualmessage) => {
+exports.createChat = (messager, reciever, mutualmessage) => {
     return new Promise((resolve, reject) => {
         var chat_user = {
             users: [

@@ -8,7 +8,6 @@ const userServices = require("../services/userservices");
 const postServices = require("../services/postservices");
 const logger = require("../middleware/logger");
 const async = require("async");
-const Tickers = require("../models/Tickers");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 

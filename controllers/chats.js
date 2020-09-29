@@ -2,16 +2,26 @@ const logger = require("../middleware/logger");
 const dbService = require("../services/chatDBservice");
 const userServices = require("../services/userservices");
 const Chat = require("../models/Chat");
+const Constants = require("../models/constants");
 const Message = require("../models/Message");
 const User = require("../models/User");
-exports.postMessages = (req, res, next) => {
+exports.postMessages = async (req, res, next) => {
     var userid = req.session.user._id;
     var chatId = req.body.chatId;
     var createdAt = new Date(Date.now());
+    let images=[];
+    if (req.files !== undefined) {
+        await req.files.forEach((file) => {
+            images.push(file.location);
+        });
+    } else if (req.file !== undefined) {
+        images.push(req.file.location);
+    }
     logger.info("/chat/message post route ", chatId);
     var promise = dbService.postMessage(
         chatId,
         req.body.message,
+        images,
         userid,
         createdAt
     );
@@ -91,6 +101,16 @@ exports.getMessages = (req, res, next) => {
                     $unwind: "$user",
                 },
                 { $unwind: "$messages" },
+                {
+                    $project: {
+                        "user.age": 0,
+                        "user.createdAt": 0,
+                        "user.industry": 0,
+                        "user.refCode": 0,
+                        "user.points": 0,
+                        "user.referred": 0,
+                    },
+                },
             ]).then(async (messages) => {
                 var userMessages = [],
                     peoplemessages = [];
@@ -138,39 +158,60 @@ exports.createChat = (req, res, next) => {
                 );
                 chatExists
                     .then((chatData) => {
-                        if (chatData) {
-                            return res.json({
-                                message: `Chat already exists between ${currentUser._id} and ${userToText}`,
-                            });
-                        } else {
-                            User.findOne({ _id: userToText })
-                                .then((recievinguser) => {
-                                    if (!recievinguser) {
-                                        return res.json({
-                                            errorMessage: `No user found by the id : ${userToText}`,
-                                        });
-                                    } else {
-                                        let createChatInstance = dbService.createChat(
-                                            currentUser,
-                                            recievinguser,
-                                            message
-                                        );
-                                        createChatInstance
-                                            .then((result) => {
-                                                return res.json({
-                                                    message: `Chat created with chat Id : ${result}`,
-                                                });
-                                            })
-                                            .catch((err) => {
-                                                console.log(err);
-                                                logger.error(
-                                                    `Error in creating chat : ${err}`
-                                                );
-                                                return res.json({
-                                                    errorMessage: `Error in creating chst instance.`,
-                                                });
-                                            });
-                                    }
+    if (chatData) {
+    return res.json({
+    message: `Chat already exists between ${currentUser._id} and ${userToText}`,
+    });
+    } else {
+    User.findOne({ _id: userToText })
+    .then((recievinguser) => {
+    if (!recievinguser) {
+    return res.json({
+        errorMessage: `No user found by the id : ${userToText}`,
+    });
+    } else {
+    let createChatInstance = dbService.createChat(
+        currentUser,
+        recievinguser,
+        message
+    );
+    createChatInstance
+        .then((result) => {
+            Constants.findOne({
+                name: "points",
+            })
+                .select("value")
+                .then((pointset) => {
+                    let groupCreationValue =
+                        pointset.value
+                            .creategroup;
+
+                    //add points of group creation before sending response.
+                    let pointsInstance = userServices.addPoints(
+                        currentUser._id,
+                        groupCreationValue
+                    );
+                    pointsInstance.then(
+                        (done) => {
+                            return res.json(
+                                {
+                                    message: `Chat created with chat Id : ${result}`,
+                                }
+                            );
+                        }
+                    );
+                });
+        })
+        .catch((err) => {
+            console.log(err);
+            logger.error(
+                `Error in creating chat : ${err}`
+            );
+            return res.json({
+                errorMessage: `Error in creating chst instance.`,
+            });
+        });
+    }
                                 })
                                 .catch((err) => {
                                     //error in finding user

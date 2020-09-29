@@ -2229,3 +2229,77 @@
 {"message":"trying to config S3","level":"info","timestamp":"2020-09-28T18:57:16.674Z"}
 {"message":"trying to config S3","level":"info","timestamp":"2020-09-28T18:57:29.880Z"}
 {"message":"trying to config S3","level":"info","timestamp":"2020-09-28T18:57:42.165Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T05:58:25.114Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:01:36.575Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:01:57.777Z"}
+{"message":"/chat/chatList route fbId: 5f3b8f78b83e090017d40a16 page: 1 lastId: undefined","level":"info","timestamp":"2020-09-29T06:02:05.082Z"}
+{"message":"chatDBService.getChatList: finding chats for fbId: 5f3b8f78b83e090017d40a16 page: 1 lasttimestamp: undefined","level":"info","timestamp":"2020-09-29T06:02:05.082Z"}
+{"message":"chat route: Got chats for fbId: 5f3b8f78b83e090017d40a16 page: 1","level":"info","timestamp":"2020-09-29T06:02:05.231Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:03:20.272Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:03:34.050Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:03:37.155Z"}
+{"message":"/chat/chatList route fbId: 5f3b8f78b83e090017d40a16 page: 1 lastId: undefined","level":"info","timestamp":"2020-09-29T06:03:44.818Z"}
+{"message":"chatDBService.getChatList: finding chats for fbId: 5f3b8f78b83e090017d40a16 page: 1 lasttimestamp: undefined","level":"info","timestamp":"2020-09-29T06:03:44.818Z"}
+{"message":"chat route: Got chats for fbId: 5f3b8f78b83e090017d40a16 page: 1","level":"info","timestamp":"2020-09-29T06:03:44.914Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:40:48.877Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:42:02.079Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:53:57.642Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:54:16.288Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:56:31.040Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:59:30.416Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T06:59:59.241Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:00:31.962Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:03:12.764Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:03:31.984Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:04:15.173Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:04:37.231Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:05:06.422Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:06:44.673Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:07:19.167Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:07:28.749Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:07:36.566Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:08:11.657Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:08:35.813Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:09:02.521Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:09:36.017Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:09:44.877Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:09:53.224Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:10:33.772Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:11:16.973Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:11:57.422Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:12:01.626Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:12:15.398Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:12:23.879Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:12:33.740Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:12:38.639Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:12:57.054Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:13:06.630Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:13:17.587Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:13:37.993Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:13:53.837Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:13:59.784Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:26:16.999Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:26:45.790Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:26:57.948Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:27:01.742Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:27:30.564Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T07:27:33.998Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T14:45:23.134Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T14:52:31.309Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T14:52:54.025Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T14:53:25.849Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T14:53:29.363Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T14:53:38.749Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T14:54:07.753Z"}
+{"level":"info","message":"/chat/message post route ","timestamp":"2020-09-29T14:58:43.236Z"}
+{"message":"chatDBService.postMessage: posting a message This is the third message for chatId: 5f7206435a12f71c94c69701 UID: 5f3b8f78b83e090017d40a16","level":"info","timestamp":"2020-09-29T14:58:43.237Z"}
+{"message":"Notification before sending: {\"token\":\"cCUw_2D-teA:APA91bFbsaYgydLrcHjhJEODSNEIezLVkd-spblkZ1rRtd6O6D1Znv1vHGVAnABwa40pruPjJwo6cOPNsELpv0a_y4lZ0EfRQvlojoKY8AnccRJNiLw9PYhFEhPmxANY05-C0MexcdYQ\",\"android\":{\"collapse_key\":\"gorefer\",\"priority\":\"high\"},\"apns\":{\"payload\":{\"aps\":{\"alert\":{\"title\":\"TRADE TALKIES\",\"body\":\"This is the third message\"}},\"content-available\":\"1\",\"sound\":\"default\"}},\"data\":{\"title\":\"TRADE TALKIES\",\"firebaseToken\":\"adfjFJEPIFJPEJFdfdfwifipjfipqjipipp323jji1hdkfjhdfkjasdfk\",\"body\":\"This is the third message\",\"chatId\":\"5f7206435a12f71c94c69701\",\"userid\":\"5f3b8f78b83e090017d40a16\",\"name\":\"undefined\",\"imageUrl\":\"https://tradetalkies.s3.ap-south-1.amazonaws.com/profileImg/1598783991958_ed6374a5-b5a4-4ed0-8adc-621ab954761e_pimg.jpeg\",\"icon\":\"\",\"action\":\"\",\"createdAt\":\"Tue Sep 29 2020 20:28:43 GMT+0530 (India Standard Time)\"},\"notification\":{\"title\":\"TRADE TALKIES\",\"body\":\"This is the third message\"},\"fcm_options\":{\"analytics_label\":\"chatting\"}}","level":"info","timestamp":"2020-09-29T14:58:43.556Z"}
+{"message":"chat route: posted message: 5f7206435a12f71c94c69701","level":"info","timestamp":"2020-09-29T14:58:43.791Z"}
+{"message":"firebaseDBService.sendNotif: Error sending message to: cCUw_2D-teA:APA91bFbsaYgydLrcHjhJEODSNEIezLVkd-spblkZ1rRtd6O6D1Znv1vHGVAnABwa40pruPjJwo6cOPNsELpv0a_y4lZ0EfRQvlojoKY8AnccRJNiLw9PYhFEhPmxANY05-C0MexcdYQ error: Error: SenderId mismatch","level":"info","timestamp":"2020-09-29T14:58:44.386Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T14:59:34.999Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T14:59:55.648Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T15:00:13.433Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T15:00:34.836Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T15:00:47.113Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T15:01:49.340Z"}
+{"message":"trying to config S3","level":"info","timestamp":"2020-09-29T15:01:52.850Z"}
