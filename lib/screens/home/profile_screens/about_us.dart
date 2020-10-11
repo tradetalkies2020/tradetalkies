@@ -24,6 +24,8 @@ class _About_usState extends State<About_us> {
             leading: true,
             show_icon: false,
             elevation: 2.0,
+            isProfile: false,
+
             color: Colors.white,
             title: 'About Us',
           )),

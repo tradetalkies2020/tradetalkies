@@ -23,6 +23,8 @@ class _Social_fbState extends State<Social_fb> {
             leading: true,
             show_icon: false,
             elevation: 2.0,
+            isProfile: false,
+
             color: Colors.white,
             title: 'Social connection',
           )),

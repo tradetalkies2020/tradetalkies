@@ -122,9 +122,11 @@ class _AvatarGenderAgeUploadState extends State<AvatarGenderAgeUpload> {
                 Container(
                   // padding: EdgeInsets.all(10),
                   margin: EdgeInsets.only(left: 20),
-                  child: Text(
-                    "TT",
-                    style: Theme.of(context).textTheme.headline1,
+                  child: Center(
+                    child: Text(
+                      "Create your profile",
+                      style: TextStyle(fontFamily: 'Poppins',fontSize: 20,fontWeight: FontWeight.w500),
+                    ),
                   ),
                 ),
                 Container(
@@ -367,7 +369,7 @@ class _AvatarGenderAgeUploadState extends State<AvatarGenderAgeUpload> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: Color(0xFF3D96FF),
+            color: Color(0xFF3550A3),
           ),
           margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
           width: _large ? _width - 45 : (_medium ? _width - 35 : _width - 25),

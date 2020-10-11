@@ -1,8 +1,10 @@
 // import 'dart:html';
+import 'package:fireauth/screens/home/followList.dart';
 import 'package:fireauth/screens/home/profile_screens/about_us.dart';
 import 'package:fireauth/screens/home/profile_screens/help.dart';
 import 'package:fireauth/screens/home/profile_screens/room_rules.dart';
 import 'package:fireauth/screens/home/profile_screens/settings.dart';
+import 'package:fireauth/widgets/feed_post.dart';
 import 'package:flutter/material.dart';
 import 'package:fireauth/screens/home/profile_screens/profile_info.dart';
 import 'package:provider/provider.dart';
@@ -25,9 +27,73 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   String imageUrl = '';
   bool _isloading = false;
+  Future myFuture;
+  List feeds;
+  Map posts;
 
   void initState() {
     _getInfo();
+    myFuture = getPosts();
+  }
+
+  Future getPosts() async {
+    // setState(() {
+    //   _isLoading = true;
+    // });
+
+    try {
+      String id;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      // prefs.setString('USER_IMAGE', imageUrl);
+      id = prefs.getString('USER_ID');
+      // print("id is $id");
+      // await Provider.of<UserAuth>(context, listen: false).comment(text, id);
+      posts =
+          await Provider.of<UserAuth>(context, listen: false).getuserPosts(id);
+      print(feeds);
+      feeds = posts['content'];
+
+      // setState(() {
+      //   comments = comment;
+      // });
+
+      // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       return HomeScreen(
+      //           fromPost: true,
+      //           selectedIndex: 3,
+      //           postImages: images,
+      //           postName: name,
+      //           postText: text,
+      //           profileUrl: image,
+      //           postId:id,
+      //           hasPhoto: _isImageSelected ? true : false);
+      //     },
+      //   ),
+      // );
+      // Navigator.pop(context);
+      // print("posted");
+      Toast.show(
+        "Completed",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    } catch (err) {
+      print(err.toString());
+      // Toast.show(
+      //   "Could not post",
+      //   context,
+      //   duration: Toast.LENGTH_LONG,
+      // );
+    }
+
+    // setState(() {
+    //   _isLoading = false;
+    // });
   }
   // @override
   // void initState() {
@@ -80,10 +146,11 @@ class _ProfileState extends State<Profile> {
           children: <Widget>[
             Container(
               padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-              height: 181,
+              height: 242,
               width: double.maxFinite,
               color: Color(0xFFF6F6F8),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -95,13 +162,13 @@ class _ProfileState extends State<Profile> {
                       //   margin: EdgeInsets.all(8),
                       //   decoration: BoxDecoration(
                       //     border: Border.all(
-                      //         color: Colors.white, width: 2.5),
-                      //     shape: BoxShape.circle,
-                      //     image: DecorationImage(
+                      //     color: Colors.white, width: 2.5),
+                      // shape: BoxShape.circle,
+                      // image: DecorationImage(
 
-                      //         // image: user.avatarURL == null ||
-                      //         //         user.avatarURL == ""
-                      //             image: AssetImage(
+                      //     // image: user.avatarURL == null ||
+                      //     //         user.avatarURL == ""
+                      //         image: AssetImage(
                       //                 "assets/icons/icon-user.png",
                       //               ),
                       //             // : NetworkImage(user.avatarURL),
@@ -117,7 +184,9 @@ class _ProfileState extends State<Profile> {
                               )
                             : CircleAvatar(
                                 radius: 40,
-                                backgroundImage:imageUrl!=null? NetworkImage(imageUrl):AssetImage('assets/images/avatar.png')),
+                                backgroundImage: imageUrl != null
+                                    ? NetworkImage(imageUrl)
+                                    : AssetImage('assets/images/avatar.png')),
                       ),
                       SizedBox(
                         width: 25.0,
@@ -215,149 +284,253 @@ class _ProfileState extends State<Profile> {
                       // )
                     ],
                   ),
-                  SizedBox(height: 6),
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Custom_widget(
-                          number: 33,
-                          text: 'Posts',
-                        ),
-                        Custom_widget(
-                          number: 93,
-                          text: 'Followers',
-                        ),
-                        Custom_widget(
-                          number: 73,
-                          text: 'Following',
-                        ),
-                      ],
-                    ),
-                  )
+                  SizedBox(height: 13),
+                  Text(
+                    'Trade Talker',
+                    style: TextStyle(
+                        fontFamily: "Inter",
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(
+                    height: 13,
+                  ),
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/new_icons/telegram.svg",
+                        // height: 20,
+                        // width: 20,
+                      ),
+                      SizedBox(
+                        width: 14,
+                      ),
+                      SvgPicture.asset(
+                        "assets/new_icons/twitter.svg",
+                        // height: 20,
+                        // width: 20,
+                      ),
+                    ],
+                  ),
+                  Consumer<UserAuth>(
+                      builder: (context, auth, _) => InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          FollowList(name: auth.name)));
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(12),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                // crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Custom_widget(
+                                    number: 33,
+                                    text: 'Posts',
+                                  ),
+                                  Custom_widget(
+                                    number: 93,
+                                    text: 'Followers',
+                                  ),
+                                  Custom_widget(
+                                    number: 73,
+                                    text: 'Following',
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )),
                 ],
               ),
             ),
             SizedBox(height: 10),
             Container(
-              width: double.maxFinite,
-              color: Colors.white70,
-              child: Column(
-                children: <Widget>[
-                  Custom_listTile(
-                    onTap: 1,
-                    icon: "assets/new_icons/user.svg",
-                    title: 'Profile info',
-                    subtitle: 'Change your account information',
-                  ),
-                  Divider(
-                    height: 1.0,
-                  ),
-                  Custom_listTile(
-                    onTap: 2,
-                    icon: "assets/new_icons/gift.svg",
-                    title: 'Refer your friend',
-                    subtitle: 'Share your friends about this app',
-                  ),
-                  Divider(
-                    height: 1.0,
-                  ),
-                  Custom_listTile(
-                    onTap: 3,
-                    icon: "assets/new_icons/book-open.svg",
-                    title: 'Room rules',
-                    subtitle: 'Know more about the rules of the rooms',
-                  ),
-                  Divider(
-                    height: 1.0,
-                  ),
-                  Custom_listTile(
-                    onTap: 4,
-                    icon: "assets/new_icons/settings.svg",
-                    title: 'Settings',
-                    subtitle: 'Notifications, app preference',
-                  ),
-                  Divider(
-                    height: 1.0,
-                  ),
-                  Custom_listTile(
-                    onTap: 5,
-                    icon: "assets/new_icons/headphones.svg",
-                    title: 'Help',
-                    subtitle: 'We are there to help you',
-                  ),
-                  Divider(
-                    height: 1.0,
-                  ),
-                  Custom_listTile(
-                    onTap: 6,
-                    icon: "assets/new_icons/gitlab.svg",
-                    title: 'About us',
-                    subtitle: 'Know more about Tradetalkies',
-                  ),
-                  Divider(
-                    height: 1.0,
-                  ),
-                  Custom_listTile(
-                    onTap: 7,
-                    icon: "assets/new_icons/star.svg",
-                    title: 'Rate us',
-                    subtitle: 'Give us a rating about the app',
-                  ),
-                  Divider(
-                    height: 1.0,
-                  ),
-                  ListTile(
-                    onTap: () {
-                      // Navig/ator.pop(context);
-                      // Navigator.popUntil(context, (route) => false);
-                      Navigator.of(context).pop();
+                margin: EdgeInsets.only(left: 20),
+                child: Text('My Posts',
+                    style: TextStyle(
+                        fontFamily: "Inter",
+                        fontSize: 14,
+                        color: Colors.black.withOpacity(0.67)))),
+            SizedBox(
+              height: 8,
+            ),
+            Consumer<UserAuth>(
+                builder: (context, auth, _) => FutureBuilder(
+                    // future: getComment(widget.post.postId),
 
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/', (Route<dynamic> route) => false);
-                      Provider.of<UserAuth>(context, listen: false).logout();
-                    },
-                    dense: true,
-                    // contentPadding: EdgeInsets.all(5),
-                    leading: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset("assets/new_icons/log-in.svg"),
-                      // child: Image.asset(
-                      //   "assets/new_icons/log-in.svg",
-                      //   fit: BoxFit.contain,
-                      //   width: 20,
-                      //   // color: Colors.black,
-                      //   height: 20,
-                      //   // color: pageIndex == 0
-                      //   //     ? Colors.blue
-                      //   //     : Theme.of(context).hintColor,
-                      // ),
-                    ),
-                    title: Text(
-                      'Logout',
-                      style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 16,
-                          fontFamily: 'Inter',
-                          color: Color(0xFF060606)),
-                    ),
-                    // subtitle: Text(widget.subtitle,style: TextStyle(fontFamily: 'Inter',fontSize: 14,color: Color(0xFF060606))),
-                    trailing: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.keyboard_arrow_right,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                  // Custom_listTile(icon: "assets/icons/logout.png",title: 'Logout',subtitle: null,),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                ],
-              ),
-            )
+                    future: myFuture,
+                    builder: (ctx, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return Column(
+                            children: (feeds.isNotEmpty)
+                                ? List.generate(feeds.length, (i) {
+                                    List imagess = feeds[i]['images'];
+
+                                    return Feed_post(
+                                      postId: feeds[i]['_id'],
+                                      comment: 0,
+                                      forComment: false,
+                                      hasPhoto: false,
+                                      imageUrl:
+                                          'https://tradetalkies.s3.ap-south-1.amazonaws.com/profileImg/1598811137375_129b421f-1786-47b1-95eb-ff68e4e7f3b4_pimg.jpg',
+                                      // imageUrl: null,
+
+                                      // isLiked: feeds[i]['liked'],
+                                      isLiked: feeds[i]['liked'],
+                                      isPost: false,
+                                      likes: feeds[i]['liked']?1:0,
+                                      name: 'Sarthak',
+
+                                      imageAsset: imagess == null
+                                          ? null
+                                          : (imagess.isNotEmpty
+                                              ? feeds[i]['images']
+                                              : null),
+                                      // imageAsset: null,
+                                      repost: 0,
+                                      text: feeds[i]['desc'],
+
+                                      time: '1 min ago',
+                                    );
+                                  })
+                                : [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'No posts found till now..',
+                                        style: TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 15,
+                                            color: Colors.grey),
+                                      ),
+                                    )
+                                  ]);
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }))
+            // Container(
+            //   width: double.maxFinite,
+            //   color: Colors.white70,
+            //   child: Column(
+            //     children: <Widget>[
+            //       Custom_listTile(
+            //         onTap: 1,
+            //         icon: "assets/new_icons/user.svg",
+            //         title: 'Profile info',
+            //         subtitle: 'Change your account information',
+            //       ),
+            //       Divider(
+            //         height: 1.0,
+            //       ),
+            //       Custom_listTile(
+            //         onTap: 2,
+            //         icon: "assets/new_icons/gift.svg",
+            //         title: 'Refer your friend',
+            //         subtitle: 'Share your friends about this app',
+            //       ),
+            //       Divider(
+            //         height: 1.0,
+            //       ),
+            //       Custom_listTile(
+            //         onTap: 3,
+            //         icon: "assets/new_icons/book-open.svg",
+            //         title: 'Room rules',
+            //         subtitle: 'Know more about the rules of the rooms',
+            //       ),
+            //       Divider(
+            //         height: 1.0,
+            //       ),
+            //       Custom_listTile(
+            //         onTap: 4,
+            //         icon: "assets/new_icons/settings.svg",
+            //         title: 'Settings',
+            //         subtitle: 'Notifications, app preference',
+            //       ),
+            //       Divider(
+            //         height: 1.0,
+            //       ),
+            //       Custom_listTile(
+            //         onTap: 5,
+            //         icon: "assets/new_icons/headphones.svg",
+            //         title: 'Help',
+            //         subtitle: 'We are there to help you',
+            //       ),
+            //       Divider(
+            //         height: 1.0,
+            //       ),
+            //       Custom_listTile(
+            //         onTap: 6,
+            //         icon: "assets/new_icons/gitlab.svg",
+            //         title: 'About us',
+            //         subtitle: 'Know more about Tradetalkies',
+            //       ),
+            //       Divider(
+            //         height: 1.0,
+            //       ),
+            //       Custom_listTile(
+            //         onTap: 7,
+            //         icon: "assets/new_icons/star.svg",
+            //         title: 'Rate us',
+            //         subtitle: 'Give us a rating about the app',
+            //       ),
+            //       Divider(
+            //         height: 1.0,
+            //       ),
+            //       ListTile(
+            //         onTap: () {
+            //           // Navig/ator.pop(context);
+            //           // Navigator.popUntil(context, (route) => false);
+            //           Navigator.of(context).pop();
+
+            //           Navigator.of(context).pushNamedAndRemoveUntil(
+            //               '/', (Route<dynamic> route) => false);
+            //           Provider.of<UserAuth>(context, listen: false).logout();
+            //         },
+            //         dense: true,
+            //         // contentPadding: EdgeInsets.all(5),
+            //         leading: Padding(
+            //           padding: const EdgeInsets.all(8.0),
+            //           child: SvgPicture.asset("assets/new_icons/log-in.svg"),
+            //           // child: Image.asset(
+            //           //   "assets/new_icons/log-in.svg",
+            //           //   fit: BoxFit.contain,
+            //           //   width: 20,
+            //           //   // color: Colors.black,
+            //           //   height: 20,
+            //           //   // color: pageIndex == 0
+            //           //   //     ? Colors.blue
+            //           //   //     : Theme.of(context).hintColor,
+            //           // ),
+            //         ),
+            //         title: Text(
+            //           'Logout',
+            //           style: TextStyle(
+            //               fontWeight: FontWeight.normal,
+            //               fontSize: 16,
+            //               fontFamily: 'Inter',
+            //               color: Color(0xFF060606)),
+            //         ),
+            //         // subtitle: Text(widget.subtitle,style: TextStyle(fontFamily: 'Inter',fontSize: 14,color: Color(0xFF060606))),
+            //         trailing: Padding(
+            //           padding: const EdgeInsets.all(8.0),
+            //           child: Icon(
+            //             Icons.keyboard_arrow_right,
+            //             size: 30,
+            //           ),
+            //         ),
+            //       ),
+            //       // Custom_listTile(icon: "assets/icons/logout.png",title: 'Logout',subtitle: null,),
+            //       SizedBox(
+            //         height: 10.0,
+            //       ),
+            //     ],
+            //   ),
+            // )
           ],
         ),
       ),
@@ -458,6 +631,7 @@ class _Custom_widgetState extends State<Custom_widget> {
     return Padding(
         padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
         child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               widget.number.toString(),

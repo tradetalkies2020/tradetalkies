@@ -1,5 +1,7 @@
+import 'package:fireauth/screens/home/chats.dart';
 import 'package:fireauth/screens/home/feeds.dart';
 import 'package:fireauth/screens/home/home_screen.dart';
+import 'package:fireauth/screens/home/rooms.dart';
 import 'package:fireauth/screens/home/stocks_data.dart';
 import 'package:fireauth/services/auth/services.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       // appBar: AppBar(
       //   automaticallyImplyLeading: false,
-      //   backgroundColor: Colors.blueAccent,
+      //   backgroundColor: Color(0xFF3550A3)Accent,
       //   title: Text(
       //     "Trade Talkies",
       //   ),
@@ -76,6 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
           isHome: true,
           leading: false,
           show_icon: pageIndex == 0 ? true : false,
+          isProfile:pageIndex==4?true:false,
+          isOther:(pageIndex==1||pageIndex==2||pageIndex==3)?1:0,
           elevation: 0.0,
           color: pageIndex == 4 || pageIndex == 0
               ? Color(0xFFF6F6F8)
@@ -83,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: pageIndex == 0
               ? 'Home'
               : (pageIndex == 1
-                  ? 'Rooms'
+                  ? 'Talkies'
                   : (pageIndex == 2
                       ? 'Chat'
                       : (pageIndex == 3 ? 'Feeds' : 'Profile'))),
@@ -96,8 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
         onPageChanged: _onChangePageIndex,
         children: <Widget>[
           homeScreen(),
-          Text('index= $pageIndex'),
-          Text('index= $pageIndex'),
+          Rooms(),
+          Chats(),
 
           Feeds(
             isPost: widget.fromPost,
@@ -146,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // height: 20,
               // color: Colors.blue,
               // color: pageIndex == 0
-              //     ? Color(0xFF3D96FF)
+              //     ? Color(0xFF3550A3)
               //     : Colors.black,
               // ),
               title: Container(
@@ -170,16 +174,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? "assets/new_icons/airplay.svg"
                   : "assets/new_icons/room-icon.svg"),
               // icon: Icon(Icons.airplay,color: pageIndex == 1
-              //       ? Color(0xFF3D96FF)
+              //       ? Color(0xFF3550A3)
               //       : Colors.black,),
               title: Container(
                 padding: EdgeInsets.all(5.0),
-                child: Text('Rooms',
+                child: Text('Talkies',
                     style: TextStyle(fontSize: 10, fontFamily: 'Inter')),
               )),
           BottomNavigationBarItem(
               // icon: Icon(Icons.chat_bubble_outline,color: pageIndex == 2
-              //     ? Color(0xFF3D96FF)
+              //     ? Color(0xFF3550A3)
               //     : Colors.black,),
               // icon: Image.asset(
               //   pageIndex == 2
@@ -211,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               //   // color: Colors.black,
               //   // color: pageIndex == 3
-              //   //     ? Color(0xFF3D96FF)
+              //   //     ? Color(0xFF3550A3)
               //   //     : Colors.black,
               // ),
               icon: SvgPicture.asset(pageIndex == 3
@@ -232,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
               //   height: 20,
               //   // color: Colors.black,
               //   // color: pageIndex == 4
-              //   //     ? Color(0xFF3D96FF)
+              //   //     ? Color(0xFF3550A3)
               //   //     : Colors.black,
               // ),
               icon: SvgPicture.asset(pageIndex == 4
@@ -248,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: pageIndex,
         // fixedColor: Theme.of(context).primaryColor,
         // type: BottomNavigationBarType.fixed,
-        selectedItemColor: Color(0xFF3D96FF),
+        selectedItemColor: Color(0xFF3550A3),
       ),
     );
   }

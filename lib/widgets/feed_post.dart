@@ -261,13 +261,16 @@ Navigator.push(
                                   margin: EdgeInsets.only(right: 10),
                                   height: 200,
                                   width: 264,
+                                  
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
-                                        image: widget.imageAsset[index],
+                                        // image: widget.imageAsset[index],
+                                  
+                                        image: NetworkImage(widget.imageAsset[index]),
                                         fit: BoxFit.fill),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8.0)),
-                                    // color: Colors.blue
+                                    color: Colors.blue
                                   ),
                                 ),
                         );
@@ -284,11 +287,12 @@ Navigator.push(
                   children: <Widget>[
                     InkWell(
                       onTap: () {
-                        if (widget.isPost) {
-                          submit(isLiked);
-                        } else {
-                          print('not post');
-                        }
+                        submit(isLiked);
+                        // if (widget.isPost) {
+                          
+                        // } else {
+                        //   print('not post');
+                        // }
                         setState(() {
                           if (isLiked) {
                             likeCount--;

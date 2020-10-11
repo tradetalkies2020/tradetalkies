@@ -1,4 +1,5 @@
 import 'package:fireauth/screens/auth/avatar_upload.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -159,20 +160,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 Container(
                   // padding: EdgeInsets.all(10),
-                  margin: EdgeInsets.only(left: 20),
-                  child: Text(
-                    "TT",
-                    style: Theme.of(context).textTheme.headline1,
-                  ),
+                  // margin: EdgeInsets.only(left: 20),
+                  child:Center(child: SvgPicture.asset('assets/new_icons/TTsm.svg')),
+                  // child: Text(
+                  //   "TT",
+                  //   style: Theme.of(context).textTheme.headline1,
+                  // ),
                 ),
                 SizedBox(
                   height: 15,
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 20),
-                  child: Text(
-                    "Create an account",
-                    style: Theme.of(context).textTheme.headline2,
+                  child: Center(
+                    child: Text(
+                      "Create an account",
+                      style: Theme.of(context).textTheme.headline2,
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -265,7 +269,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                   child: Text(
                     " Sign in",
-                    style: TextStyle(color:Colors.blue,fontFamily: 'Inter',fontSize: 16.0,fontWeight: FontWeight.w600)
+                    style: TextStyle(color:Color(0xFF3550A3),fontFamily: 'Inter',fontSize: 16.0,fontWeight: FontWeight.w600)
                   ),
                 ),
               ],
@@ -307,7 +311,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: Color(0xFF3D96FF),
+            color: Color(0xFF3550A3),
           ),
           margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
           width: _large ? _width - 45 : (_medium ? _width - 35 : _width - 25),

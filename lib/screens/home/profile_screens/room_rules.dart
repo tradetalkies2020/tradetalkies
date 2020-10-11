@@ -23,6 +23,8 @@ class _Room_RulesState extends State<Room_Rules> {
             isHome: false,
             leading: true,
             show_icon: false,
+            isProfile: false,
+
             elevation: 2.0,
             color: Colors.white,
             title: 'Room Rules',

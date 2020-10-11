@@ -23,8 +23,11 @@ class _HelpState extends State<Help> {
             isHome: false,
             leading: true,
             show_icon: false,
+            isProfile: false,
+            
             elevation: 2.0,
             color: Colors.white,
+            
             title: 'Help',
           )),
       // appBar: AppBar(

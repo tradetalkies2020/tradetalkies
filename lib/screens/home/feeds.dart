@@ -1,6 +1,7 @@
 import 'package:fireauth/screens/home/post.dart';
 import 'package:fireauth/screens/home/search_screen.dart';
 import 'package:fireauth/screens/home/stock_info.dart';
+import 'package:fireauth/screens/splash_screen/splash_screen.dart';
 import 'package:fireauth/services/auth/services.dart';
 import 'package:fireauth/widgets/custom_appbar.dart';
 import 'package:fireauth/widgets/feed_post.dart';
@@ -47,6 +48,8 @@ class _FeedsState extends State<Feeds> {
   List selectedFilter = [];
   int selectedRadio = 0;
   DateTime from, to;
+  Future myFuture;
+  List feeds;
 
   bool isfromSelected = false;
   bool istoSelected = false;
@@ -72,8 +75,122 @@ class _FeedsState extends State<Feeds> {
     super.initState();
     // _test();
     _delegate = _MySearchDelegate(kEnglishWords, kEnglishWords);
+    myFuture = getPosts(Index);
     // myFuture = getComment('5f5be2749ae7fe00171b88fd');
     // selectedRadio = 0;
+  }
+
+  Future getPosts(int index) async {
+    // setState(() {
+    //   _isLoading = true;
+    // });
+
+    try {
+      // print("id is $id");
+      // await Provider.of<UserAuth>(context, listen: false).comment(text, id);
+      feeds =
+          await Provider.of<UserAuth>(context, listen: false).getPosts(index);
+      print(feeds);
+
+      // setState(() {
+      //   comments = comment;
+      // });
+
+      // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       return HomeScreen(
+      //           fromPost: true,
+      //           selectedIndex: 3,
+      //           postImages: images,
+      //           postName: name,
+      //           postText: text,
+      //           profileUrl: image,
+      //           postId:id,
+      //           hasPhoto: _isImageSelected ? true : false);
+      //     },
+      //   ),
+      // );
+      // Navigator.pop(context);
+      // print("posted");
+      Toast.show(
+        "Completed",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    } catch (err) {
+      print(err.toString());
+      // Toast.show(
+      //   "Could not post",
+      //   context,
+      //   duration: Toast.LENGTH_LONG,
+      // );
+    }
+
+    // setState(() {
+    //   _isLoading = false;
+    // });
+  }
+
+  Future getFilerFeeds(
+      int selectedRadio, DateTime from, DateTime to, int index) async {
+    // setState(() {
+    //   _isLoading = true;
+    // });
+
+    try {
+      // print("id is $id");
+      // await Provider.of<UserAuth>(context, listen: false).comment(text, id);
+      feeds = await Provider.of<UserAuth>(context, listen: false)
+          .getFilterPosts(selectedRadio, from, to, index);
+      print(feeds[0]);
+      if (feeds[0] == null) {
+        print('yess');
+        feeds = [];
+        // print(feeds);
+      }
+      // setState(() {
+      //   comments = comment;
+      // });
+
+      // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       return HomeScreen(
+      //           fromPost: true,
+      //           selectedIndex: 3,
+      //           postImages: images,
+      //           postName: name,
+      //           postText: text,
+      //           profileUrl: image,
+      //           postId:id,
+      //           hasPhoto: _isImageSelected ? true : false);
+      //     },
+      //   ),
+      // );
+      // Navigator.pop(context);
+      // print("posted");
+      Toast.show(
+        "Completed",
+        context,
+        duration: Toast.LENGTH_LONG,
+      );
+    } catch (err) {
+      print(err.toString());
+      // Toast.show(
+      //   "Could not post",
+      //   context,
+      //   duration: Toast.LENGTH_LONG,
+      // );
+    }
+
+    // setState(() {
+    //   _isLoading = false;
+    // });
   }
 
   Future<void> _test() async {
@@ -340,6 +457,7 @@ class _FeedsState extends State<Feeds> {
           selected_feed[index] = true;
           // print(selected_feed);
           Index = index;
+          myFuture = getPosts(Index);
         });
       },
       child: Container(
@@ -349,10 +467,10 @@ class _FeedsState extends State<Feeds> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(6)),
           color: selected_feed[index]
-              ? Color(0xFF3d96ff).withOpacity(0.1)
+              ? Color(0xFF3550A3).withOpacity(0.1)
               : Color(0xFFa5a5a5).withOpacity(0.1),
           border: selected_feed[index]
-              ? Border.all(color: Color(0xFF3D96FF), width: 1)
+              ? Border.all(color: Color(0xFF3550A3), width: 1)
               : null,
         ),
 
@@ -367,7 +485,7 @@ class _FeedsState extends State<Feeds> {
                 fontFamily: 'Inter',
                 fontSize: 14,
                 letterSpacing: 0.4,
-                color: selected_feed[index] ? Color(0xFF3D96FF) : Colors.black),
+                color: selected_feed[index] ? Color(0xFF3550A3) : Colors.black),
           ),
         ),
       ),
@@ -384,6 +502,7 @@ class _FeedsState extends State<Feeds> {
 
   @override
   Widget build(BuildContext context) {
+    
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
     _pixelRatio = MediaQuery.of(context).devicePixelRatio;
@@ -617,10 +736,10 @@ class _FeedsState extends State<Feeds> {
                                                                           6)),
                                                           // color: Colors.white,
                                                           // color: selected_feed[index]
-                                                          //     ? Color(0xFF3d96ff).withOpacity(0.1)
+                                                          //     ? Color(0xFF3550A3).withOpacity(0.1)
                                                           //     : Color(0xFFa5a5a5).withOpacity(0.1),
                                                           // border: selected_feed[index]
-                                                          //     ? Border.all(color: Color(0xFF3D96FF), width: 1)
+                                                          //     ? Border.all(color: Color(0xFF3550A3), width: 1)
                                                           //     : null,
                                                           border: Border.all(
                                                               color: Color(
@@ -693,10 +812,10 @@ class _FeedsState extends State<Feeds> {
                                                                           6)),
                                                           // color: Colors.white,
                                                           // color: selected_feed[index]
-                                                          //     ? Color(0xFF3d96ff).withOpacity(0.1)
+                                                          //     ? Color(0xFF3550A3).withOpacity(0.1)
                                                           //     : Color(0xFFa5a5a5).withOpacity(0.1),
                                                           // border: selected_feed[index]
-                                                          //     ? Border.all(color: Color(0xFF3D96FF), width: 1)
+                                                          //     ? Border.all(color: Color(0xFF3550A3), width: 1)
                                                           //     : null,
                                                           border: Border.all(
                                                               color: Color(
@@ -769,8 +888,14 @@ class _FeedsState extends State<Feeds> {
                                           setState(() {
                                             if (selectedRadio == null) {
                                               isFilter = false;
-                                            } else
+                                            } else {
                                               isFilter = true;
+                                              myFuture = getFilerFeeds(
+                                                  selectedRadio,
+                                                  from,
+                                                  to,
+                                                  Index);
+                                            }
                                           });
                                           print(
                                               "selected radio is $selectedRadio");
@@ -782,7 +907,7 @@ class _FeedsState extends State<Feeds> {
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(8)),
                                             color: selectedRadio != null
-                                                ? Color(0xFF3D96FF)
+                                                ? Color(0xFF3550A3)
                                                 : Color(0xFFABABAB),
                                           ),
                                           margin:
@@ -822,12 +947,12 @@ class _FeedsState extends State<Feeds> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(6)),
                                 color: isFilter
-                                    ? Color(0xFF3d96ff).withOpacity(0.1)
+                                    ? Color(0xFF3550A3).withOpacity(0.1)
                                     : Color(0xFFa5a5a5).withOpacity(0.1),
                                 // color: Color(0xFFa5a5a5).withOpacity(0.1),
                                 border: isFilter
                                     ? Border.all(
-                                        color: Color(0xFF3D96FF), width: 1)
+                                        color: Color(0xFF3550A3), width: 1)
                                     : null,
                               ),
 
@@ -849,7 +974,7 @@ class _FeedsState extends State<Feeds> {
                                           fontSize: 15,
                                           letterSpacing: 0.4,
                                           color: Colors.black)
-                                      // color: selected_feed[index] ? Color(0xFF3D96FF) : Colors.black),
+                                      // color: selected_feed[index] ? Color(0xFF3550A3) : Colors.black),
                                       ),
                                 ],
                               ),
@@ -967,99 +1092,151 @@ class _FeedsState extends State<Feeds> {
               //         height: 1,
               //       ),
 
-              Column(
-                children: Index == 0
-                    ? ac
-                    : (Index == 1 ? sc : (Index == 2 ? ac : sc)),
-              ),
+              // Column(
+              //   children: Index == 0
+              //       ? ac
+              //       : (Index == 1 ? sc : (Index == 2 ? ac : sc)),
+              // ),
 
-              Feed_post(
-                name: 'Manikanth',
-                time: '2mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: imageAssets,
-                isPost: false,
-                isLiked: true,
-                likes: 10,
-                comment: 10,
-                repost: 10,
-                hasPhoto: true,
-                forComment: false,
-              ),
-              //   Divider(),
+              FutureBuilder(
+                  // future: getComment(widget.post.postId),
+                  future: myFuture,
+                  builder: (ctx, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Column(
+                          children: (feeds.isNotEmpty )
+                              ? List.generate(feeds.length, (i) {
+                                  List imagess = feeds[i]['images'];
+                                  
+                                  return Feed_post(
+                                    comment: 0,
+                                    forComment: false,
+                                    hasPhoto: false,
+                                    imageUrl: feeds[i]['userDetails']
+                                        ['imageUrl'],
+                                    // imageUrl: null,
 
-              Feed_post(
-                name: 'sarthak',
-                time: '4mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: imageAssets,
-                isPost: false,
-                isLiked: true,
-                likes: 10,
-                comment: 10,
-                repost: 10,
-                hasPhoto: true,
-                forComment: false,
-              ),
+                                    // isLiked: feeds[i]['liked'],
+                                    isLiked: false,
+                                    isPost: false,
+                                    likes: 0,
+                                    name: feeds[i]['userDetails']['local']
+                                        ['username'],
 
-              //Divider(),
-              Feed_post(
-                name: 'AmanKumar',
-                time: '6mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: imageAssets,
-                isPost: false,
-                isLiked: true,
-                likes: 10,
-                comment: 10,
-                repost: 10,
-                hasPhoto: true,
-                forComment: false,
-              ),
+                                    imageAsset: imagess==null?null:(imagess.isNotEmpty
+                                        ? feeds[i]['images']
+                                        : null),
+                                    // imageAsset: null,
+                                    repost: 0,
+                                    text: feeds[i]['desc'],
 
-              //Divider(),
-              Feed_post(
-                name: 'Manikanth',
-                time: '2mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: imageAssets,
-                isPost: false,
-                isLiked: true,
-                likes: 10,
-                comment: 10,
-                repost: 10,
-                hasPhoto: true,
-                forComment: false,
-              ),
+                                    time: '1 min ago',
+                                  );
+                                })
+                              : [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'No posts found till now..',
+                                      style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 15,
+                                          color: Colors.grey),
+                                    ),
+                                  )
+                                ]);
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
 
-              //Divider(),
-              Feed_post(
-                name: 'Manikanth',
-                time: '2mins ago',
-                text:
-                    'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
-                imageAsset: imageAssets,
-                isPost: false,
-                isLiked: true,
-                likes: 10,
-                comment: 10,
-                repost: 10,
-                hasPhoto: true,
-                forComment: false,
-              ),
+              // Feed_post(
+              //   name: 'Manikanth',
+              //   time: '2mins ago',
+              //   text:
+              //       'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+              //   imageAsset: imageAssets,
+              //   isPost: false,
+              //   isLiked: true,
+              //   likes: 10,
+              //   comment: 10,
+              //   repost: 10,
+              //   hasPhoto: true,
+              //   forComment: false,
+              // ),
+              // //   Divider(),
+
+              // Feed_post(
+              //   name: 'sarthak',
+              //   time: '4mins ago',
+              //   text:
+              //       'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+              //   imageAsset: imageAssets,
+              //   isPost: false,
+              //   isLiked: true,
+              //   likes: 10,
+              //   comment: 10,
+              //   repost: 10,
+              //   hasPhoto: true,
+              //   forComment: false,
+              // ),
+
+              // //Divider(),
+              // Feed_post(
+              //   name: 'AmanKumar',
+              //   time: '6mins ago',
+              //   text:
+              //       'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+              //   imageAsset: imageAssets,
+              //   isPost: false,
+              //   isLiked: true,
+              //   likes: 10,
+              //   comment: 10,
+              //   repost: 10,
+              //   hasPhoto: true,
+              //   forComment: false,
+              // ),
+
+              // //Divider(),
+              // Feed_post(
+              //   name: 'Manikanth',
+              //   time: '2mins ago',
+              //   text:
+              //       'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+              //   imageAsset: imageAssets,
+              //   isPost: false,
+              //   isLiked: true,
+              //   likes: 10,
+              //   comment: 10,
+              //   repost: 10,
+              //   hasPhoto: true,
+              //   forComment: false,
+              // ),
+
+              // //Divider(),
+              // Feed_post(
+              //   name: 'Manikanth',
+              //   time: '2mins ago',
+              //   text:
+              //       'Don’t worry, when this crashes, all the hypocrities who are shouting will buy and sell the stocks ',
+              //   imageAsset: imageAssets,
+              //   isPost: false,
+              //   isLiked: true,
+              //   likes: 10,
+              //   comment: 10,
+              //   repost: 10,
+              //   hasPhoto: true,
+              //   forComment: false,
+              // ),
             ],
           ),
         ),
         backgroundColor: Color(0xFFFFFFFF),
         floatingActionButton: FloatingActionButton(
           elevation: 0.0,
-          child: SvgPicture.asset("assets/new_icons/edit.svg"),
+          child: SvgPicture.asset("assets/new_icons/edit-3.svg"),
           foregroundColor: Colors.white,
-          backgroundColor: Colors.blue,
+          backgroundColor: Color(0xFF3550A3),
           onPressed: () {
             // _auth.signOut();
             // Navigator.pop(context);
@@ -1080,7 +1257,8 @@ class _MySearchDelegate extends SearchDelegates<String> {
   _MySearchDelegate(List<String> words, List<String> codes)
       : _words = words,
         _codes = codes,
-        _history = <String>['Microsoft', 'Apple', 'Tesla', 'Reliance'],
+                _history = <String>['microsoft', 'apple', 'tesla', 'reliance'],
+
         super();
 
   // Leading icon in search bar.

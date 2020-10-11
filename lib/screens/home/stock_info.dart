@@ -30,9 +30,7 @@ class _StockInfoState extends State<StockInfo> {
     false
   ];
   List imageAssets = [
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png'),
-    AssetImage('assets/images/avatar.png')
+    "https://tradetalkies.s3.ap-south-1.amazonaws.com/profileImg/1598811137375_129b421f-1786-47b1-95eb-ff68e4e7f3b4_pimg.jpg"
   ];
 
   buildItem(BuildContext context, String value, int index) {
@@ -53,10 +51,10 @@ class _StockInfoState extends State<StockInfo> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(4)),
           color: selected_feed[index]
-              ? Color(0xFF3d96ff).withOpacity(0.1)
+              ? Color(0xFF3550A3).withOpacity(0.1)
               : Color(0xFFFFFFFF).withOpacity(0.1),
           border: selected_feed[index]
-              ? Border.all(color: Color(0xFF3D96FF), width: 1)
+              ? Border.all(color: Color(0xFF3550A3), width: 1)
               : Border.all(color: Color(0xFFD5D5D5), width: 1),
         ),
 
@@ -71,7 +69,7 @@ class _StockInfoState extends State<StockInfo> {
                 fontFamily: 'Inter',
                 fontSize: 14,
                 letterSpacing: 0.4,
-                color: selected_feed[index] ? Color(0xFF3D96FF) : Colors.black),
+                color: selected_feed[index] ? Color(0xFF3550A3) : Colors.black),
           ),
         ),
       ),
@@ -87,6 +85,8 @@ class _StockInfoState extends State<StockInfo> {
           child: CustomAppbar(
             isHome: false,
             leading: true,
+            isProfile: false,
+
             show_icon: false,
             elevation: 2.0,
             color: Colors.white,

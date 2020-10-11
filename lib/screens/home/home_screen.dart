@@ -310,9 +310,9 @@ class _homeScreenState extends State<homeScreen> {
       backgroundColor: Color(0xFFF6F6F8),
       floatingActionButton: FloatingActionButton(
         elevation: 0.0,
-        child: SvgPicture.asset("assets/new_icons/edit.svg"),
+        child: SvgPicture.asset("assets/new_icons/edit-3.svg"),
         foregroundColor: Colors.white,
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xFF3550A3),
         onPressed: () {
           // _auth.signOut();
           // Navigator.pop(context);
@@ -334,7 +334,8 @@ class _MySearchDelegate extends SearchDelegates<String> {
   _MySearchDelegate(List<String> words, List<String> codes)
       : _words = words,
         _codes = codes,
-        _history = <String>['Microsoft', 'Apple', 'Tesla', 'Reliance'],
+                _history = <String>['microsoft', 'apple', 'tesla', 'reliance'],
+
         super();
 
   // Leading icon in search bar.

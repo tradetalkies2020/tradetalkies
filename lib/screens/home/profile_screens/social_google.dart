@@ -22,6 +22,8 @@ class _Social_googleState extends State<Social_google> {
             isHome: false,
             leading: true,
             show_icon: false,
+            isProfile: false,
+
             elevation: 2.0,
             color: Colors.white,
             title: 'Social connection',

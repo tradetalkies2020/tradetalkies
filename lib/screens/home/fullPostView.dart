@@ -78,7 +78,7 @@ class _FullpostViewState extends State<FullpostView> {
                 color: Colors.black,
 
                 image: DecorationImage(
-                    image: widget.image, fit: BoxFit.fill),
+                    image: NetworkImage(widget.image),fit: BoxFit.fill),
                 // borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 // color: Colors.blue
               )),

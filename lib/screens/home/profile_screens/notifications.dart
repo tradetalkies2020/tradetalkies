@@ -35,6 +35,7 @@ class _NotificationsState extends State<Notifications> {
           child: CustomAppbar(
             isHome: false,
             leading: true,
+            isProfile: false,
             show_icon: false,
             elevation: 2.0,
             color: Colors.white,

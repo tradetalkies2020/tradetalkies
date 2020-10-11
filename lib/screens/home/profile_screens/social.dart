@@ -25,6 +25,8 @@ class _Social_ConnectState extends State<Social_Connect> {
             leading: true,
             show_icon: false,
             elevation: 2.0,
+            isProfile: false,
+
             color: Colors.white,
             title: 'Social connection',
           )),

@@ -1037,6 +1037,180 @@ class UserAuth with ChangeNotifier {
     }
   }
 
+  Future<List> getPosts(int index) async {
+    try {
+      http.Response response;
+      // print("id is $id");
+      if (index == 0) {
+        response = await http.get(
+          "http://tradetalkies.herokuapp.com/feed",
+          headers: {
+            "Content-type": "application/json",
+            "Cookie": "$_token",
+            HttpHeaders.authorizationHeader: "Bearer $_token",
+          },
+        );
+      } else if (index == 1) {
+        print('fetching trending post');
+        response = await http.get(
+          "http://tradetalkies.herokuapp.com/trending-posts",
+          headers: {
+            "Content-type": "application/json",
+            "Cookie": "$_token",
+            HttpHeaders.authorizationHeader: "Bearer $_token",
+          },
+        );
+      } else {
+        print(index);
+      }
+
+      print(response.body);
+      // List ab = [];
+      List feeds = json.decode(response.body);
+      // print(comments);
+      print(feeds[0]['images']);
+      print(feeds[0]['desc']);
+      print(feeds[0]['userDetails']['local']['username']);
+      print(feeds[0]['userDetails']['imageUrl']);
+      print(feeds[0]['comments'].runtimeType);
+      print(feeds[0]['repost'].runtimeType);
+
+      // print(comments[0]['postedBy']['local']['username']);
+      // print(comments[0]['postedBy']['createdAt']);
+      // print(DateTime(comments[0]['createdAt']));
+      // print(comments[0]['postedBy']['imageUrl']);
+      // Map output = {
+
+      //   'image': '',
+      //   'userName': '_name'
+      // };
+
+      notifyListeners();
+      return feeds;
+    } catch (err) {
+      print(err.toString());
+      throw err;
+    }
+  }
+
+  Future<List> getFilterPosts(
+      int selectedRadio, DateTime from, DateTime to, int index) async {
+    try {
+      print(
+          'dnnd $selectedRadio nhh ${from.toIso8601String()} ddd ${to.toIso8601String()} xss $index');
+      http.Response response;
+      // print("id is $id");
+      if (index == 0) {
+        switch (selectedRadio) {
+          case 1:
+            response = await http.get(
+              "http://tradetalkies.herokuapp.com/feed?hourly=true",
+              headers: {
+                "Content-type": "application/json",
+                "Cookie": "$_token",
+                HttpHeaders.authorizationHeader: "Bearer $_token",
+              },
+            );
+
+            break;
+          case 2:
+            response = await http.get(
+              "http://tradetalkies.herokuapp.com/feed?startTimestamp=${from.toIso8601String()}&endTimestamp=${to.toIso8601String()}",
+              headers: {
+                "Content-type": "application/json",
+                "Cookie": "$_token",
+                HttpHeaders.authorizationHeader: "Bearer $_token",
+              },
+            );
+            break;
+          case 3:
+            response = await http.get(
+              "http://tradetalkies.herokuapp.com/feed?weekly=true",
+              headers: {
+                "Content-type": "application/json",
+                "Cookie": "$_token",
+                HttpHeaders.authorizationHeader: "Bearer $_token",
+              },
+            );
+            break;
+          default:
+        }
+      }
+
+      print('vdvd is ${response.body}');
+      List sb = json.decode(response.body);
+
+      // List comments = json.decode(response.body)['comments'];
+      // // print(comments);
+      // print(comments[0]['comment']);
+      // print(comments[0]['postedBy']['local']['username']);
+      // print(comments[0]['postedBy']['createdAt']);
+      // // print(DateTime(comments[0]['createdAt']));
+      // print(comments[0]['postedBy']['imageUrl']);
+      // Map output = {
+
+      //   'image': '',
+      //   'userName': '_name'
+      // };
+
+      notifyListeners();
+      return sb;
+    } catch (err) {
+      print(err.toString());
+      throw err;
+    }
+  }
+
+  Future<Map> getuserPosts(String id) async {
+    try {
+      http.Response response;
+      // print("id is $id");
+
+      response = await http.get(
+        "http://tradetalkies.herokuapp.com/user-post/$id?page=1",
+        headers: {
+          "Content-type": "application/json",
+          "Cookie": "$_token",
+          HttpHeaders.authorizationHeader: "Bearer $_token",
+        },
+      );
+
+      print('jsjbsjbs is ${response.body}');
+      print(response.statusCode);
+      // List ab = [];
+      Map feeds;
+      if (response.statusCode == 200) {
+        feeds = json.decode(response.body);
+      } else {
+        feeds = {'content': []};
+      }
+
+      // print(comments);
+      // print(feeds[0]['_id']);
+      // print(feeds[0]['desc']);
+      // print(feeds[0]['userDetails']['local']['username']);
+      // print(feeds[0]['userDetails']['imageUrl']);
+      // print(feeds[0]['comments'].runtimeType);
+      // print(feeds[0]['repost'].runtimeType);
+
+      // print(comments[0]['postedBy']['local']['username']);
+      // print(comments[0]['postedBy']['createdAt']);
+      // print(DateTime(comments[0]['createdAt']));
+      // print(comments[0]['postedBy']['imageUrl']);
+      // Map output = {
+
+      //   'image': '',
+      //   'userName': '_name'
+      // };
+
+      notifyListeners();
+      return feeds;
+    } catch (err) {
+      print(err.toString());
+      throw err;
+    }
+  }
+
   Future<void> feed(DateTime date) async {
     try {
       // print("id is $id");
@@ -1049,7 +1223,6 @@ class UserAuth with ChangeNotifier {
           "Cookie": "$_token",
           HttpHeaders.authorizationHeader: "Bearer $_token",
         },
-        
       );
 
       print(response.body);

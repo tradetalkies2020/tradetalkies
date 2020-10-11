@@ -44,14 +44,15 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: basicTheme(),
           home: auth.isAuth
-              ? HomeScreen(selectedIndex: 0,fromPost: false,)
+          ?SplashScreen(isAuth: true,)
+              // ? HomeScreen(selectedIndex: 0,fromPost: false,)
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? SplashScreen()
-                          : Auth(),
+                  builder: (ctx, authResultSnapshot) => SplashScreen(isAuth: false,)
+                      // authResultSnapshot.connectionState ==
+                      //         ConnectionState.waiting
+                      //     ? SplashScreen()
+                      //     : Auth(),
                 ),
           routes: {
             HomeScreen.routeName: (ctx) => HomeScreen(),

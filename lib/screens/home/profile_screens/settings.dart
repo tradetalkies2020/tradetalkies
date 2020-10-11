@@ -27,6 +27,8 @@ class _SettingsState extends State<Settings> {
             show_icon: false,
             elevation: 2.0,
             color: Colors.white,
+            isProfile: false,
+
             title: 'Settings',
           )),
       // appBar: AppBar(

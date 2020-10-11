@@ -841,7 +841,7 @@ class _CommentState extends State<Repost> {
                           // padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Color(0xFF3D96FF),
+                            color: Color(0xFF3550A3),
                           ),
                           // margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                           width: 95,

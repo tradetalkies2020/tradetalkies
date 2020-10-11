@@ -106,6 +106,8 @@ Toast.show(
             isHome: false,
             leading: true,
             show_icon: false,
+            isProfile: false,
+
             elevation: 2.0,
             color: Colors.white,
             title: 'Password',
@@ -166,7 +168,7 @@ Toast.show(
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(8)),
-                      color: Color(0xFF3D96FF),
+                      color: Color(0xFF3550A3),
                     ),
                     margin: EdgeInsets.fromLTRB(15, 30, 15, 0),
                     // width: _large ? _width - 45 : (_medium ? _width - 35 : _width - 25),

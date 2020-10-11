@@ -427,7 +427,7 @@ class _Profile_infoState extends State<Profile_info> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: widget.forEdit ? Color(0xFF3D96FF) : Color(0xFFABABAB),
+            color: widget.forEdit ? Color(0xFF3550A3) : Color(0xFFABABAB),
           ),
           margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
           width: _large ? _width - 45 : (_medium ? _width - 35 : _width - 25),

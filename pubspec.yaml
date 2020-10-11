@@ -50,7 +50,9 @@ dependencies:
   shared_preferences: ^0.5.7+3
   flutter_absolute_path: ^1.0.6
   flutter_overboard: ^1.1.5
+  dotted_border: ^1.0.6
   flutter_picker: ^1.1.5
+  clipboard_manager: ^0.0.4
   toast: ^0.1.5
 
 dev_dependencies:
@@ -91,7 +93,7 @@ flutter:
         - asset: assets/fonts/Inter/Inter-VariableFont_slnt,wght.ttf
     - family: Roboto
       fonts:
-        - asset: assets/fonts/Poppins/Poppins-Regular.ttf
+        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

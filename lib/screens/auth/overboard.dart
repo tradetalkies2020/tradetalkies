@@ -5,6 +5,7 @@ import 'package:flutter_overboard/src/circular_clipper.dart';
 import 'package:fireauth/services/auth/page_model.dart';
 import 'package:fireauth/widgets/responsive_ui.dart';
 import 'package:flutter_overboard/src/overboard_animator.dart';
+import 'package:flutter_svg/svg.dart';
 // import 'package:flutter_overboard/src/page_model.dart';
 
 enum SwipeDirection { LEFT_TO_RIGHT, RIGHT_TO_LEFT, SKIP_TO_LAST }
@@ -27,7 +28,8 @@ class OverBoard extends StatefulWidget {
       this.nextText,
       this.finishText,
       @required this.finishCallback,
-      this.animator, this.skipCallback})
+      this.animator,
+      this.skipCallback})
       : super(key: key);
 
   @override
@@ -57,6 +59,7 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
 
     _animator = new OverBoardAnimator(this);
     _total = widget.pages.length;
+    print('total is ${_total}');
   }
 
   @override
@@ -68,7 +71,7 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
     _medium = ResponsiveWidget.isScreenMedium(_width, _pixelRatio);
 
     return SingleChildScrollView(
-          child: Container(
+      child: Container(
         color: Colors.white,
         child: _getStack(),
       ),
@@ -76,7 +79,7 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
   }
 
   _getStack() {
-    PageModel page = widget.pages[_last];
+    PageModel page = widget.pages[_counter];
 
     return GestureDetector(
       onPanStart: (DragStartDetails details) {
@@ -88,67 +91,66 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
       onPanEnd: (DragEndDetails details) {
         initial = 0.0;
         setState(() {
-          _last = _counter;
+          _last = _counter ;
+          // print('last is $_last');
         });
         if (distance > 1 && _counter > 0) {
           setState(() {
             _counter--;
+            // print('counter- is $_counter');
             _swipeDirection = SwipeDirection.LEFT_TO_RIGHT;
           });
-          _animate();
+          // _animate();
         } else if (distance < 0 && _counter < _total - 1) {
           setState(() {
             _counter++;
+            // print('counter+ is $_counter');
+
             _swipeDirection = SwipeDirection.RIGHT_TO_LEFT;
           });
-          _animate();
+          // _animate();
         }
       },
       child: Column(
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(top:63.0),
+            margin: EdgeInsets.only(top: 63.0),
             // height: 50.0,
             child: new Text(
               page.title,
               textAlign: TextAlign.center,
               style: new TextStyle(
-                color: Colors.black,
-                fontSize: 26.0,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w900
-
-              ),
+                  color: Colors.black,
+                  fontSize: 16.0,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w900),
             ),
           ),
           SizedBox(height: 55),
           page.doAnimateImage
               ? Container(
-              width: _large ? _width - 45 : (_medium ? _width - 35 : _width - 25),
-              height: 340,
-              decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: Color(0xFFDADADA)
-            
-          ),
-              // padding: EdgeInsets.only(bottom: 45.0),
-              child: null,
+                  width: _large
+                      ? _width - 45
+                      : (_medium ? _width - 35 : _width - 25),
+                  height: 340,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Color(0xFFDADADA)),
+                  // padding: EdgeInsets.only(bottom: 45.0),
+                  child: null,
 
-          //     child: new Image.asset(page.imageAssetPath,
-          //         // width: 358.0, height: 293.0,
-          //         // color: Colors.red
-          // width: _large ? _width - 45 : (_medium ? _width - 35 : _width - 25),
+                  //     child: new Image.asset(page.imageAssetPath,
+                  //         // width: 358.0, height: 293.0,
+                  //         // color: Colors.red
+                  // width: _large ? _width - 45 : (_medium ? _width - 35 : _width - 25),
 
-          //         // color: Color(0xFFDADADA)
-          //         ),
-              )
-              : Image.asset(page.imageAssetPath,
-                  // width: 358.0, height: 293.0,
-                  
-                  // color: Color(0xFFDADADA)
-                  ),
-          
+                  //         // color: Color(0xFFDADADA)
+                  //         ),
+                )
+              :SvgPicture.asset(page.imageAssetPath)
+          ,
+
           // _getPage(_last),
           // AnimatedBuilder(
           //   animation: _animator.getAnimator(),
@@ -160,108 +162,105 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
           //   },
           //   child: Container(),
           // ),
-          SizedBox(height: 80,),
-          InkWell(
-        onTap: _counter < _total - 1?_next: widget.finishCallback,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: Color(0xFF3D96FF),
+          SizedBox(
+            height: 80,
           ),
-          // margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-          width: _large ? _width - 45 : (_medium ? _width - 35 : _width - 25),
-          height: 50,
-          child: Center(
-            child: Text(_counter < _total - 1?
-              "Continue":"Get Started",
-              style: Theme.of(context).textTheme.headline4,
+          InkWell(
+            onTap: _counter < _total - 1 ? _next : widget.finishCallback,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                color: Color(0xFF3550A3),
+              ),
+              // margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              width:
+                  _large ? _width - 45 : (_medium ? _width - 35 : _width - 25),
+              height: 50,
+              child: Center(
+                child: Text(
+                  _counter < _total - 1 ? "Continue" : "Get Started",
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      SizedBox(height:25,),
-       Container(
-          // padding: EdgeInsets.all(15),
-          child: Row(
+          SizedBox(
+            height: 25,
+          ),
+          Container(
+              // padding: EdgeInsets.all(15),
+              child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-          Text(
-            "Have an account ?",
-            style: Theme.of(context).textTheme.headline6.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.normal,
-              fontFamily: 'Inter'
-
-            ),
-          ),
-          InkWell(
-            onTap: (widget.skipCallback != null ? widget.skipCallback : _skip),
-            // onTap: () {
-              
-            //   // Navigator.push(
-            //   //   context,
-            //   //   MaterialPageRoute(
-            //   //     builder: (context) {
-            //   //       return SignUpScreen();
-            //   //     },
-            //   //   ),
-            //   // );
-            // },
-            child: Text(
-              " Sign In",
-              style: Theme.of(context).textTheme.headline6.copyWith(
-                    color: Colors.blue,
+              Text(
+                "Have an account ?",
+                style: Theme.of(context).textTheme.headline6.copyWith(
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Inter'
-                  ),
-            ),
-          ),
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'Inter'),
+              ),
+              InkWell(
+                onTap:
+                    (widget.skipCallback != null ? widget.skipCallback : _skip),
+                // onTap: () {
+
+                //   // Navigator.push(
+                //   //   context,
+                //   //   MaterialPageRoute(
+                //   //     builder: (context) {
+                //   //       return SignUpScreen();
+                //   //     },
+                //   //   ),
+                //   // );
+                // },
+                child: Text(
+                  " Sign In",
+                  style: Theme.of(context).textTheme.headline6.copyWith(
+                      color: Color(0xFF3550A3),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Inter'),
+                ),
+              ),
             ],
           )),
           SizedBox(height: 20),
           Container(
             // margin: EdgeInsets.only(top:110.0),
-          child: Center(child: LayoutBuilder(
-            builder: (context, constraints) {
-              _bulletContainerWidth = constraints.maxWidth - 40.0;
-              return Container(
-                // padding: const EdgeInsets.all(0.0),
-                child: ((widget.showBullets ?? true)
-                    ? SingleChildScrollView(
-                        physics: NeverScrollableScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        controller: _scrollController,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            for (int i = 0; i < _total; i++)
-                              Padding(
-                                padding: EdgeInsets.all(_bulletPadding),
-                                child: Container(
-                                  height: _bulletSize,
-                                  width: _bulletSize,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: (i == _counter
-                                          ? Color(0xFF2E279D)
-                                          : Color(0xFFBBBBBB))),
-                                ),
-                              )
-                          ],
-                        ),
-                      )
-                    : Container()),
-              );
-            },
-          )),
-            ),
-
-     
-          
-          
-            
-          
+            child: Center(child: LayoutBuilder(
+              builder: (context, constraints) {
+                _bulletContainerWidth = constraints.maxWidth - 40.0;
+                return Container(
+                  // padding: const EdgeInsets.all(0.0),
+                  child: ((widget.showBullets ?? true)
+                      ? SingleChildScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          controller: _scrollController,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              for (int i = 0; i < _total; i++)
+                                Padding(
+                                  padding: EdgeInsets.all(_bulletPadding),
+                                  child: Container(
+                                    height: _bulletSize,
+                                    width: _bulletSize,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: (i == _counter
+                                            ? Color(0xFF2E279D)
+                                            : Color(0xFFBBBBBB))),
+                                  ),
+                                )
+                            ],
+                          ),
+                        )
+                      : Container()),
+                );
+              },
+            )),
+          ),
         ],
       ),
     );
@@ -270,60 +269,65 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
   _getPage(index) {
     PageModel page = widget.pages[index];
     return Column(
-        // mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top:60.0),
-            child: new Text(
-              page.title,
-              textAlign: TextAlign.center,
-              style: new TextStyle(
+      // mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(top: 60.0),
+          child: new Text(
+            page.title,
+            textAlign: TextAlign.center,
+            style: new TextStyle(
                 color: Colors.black,
                 fontSize: 32.0,
                 fontFamily: 'Poppins',
-                fontWeight: FontWeight.w900
-
-              ),
-            ),
+                fontWeight: FontWeight.w900),
           ),
-          page.doAnimateImage
-              ? AnimatedBoard(
-                  animator: _animator,
-                  child: new Padding(
-                    padding: new EdgeInsets.only(bottom: 25.0),
-                    child: new Image.asset(page.imageAssetPath,
-                        width: 358.0, height: 293.0,
-                        // color: Colors.red
-                        color: Color(0xFFDADADA)
-                        ),
-                  ),
-                )
-              : Image.asset(page.imageAssetPath,
-                  width: 358.0, height: 293.0,
-                  // color: Color(0xFFDADADA)
-                  ),
-          
-          // Padding(
-          //   padding: new EdgeInsets.only(
-          //       bottom: 75.0, left: 30.0, right: 30.0),
-          //   child: new Text(
-          //     page.body,
-          //     textAlign: TextAlign.center,
-          //     style: new TextStyle(
-          //       color: Colors.white,
-          //       fontSize: 18.0,
-          //     ),
-          //   ),
-          // ),
-        ],
-      );
+        ),
+        page.doAnimateImage
+            ? AnimatedBoard(
+                animator: _animator,
+                child: new Padding(
+                  padding: new EdgeInsets.only(bottom: 25.0),
+                  child: new Image.asset(page.imageAssetPath,
+                      width: 358.0,
+                      height: 293.0,
+                      // color: Colors.red
+                      color: Color(0xFFDADADA)),
+                ),
+              )
+            : Image.asset(
+                page.imageAssetPath,
+                width: 358.0, height: 293.0,
+                // color: Color(0xFFDADADA)
+              ),
+
+        // Padding(
+        //   padding: new EdgeInsets.only(
+        //       bottom: 75.0, left: 30.0, right: 30.0),
+        //   child: new Text(
+        //     page.body,
+        //     textAlign: TextAlign.center,
+        //     style: new TextStyle(
+        //       color: Colors.white,
+        //       fontSize: 18.0,
+        //     ),
+        //   ),
+        // ),
+      ],
+    );
   }
 
   _next() {
     setState(() {
       _swipeDirection = SwipeDirection.RIGHT_TO_LEFT;
+      // print('last was $_last');
       _last = _counter;
+      // print('last is $_last');
+      // print('counter was $_counter');
+
       _counter++;
+      // print('counter is $_counter');
+
     });
     _animate();
   }
