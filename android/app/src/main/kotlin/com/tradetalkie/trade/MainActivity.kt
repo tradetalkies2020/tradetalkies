@@ -1,4 +1,4 @@
-package com.example.fireauth
+package com.tradetalkie.trade
 
 import io.flutter.embedding.android.FlutterActivity
 
